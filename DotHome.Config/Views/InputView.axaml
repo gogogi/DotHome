@@ -1,0 +1,15 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 HorizontalAlignment="Left"
+             x:Class="DotHome.Config.Views.InputView">
+	<UserControl.RenderTransform>
+		<TranslateTransform X="-2"/>
+	</UserControl.RenderTransform>
+	<StackPanel Orientation="Horizontal">
+		<Polygon x:Name="polygon" Fill="Silver" Points="0,0 6,0 10,4 6,8 0,8" VerticalAlignment="Center" Cursor="Hand"/>
+		<TextBlock x:Name="textBlockName" IsEnabled="False"/>
+	</StackPanel>
+</UserControl>

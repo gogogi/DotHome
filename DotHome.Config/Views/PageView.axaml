@@ -1,0 +1,33 @@
+﻿<TabItem xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 LayoutUpdated="PageView_LayoutUpdated"
+			 xmlns:local="clr-namespace:DotHome.Config.Views;assembly=DotHome.Config"
+			 KeyDown="PageView_KeyDown"
+			 Focusable="True"
+			 Padding="0"
+             x:Class="DotHome.Config.Views.PageView">
+	<TabItem.Header>
+		<StackPanel Orientation="Horizontal" PointerPressed="Header_PointerPressed" PointerMoved="Header_PointerMoved" PointerReleased="Header_PointerReleased">
+			<TextBlock x:Name="textBlockHeader" VerticalAlignment="Center" Margin="4 0"/>
+			<Button BorderThickness="0" Background="Transparent" Click="CloseButton_Click">
+				<Image Source="/Assets/Icons/Close_256x.png"/>
+			</Button>
+		</StackPanel>
+	</TabItem.Header>
+	<ScrollViewer x:Name="scrollViewer" HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible">
+		<Panel x:Name="panel" Background="Gray" PointerWheelChanged="Panel_Wheel" PointerPressed="Panel_PointerPressed" PointerReleased="Panel_PointerReleased" PointerMoved="Panel_PointerMoved">
+			<LayoutTransformControl x:Name="layoutTransformControl" HorizontalAlignment="Center" VerticalAlignment="Center" >
+				<Canvas x:Name="canvas" Background="White" PointerMoved="Canvas_PointerMoved" PointerPressed="Canvas_PointerPressed" PointerReleased="Canvas_PointerReleased" DragDrop.AllowDrop="True">
+					<Line x:Name="previewLine" Stroke="Black" IsVisible="False"/>
+					<Panel x:Name="wiresPanel"/>
+					<Canvas x:Name="blocksCanvas"/>
+					<Rectangle x:Name="previewRectangle" Stroke="Blue" Fill="LightBlue" StrokeThickness="2" Opacity="0.5" IsVisible="False"/>
+				</Canvas>
+			</LayoutTransformControl>
+		</Panel>
+
+	</ScrollViewer>
+</TabItem>

@@ -1,0 +1,97 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="DotHome.Config.MainWindow"
+		Icon="/Assets/Icons/Home_256x.png"
+		Closing="MainWindow_Closing"
+        Title="DotHome Config">
+	<Window.Styles>
+		<Style Selector="TabItem">
+			<Setter Property="FontSize" Value="12"/>
+			<Setter Property="Height" Value="24"/>
+			<Setter Property="Margin" Value="0"/>
+			<Setter Property="BorderBrush" Value="DarkGray"/>
+			<Setter Property="BorderThickness" Value="1 1 1 0"/>
+			<Setter Property="Padding" Value="10 0"/>
+		</Style>
+		<Style Selector="TextBlock">
+			<Setter Property="Foreground" Value="Black"/>
+		</Style>
+	</Window.Styles>
+	<DockPanel>
+		<Menu DockPanel.Dock="Top" BorderThickness="0 0 0 1" BorderBrush="DarkGray">
+			<MenuItem Header="_File">
+				<MenuItem Header="_New Project" Command="{Binding NewProjectCommand}" HotKey="Ctrl+N" InputGesture="Ctrl+N">
+					<MenuItem.Icon>
+						<Image Source="/Assets/Icons/NewFile_256x.png"/>
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem Header="_Open Project" Command="{Binding OpenProjectCommand}" HotKey="Ctrl+O" InputGesture="Ctrl+O">
+					<MenuItem.Icon>
+						<Image Source="/Assets/Icons/OpenFile_256x.png"/>
+					</MenuItem.Icon>
+				</MenuItem>
+				<Separator Background="LightGray"/>
+				<MenuItem Header="_Close Project" Command="{Binding CloseProjectCommand}" HotKey="Ctrl+W" InputGesture="Ctrl+W">
+					<MenuItem.Icon>
+						<Image Source="/Assets/Icons/CloseDocument_256x.png"/>
+					</MenuItem.Icon>
+				</MenuItem>
+				<Separator Background="LightGray"/>
+				<MenuItem Header="_Save Project" Command="{Binding SaveProjectCommand}" HotKey="Ctrl+S" InputGesture="Ctrl+S">
+					<MenuItem.Icon>
+						<Image Source="/Assets/Icons/Save_256x.png"/>
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem Header="Save Project _As" Command="{Binding SaveProjectAsCommand}" HotKey="Ctrl+Shift+S" InputGesture="Ctrl+Shift+S">
+					<MenuItem.Icon>
+						<Image Source="/Assets/Icons/SaveAs_256x.png"/>
+					</MenuItem.Icon>
+				</MenuItem>
+				<Separator Background="LightGray"/>
+				<MenuItem Header="_Exit" HotKey="Alt+F4" Command="{Binding ExitCommand}" InputGesture="Alt+F4">
+					<MenuItem.Icon>
+						<Image Source="/Assets/Icons/Exit_256x.png"/>
+					</MenuItem.Icon>
+				</MenuItem>
+			</MenuItem>
+			<MenuItem Header="_Edit">
+				<MenuItem Header="Cance_l" Command="{Binding CancelCommand}" HotKey="Escape" InputGesture="Escape">
+					<MenuItem.Icon>
+						<Image Source="/Assets/Icons/Cancel_256x.png"/>
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem Header="Select _all" Command="{Binding SelectAllCommand}" HotKey="Ctrl+A" InputGesture="Ctrl+A">
+					<MenuItem.Icon>
+						<Image Source="/Assets/Icons/SelectAll_256x.png"/>
+					</MenuItem.Icon>
+				</MenuItem>
+				<Separator Background="LightGray"/>
+				<MenuItem Header="_Copy" Command="{Binding CopyCommand}" HotKey="Ctrl+C" InputGesture="Ctrl+C">
+					<MenuItem.Icon>
+						<Image Source="/Assets/Icons/Copy_256x.png"/>
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem Header="C_ut" Command="{Binding CutCommand}" HotKey="Ctrl+X" InputGesture="Ctrl+X">
+					<MenuItem.Icon>
+						<Image Source="/Assets/Icons/Cut_256x.png"/>
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem Header="_Paste" Command="{Binding PasteCommand}" HotKey="Ctrl+V" InputGesture="Ctrl+V">
+					<MenuItem.Icon>
+						<Image Source="/Assets/Icons/Paste_256x.png"/>
+					</MenuItem.Icon>
+				</MenuItem>
+				<Separator Background="LightGray"/>
+				<MenuItem Header="_Delete" Command="{Binding DeleteCommand}" HotKey="Delete" InputGesture="Delete">
+					<MenuItem.Icon>
+						<Image Source="/Assets/Icons/Trash_256x.png"/>
+					</MenuItem.Icon>
+				</MenuItem>
+			</MenuItem>
+		</Menu>
+		<ContentControl x:Name="projectContentControl" />
+	</DockPanel>
+</Window>

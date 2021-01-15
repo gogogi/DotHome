@@ -1,0 +1,46 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <AvaloniaResource Include="Assets\Icons\*" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Assets\Icons\Add_256x.png" />
+    <None Remove="Assets\Icons\Cancel_256x.png" />
+    <None Remove="Assets\Icons\Close_256x.png" />
+    <None Remove="Assets\Icons\Const.png" />
+    <None Remove="Assets\Icons\Copy_256x.png" />
+    <None Remove="Assets\Icons\Cut_256x.png" />
+    <None Remove="Assets\Icons\DocumentCollection_256x.png" />
+    <None Remove="Assets\Icons\Document_256x.png" />
+    <None Remove="Assets\Icons\Edit_256x.png" />
+    <None Remove="Assets\Icons\GeoLocation_256x.png" />
+    <None Remove="Assets\Icons\Group_256x.png" />
+    <None Remove="Assets\Icons\Home_256x.png" />
+    <None Remove="Assets\Icons\ParallelPort_256x.png" />
+    <None Remove="Assets\Icons\Paste_256x.png" />
+    <None Remove="Assets\Icons\RefSink.png" />
+    <None Remove="Assets\Icons\RefSource.png" />
+    <None Remove="Assets\Icons\SelectAll_256x.png" />
+    <None Remove="Assets\Icons\Trash_256x.png" />
+    <None Remove="Assets\Icons\UserGroup_256x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="0.10.0-rc1" />
+    <PackageReference Include="Avalonia.Desktop" Version="0.10.0-rc1" />
+    <PackageReference Include="Avalonia.Diagnostics" Version="0.10.0-rc1" />
+    <PackageReference Include="MessageBox.Avalonia" Version="0.10.7-rc1" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DotHome.ProgrammingModel\DotHome.ProgrammingModel.csproj" />
+    <ProjectReference Include="..\DotHome.RunningModel\DotHome.RunningModel.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Views\SelectionPropertiesView.axaml.cs">
+      <DependentUpon>SelectionPropertiesView.axaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+</Project>

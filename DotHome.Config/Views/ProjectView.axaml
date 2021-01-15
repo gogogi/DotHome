@@ -1,0 +1,123 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:local="clr-namespace:DotHome.Config.Views;assembly=DotHome.Config"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="DotHome.Config.Views.ProjectView">
+	<Grid>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition MinWidth="200" MaxWidth="600" Width="400"/>
+			<ColumnDefinition Width="Auto"/>
+			<ColumnDefinition Width="*"/>
+		</Grid.ColumnDefinitions>
+		<TabControl Grid.Column="0">
+			<TabControl.Styles>
+				<Style Selector="TabControl WrapPanel">
+					<Setter Property="Background" Value="#EEEEEE"/>
+					<!--<Setter Property="BorderThickness" Value="1"/>-->
+				</Style>
+			</TabControl.Styles>
+			<TabItem Header="Project">
+				<ScrollViewer>
+					<TreeView BorderThickness="0">
+						<TreeViewItem>
+							<TreeViewItem.Header>
+								<StackPanel Orientation="Horizontal">
+									<Image Source="/Assets/Icons/UserGroup_256x.png" Width="16" Height="16" Margin="4 0"/>
+									<TextBlock Text="Users"/>
+								</StackPanel>
+							</TreeViewItem.Header>
+							<TreeViewItem Header="Vojta"/>
+						</TreeViewItem>
+						<TreeViewItem>
+							<TreeViewItem.Header>
+								<StackPanel Orientation="Horizontal">
+									<Image Source="/Assets/Icons/GeoLocation_256x.png" Width="16" Height="16" Margin="4 0"/>
+									<TextBlock Text="Rooms"/>
+								</StackPanel>
+							</TreeViewItem.Header>
+							<TreeViewItem Header="Vojta"/>
+						</TreeViewItem>
+						<TreeViewItem>
+							<TreeViewItem.Header>
+								<StackPanel Orientation="Horizontal">
+									<Image Source="/Assets/Icons/Group_256x.png" Width="16" Height="16" Margin="4 0"/>
+									<TextBlock Text="Categories"/>
+								</StackPanel>
+							</TreeViewItem.Header>
+							<TreeViewItem Header="Vojta"/>
+						</TreeViewItem>
+						<TreeViewItem x:Name="treeViewItemPages" Background="White">
+							<TreeViewItem.Styles>
+								<Style Selector=":is(TreeViewItem)">
+									<Setter Property="ContextMenu">
+										<Setter.Value>
+											<ContextMenu>
+												<MenuItem Header="Edit" Click="EditPage_Click">
+													<MenuItem.Icon>
+														<Image Source="/Assets/Icons/Edit_256x.png"/>
+													</MenuItem.Icon>
+												</MenuItem>
+												<MenuItem Header="Remove" Click="RemovePage_Click">
+													<MenuItem.Icon>
+														<Image Source="/Assets/Icons/Trash_256x.png"/>
+													</MenuItem.Icon>
+												</MenuItem>
+											</ContextMenu>
+										</Setter.Value>
+									</Setter>
+								</Style>
+							</TreeViewItem.Styles>
+							<TreeViewItem.ContextMenu>
+								<ContextMenu>
+									<MenuItem Header="New Page" Click="NewPage_Click">
+										<MenuItem.Icon>
+											<Image Source="/Assets/Icons/Add_256x.png"/>
+										</MenuItem.Icon>
+									</MenuItem>
+								</ContextMenu>
+							</TreeViewItem.ContextMenu>
+							<TreeViewItem.Header>
+								<StackPanel Orientation="Horizontal">
+									<Image Source="/Assets/Icons/DocumentCollection_256x.png" Width="16" Height="16" Margin="4 0"/>
+									<TextBlock Text="Pages"/>
+								</StackPanel>
+							</TreeViewItem.Header>
+							<TreeViewItem.ItemTemplate>
+								<TreeDataTemplate>
+									<StackPanel Orientation="Horizontal" DoubleTapped="Page_DoubleTapped" HorizontalAlignment="Stretch">
+										<Image Source="/Assets/Icons/Document_256x.png" Width="16" Height="16" Margin="4 0"/>
+										<TextBlock Text="{Binding .}"/>
+									</StackPanel>
+								</TreeDataTemplate>
+							</TreeViewItem.ItemTemplate>
+						</TreeViewItem>
+						<TreeViewItem>
+							<TreeViewItem.Header>
+								<StackPanel Orientation="Horizontal">
+									<Image Source="/Assets/Icons/ParallelPort_256x.png" Width="16" Height="16" Margin="4 0"/>
+									<TextBlock Text="Devices"/>
+								</StackPanel>
+							</TreeViewItem.Header>
+							<TreeViewItem Header="Vojta"/>
+						</TreeViewItem>
+					</TreeView>
+				</ScrollViewer>
+			</TabItem>
+			<TabItem Header="Block Library">
+				<local:BlocksLibraryView/>
+			</TabItem>
+			<TabItem Header="Selection">
+				<local:SelectionPropertiesView/>
+			</TabItem>
+			<TabItem Header="Device">
+
+			</TabItem>
+		</TabControl>
+		<GridSplitter Grid.Column="1" Width="5"/>
+		<TabControl x:Name="pagesTabControl" Grid.Column="2" Items="{Binding Pages}">
+		</TabControl>
+	</Grid>
+	
+</UserControl>
