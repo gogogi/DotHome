@@ -4,11 +4,14 @@ using Avalonia.Controls.Shapes;
 using Avalonia.Markup.Xaml;
 using DotHome.Definitions;
 using DotHome.Config.Tools;
+using DotHome.ProgrammingModel;
 
 namespace DotHome.Config.Views
 {
     public class OutputView : UserControl
     {
+        public IOutput Output => (IOutput)DataContext;
+
         private TextBlock textBlockName;
         private Polygon polygon;
 

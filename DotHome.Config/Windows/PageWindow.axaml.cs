@@ -2,6 +2,7 @@
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using DotHome.Config.Views;
+using DotHome.ProgrammingModel;
 using MessageBox.Avalonia;
 using System.Linq;
 
@@ -9,13 +10,13 @@ namespace DotHome.Config.Windows
 {
     public class PageWindow : Window
     {
-        private PageView page;
-        private ProjectView project;
+        private Page page;
+        private Project project;
 
         private TextBox textBoxName;
         private NumericUpDown numericUpDownWidth;
         private NumericUpDown numericUpDownHeight;
-        public PageWindow(PageView page, ProjectView project) : this()
+        public PageWindow(Page page, Project project) : this()
         {
             this.page = page;
             this.project = project;
@@ -72,21 +73,21 @@ namespace DotHome.Config.Windows
             }
             if(page == null)
             {
-                PageView pageView = new PageView() { Name = textBoxName.Text, Width = (int)numericUpDownWidth.Value, Height = (int)numericUpDownHeight.Value };
-                project.AddPage(pageView);
-                Close(pageView);
+                Page page = new Page() { Name = textBoxName.Text, Width = (int)numericUpDownWidth.Value, Height = (int)numericUpDownHeight.Value };
+                project.Pages.Add(page);
+                Close(page);
             }
             else
             {
                 double minX = page.Blocks.Min(b => b.X);
-                double maxX = page.Blocks.Max(b => b.X + b.Width);
+                double maxX = page.Blocks.Max(b => b.X/* + b.Width*/);
                 if (maxX - minX > numericUpDownWidth.Value)
                 {
                     await MessageBoxManager.GetMessageBoxStandardWindow("Error", "Page width is too small").ShowDialog(this);
                     return;
                 }
                 double minY = page.Blocks.Min(b => b.Y);
-                double maxY = page.Blocks.Max(b => b.Y + b.Height);
+                double maxY = page.Blocks.Max(b => b.Y/* + b.Height*/);
                 if (maxY - minY > numericUpDownHeight.Value)
                 {
                     await MessageBoxManager.GetMessageBoxStandardWindow("Error", "Page height is too small").ShowDialog(this);
@@ -96,18 +97,18 @@ namespace DotHome.Config.Windows
                 if (maxX > numericUpDownWidth.Value)
                 {
                     double delta = maxX - numericUpDownWidth.Value;
-                    foreach (ABlockView b in page.Blocks)
+                    foreach (ABlock b in page.Blocks)
                     {
-                        b.X -= delta;
+                        b.X -= (int)delta;
                     }
                 }
 
                 if (maxY > numericUpDownHeight.Value)
                 {
                     double delta = maxY - numericUpDownHeight.Value;
-                    foreach (ABlockView b in page.Blocks)
+                    foreach (ABlock b in page.Blocks)
                     {
-                        b.Y -= delta;
+                        b.Y -= (int)delta;
                     }
                 }
 

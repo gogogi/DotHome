@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 
 namespace DotHome.ProgrammingModel
 {
-    [Serializable]
-    public class VisualBlock : ABlock
+    public class VisualBlock : ABlock, INotifyPropertyChanged
     {
     }
 }

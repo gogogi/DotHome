@@ -1,33 +1,55 @@
-﻿<TabItem xmlns="https://github.com/avaloniaui"
+﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:model="clr-namespace:DotHome.ProgrammingModel;assembly=DotHome.ProgrammingModel"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 			 LayoutUpdated="PageView_LayoutUpdated"
 			 xmlns:local="clr-namespace:DotHome.Config.Views;assembly=DotHome.Config"
 			 KeyDown="PageView_KeyDown"
 			 Focusable="True"
-			 Padding="0"
              x:Class="DotHome.Config.Views.PageView">
-	<TabItem.Header>
-		<StackPanel Orientation="Horizontal" PointerPressed="Header_PointerPressed" PointerMoved="Header_PointerMoved" PointerReleased="Header_PointerReleased">
-			<TextBlock x:Name="textBlockHeader" VerticalAlignment="Center" Margin="4 0"/>
-			<Button BorderThickness="0" Background="Transparent" Click="CloseButton_Click">
-				<Image Source="/Assets/Icons/Close_256x.png"/>
-			</Button>
-		</StackPanel>
-	</TabItem.Header>
 	<ScrollViewer x:Name="scrollViewer" HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible">
 		<Panel x:Name="panel" Background="Gray" PointerWheelChanged="Panel_Wheel" PointerPressed="Panel_PointerPressed" PointerReleased="Panel_PointerReleased" PointerMoved="Panel_PointerMoved">
 			<LayoutTransformControl x:Name="layoutTransformControl" HorizontalAlignment="Center" VerticalAlignment="Center" >
-				<Canvas x:Name="canvas" Background="White" PointerMoved="Canvas_PointerMoved" PointerPressed="Canvas_PointerPressed" PointerReleased="Canvas_PointerReleased" DragDrop.AllowDrop="True">
+				<LayoutTransformControl.LayoutTransform>
+					<ScaleTransform ScaleX="{Binding Scale}" ScaleY="{Binding Scale}"/>
+				</LayoutTransformControl.LayoutTransform>
+				<Canvas x:Name="canvas" Width="{Binding Width}" Height="{Binding Height}" Background="White" PointerMoved="Canvas_PointerMoved" PointerPressed="Canvas_PointerPressed" PointerReleased="Canvas_PointerReleased" DragDrop.AllowDrop="True">
 					<Line x:Name="previewLine" Stroke="Black" IsVisible="False"/>
-					<Panel x:Name="wiresPanel"/>
-					<Canvas x:Name="blocksCanvas"/>
+					<ItemsControl Items="{Binding Blocks}" ZIndex="2">
+						<ItemsControl.ItemsPanel>
+							<ItemsPanelTemplate>
+								<Canvas Width="{Binding Width}" Height="{Binding Height}" />
+							</ItemsPanelTemplate>
+						</ItemsControl.ItemsPanel>
+						<ItemsControl.DataTemplates>
+							<DataTemplate DataType="{x:Type model:RefSink}">
+								<local:RefSinkView PointerPressed="Block_PointerPressed" AttachedToVisualTree="Block_AttachedToVisualTree" DetachedFromVisualTree="Block_DetachedFromVisualTree" InputPointerPressed="Block_InputPointerPressed" InputPointerReleased="Block_InputPointerReleased" InputAttachedToVisualTree="Block_InputAttachedToVisualTree" InputDetachedFromVisualTree="Block_InputDetachedFromVisualTree"/>
+							</DataTemplate>
+							<DataTemplate DataType="{x:Type model:RefSource}">
+								<local:RefSourceView PointerPressed="Block_PointerPressed" AttachedToVisualTree="Block_AttachedToVisualTree" DetachedFromVisualTree="Block_DetachedFromVisualTree" OutputPointerReleased="Block_OutputPointerReleased" OutputPointerPressed="Block_OutputPointerPressed" OutputAttachedToVisualTree="Block_OutputAttachedToVisualTree" OutputDetachedFromVisualTree="Block_OutputDetachedFromVisualTree"/>
+							</DataTemplate>
+							<DataTemplate DataType="{x:Type model:Const}">
+								<local:ConstView PointerPressed="Block_PointerPressed" AttachedToVisualTree="Block_AttachedToVisualTree" DetachedFromVisualTree="Block_DetachedFromVisualTree"/>
+							</DataTemplate>
+						</ItemsControl.DataTemplates>
+					</ItemsControl>
+					<ItemsControl Items="{Binding Wires}" ZIndex="1">
+						<ItemsControl.ItemsPanel>
+							<ItemsPanelTemplate>
+								<Canvas Width="{Binding Width}" Height="{Binding Height}" />
+							</ItemsPanelTemplate>
+						</ItemsControl.ItemsPanel>
+						<ItemsControl.DataTemplates>
+							<DataTemplate DataType="{x:Type model:Wire}">
+								<local:WireView AttachedToVisualTree="Wire_AttachedToVisualTree" DetachedFromVisualTree="Wire_DetachedFromVisualTree"/>
+							</DataTemplate>
+						</ItemsControl.DataTemplates>
+					</ItemsControl>
 					<Rectangle x:Name="previewRectangle" Stroke="Blue" Fill="LightBlue" StrokeThickness="2" Opacity="0.5" IsVisible="False"/>
 				</Canvas>
 			</LayoutTransformControl>
 		</Panel>
-
 	</ScrollViewer>
-</TabItem>
+</UserControl>

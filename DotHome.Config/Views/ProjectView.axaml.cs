@@ -16,58 +16,48 @@ namespace DotHome.Config.Views
 {
     public class ProjectView : UserControl
     {
+        private Project Project => (Project)DataContext;
+
         private TabControl pagesTabControl;
-        private TreeViewItem treeViewItemPages;
 
-        public ObservableCollection<PageView> Pages { get; } = new ObservableCollection<PageView>();
-
-        public PageView SelectedPage { get { if (((PageView)pagesTabControl.SelectedItem).Visible) return (PageView)pagesTabControl.SelectedItem; else return null; } }
-
-        public void AddPage(PageView pageView)
+        private void PageClose_Clicked(object sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
-            Pages.Add(pageView);
-            pageView.Focus();
-            pagesTabControl.SelectedItem = pageView;
-            treeViewItemPages.Items = Pages.Select(pw => pw.Name);
+            Page page = (Page)((IControl)sender).DataContext;
+            page.Visible = false;
         }
 
         private void Page_DoubleTapped(object sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
-            string pageName = (string)((StackPanel)sender).DataContext;
-            PageView pageView = Pages.Single(pw => pw.Name == pageName);
-            pageView.Visible = true;
-            pagesTabControl.SelectedItem = pageView;
+            Page page = (Page)((IControl)sender).DataContext;
+            page.Visible = true;
+            pagesTabControl.SelectedItem = page;
         }
 
         private async void NewPage_Click(object sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
-            PageWindow pageWindow = new PageWindow(null, this);
-            PageView pageView = await pageWindow.ShowDialog<PageView>(ConfigTools.MainWindow);
-            if(pageView != null)
+            PageWindow pageWindow = new PageWindow(null, Project);
+            Page page = await pageWindow.ShowDialog<Page>(ConfigTools.MainWindow);
+            if(page != null)
             {
-                pagesTabControl.SelectedItem = pageView;
+                pagesTabControl.SelectedItem = page;
             }
         }
 
         private async void EditPage_Click(object sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
-            string pageName = (string)((MenuItem)sender).DataContext;
-            PageView pageView = Pages.Single(pw => pw.Name == pageName);
-            PageWindow pageWindow = new PageWindow(pageView, this);
+            Page page = (Page)((IControl)sender).DataContext;
+            PageWindow pageWindow = new PageWindow(page, Project);
             await pageWindow.ShowDialog(ConfigTools.MainWindow);
-            treeViewItemPages.Items = Pages.Select(pw => pw.Name);
         }
 
         private async void RemovePage_Click(object sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
-            string pageName = (string)((MenuItem)sender).DataContext;
-            PageView pageView = Pages.Single(pw => pw.Name == pageName);
-            var result = await MessageBoxManager.GetMessageBoxStandardWindow("Remove Page", $"Do you really want to remove page '{pageName}'?", ButtonEnum.YesNo, Icon.Warning).ShowDialog(ConfigTools.MainWindow);
+            Page page = (Page)((IControl)sender).DataContext;
+            var result = await MessageBoxManager.GetMessageBoxStandardWindow("Remove Page", $"Do you really want to remove page '{page.Name}'?", ButtonEnum.YesNo, Icon.Warning).ShowDialog(ConfigTools.MainWindow);
             if(result == ButtonResult.Yes)
             {
-                Pages.Remove(pageView);
+                Project.Pages.Remove(page);
             }
-            treeViewItemPages.Items = Pages.Select(pw => pw.Name);
         }
 
         public ProjectView()
@@ -75,9 +65,6 @@ namespace DotHome.Config.Views
             this.InitializeComponent();
 
             pagesTabControl = this.FindControl<TabControl>("pagesTabControl");
-            treeViewItemPages = this.FindControl<TreeViewItem>("treeViewItemPages");
-
-            DataContext = this;
         }
 
         private void InitializeComponent()

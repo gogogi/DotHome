@@ -48,7 +48,7 @@
 							</TreeViewItem.Header>
 							<TreeViewItem Header="Vojta"/>
 						</TreeViewItem>
-						<TreeViewItem x:Name="treeViewItemPages" Background="White">
+						<TreeViewItem Items="{Binding Pages}" Background="White">
 							<TreeViewItem.Styles>
 								<Style Selector=":is(TreeViewItem)">
 									<Setter Property="ContextMenu">
@@ -88,7 +88,7 @@
 								<TreeDataTemplate>
 									<StackPanel Orientation="Horizontal" DoubleTapped="Page_DoubleTapped" HorizontalAlignment="Stretch">
 										<Image Source="/Assets/Icons/Document_256x.png" Width="16" Height="16" Margin="4 0"/>
-										<TextBlock Text="{Binding .}"/>
+										<TextBlock Text="{Binding Name}"/>
 									</StackPanel>
 								</TreeDataTemplate>
 							</TreeViewItem.ItemTemplate>
@@ -117,6 +117,27 @@
 		</TabControl>
 		<GridSplitter Grid.Column="1" Width="5"/>
 		<TabControl x:Name="pagesTabControl" Grid.Column="2" Items="{Binding Pages}">
+			<TabControl.Styles>
+				<Style Selector=":is(TabItem)">
+					<Setter Property="Padding" Value="0"/>
+					<Setter Property="IsVisible" Value="{Binding Visible}"/>
+				</Style>
+			</TabControl.Styles>
+			<TabControl.ItemTemplate>
+				<DataTemplate>
+					<StackPanel Orientation="Horizontal">
+						<TextBlock Text="{Binding Name}" VerticalAlignment="Center" Margin="4 0"/>
+						<Button BorderThickness="0" Background="Transparent" Click="PageClose_Clicked">
+							<Image Source="/Assets/Icons/Close_256x.png"/>
+						</Button>
+					</StackPanel>
+				</DataTemplate>
+			</TabControl.ItemTemplate>
+			<TabControl.ContentTemplate>
+				<DataTemplate>
+					<local:PageView IsVisible="{Binding Visible}"/>
+				</DataTemplate>
+			</TabControl.ContentTemplate>
 		</TabControl>
 	</Grid>
 	

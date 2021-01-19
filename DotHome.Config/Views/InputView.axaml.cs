@@ -5,17 +5,20 @@ using Avalonia.Markup.Xaml;
 using DotHome.Definitions;
 using DotHome.Config.Tools;
 using System.Diagnostics;
+using DotHome.ProgrammingModel;
 
 namespace DotHome.Config.Views
 {
     public class InputView : UserControl
     {
+        public IInput Input => (IInput)DataContext;
+
         private TextBlock textBlockName;
         private Polygon polygon;
 
         public bool Disabled { get => !IsVisible; set => IsVisible = !value; }
 
-        public Point Position => polygon.TranslatePoint(new Point(0, 4), this.ParentOfType<Canvas>()) ?? new Point(0, 0);
+        public Point Position => polygon.TranslatePoint(new Point(2, 4), this.ParentOfType<Canvas>()) ?? new Point(0, 0);
 
         public InputView(InputDefinition inputDefinition) : this()
         {

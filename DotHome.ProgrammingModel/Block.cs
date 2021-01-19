@@ -1,18 +1,20 @@
 ﻿using DotHome.Definitions;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Linq;
 using System.Text;
 
 namespace DotHome.ProgrammingModel
 {
-    [Serializable]
-    public class Block : ABlock
+    public class Block : ABlock, INotifyPropertyChanged
     {
         public BlockDefinition Definition { get; set; }
 
-        public List<Input> Inputs { get; } = new List<Input>();
+        public ObservableCollection<Input> Inputs { get; } = new ObservableCollection<Input>();
 
-        public List<Output> Outputs { get; } = new List<Output>();
+        public ObservableCollection<Output> Outputs { get; } = new ObservableCollection<Output>();
 
         public override IInput[] GetInputs() => (IInput[])Inputs.ToArray();
 

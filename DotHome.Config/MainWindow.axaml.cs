@@ -21,10 +21,8 @@ using System.Windows.Input;
 
 namespace DotHome.Config
 {
-    public class MainWindow : Window
+    public partial class MainWindow : Window
     {
-        private ProjectView ProjectView { get => (ProjectView)projectContentControl.Content; set => projectContentControl.Content = value; }
-        private string Path { get; set; }
 
         private ContentControl projectContentControl;
 
@@ -50,19 +48,19 @@ namespace DotHome.Config
 #endif
             projectContentControl = this.FindControl<ContentControl>("projectContentControl");
 
-            NewProjectCommand = new Command(() => ProjectView == null, () => { ProjectView = ConfigTools.NewProjectView(); Path = null; });
-            OpenProjectCommand = new Command(() => ProjectView == null, OpenProject_Executed);
-            CloseProjectCommand = new Command(() => ProjectView != null, CloseProject_Executed);
-            SaveProjectCommand = new Command(() => ProjectView != null, SaveProject_Executed);
-            SaveProjectAsCommand = new Command(() => ProjectView != null, SaveProjectAs_Executed);
+            NewProjectCommand = new Command(() => Project == null, () => { Project = ConfigTools.NewProject(); Path = null; });
+            OpenProjectCommand = new Command(() => Project == null, OpenProject_Executed);
+            CloseProjectCommand = new Command(() => Project != null, CloseProject_Executed);
+            SaveProjectCommand = new Command(() => Project != null, SaveProject_Executed);
+            SaveProjectAsCommand = new Command(() => Project != null, SaveProjectAs_Executed);
             ExitCommand = new Command(() => true, () => Close());
 
-            CancelCommand = new Command(() => ProjectView?.SelectedPage != null, () => ProjectView.SelectedPage.Cancel());
-            SelectAllCommand = new Command(() => ProjectView?.SelectedPage != null, () => ProjectView.SelectedPage.SelectAll());
-            CopyCommand = new Command(() => ProjectView?.SelectedPage != null && ProjectView.SelectedPage.Blocks.Any(b => b.Selected), () => ProjectView.SelectedPage.Copy());
-            CutCommand = new Command(() => ProjectView?.SelectedPage != null && ProjectView.SelectedPage.Blocks.Any(b => b.Selected), () => ProjectView.SelectedPage.Cut());
-            PasteCommand = new Command(() => ProjectView?.SelectedPage != null, () => ProjectView.SelectedPage.Paste());
-            DeleteCommand = new Command(() => ProjectView?.SelectedPage != null && ProjectView.SelectedPage.Blocks.Any(b => b.Selected), () => ProjectView.SelectedPage.Delete());
+            //CancelCommand = new Command(() => ProjectView?.SelectedPage != null, () => ProjectView.SelectedPage.Cancel());
+            //SelectAllCommand = new Command(() => ProjectView?.SelectedPage != null, () => ProjectView.SelectedPage.SelectAll());
+            //CopyCommand = new Command(() => ProjectView?.SelectedPage != null && ProjectView.SelectedPage.Blocks.Any(b => b.Selected), () => ProjectView.SelectedPage.Copy());
+            //CutCommand = new Command(() => ProjectView?.SelectedPage != null && ProjectView.SelectedPage.Blocks.Any(b => b.Selected), () => ProjectView.SelectedPage.Cut());
+            //PasteCommand = new Command(() => ProjectView?.SelectedPage != null, () => ProjectView.SelectedPage.Paste());
+            //DeleteCommand = new Command(() => ProjectView?.SelectedPage != null && ProjectView.SelectedPage.Blocks.Any(b => b.Selected), () => ProjectView.SelectedPage.Delete());
 
             DataContext = this;
         }
@@ -74,7 +72,7 @@ namespace DotHome.Config
             if (path != null)
             {
                 Path = path;
-                File.WriteAllText(Path, ModelSerializer.SerializeProject(ModelConverter.ProjectViewToProject(ProjectView)));
+                File.WriteAllText(Path, ModelSerializer.SerializeProject(Project));
             }
         }
 
@@ -87,12 +85,12 @@ namespace DotHome.Config
                 if (path != null)
                 {
                     Path = path;
-                    File.WriteAllText(Path, ModelSerializer.SerializeProject(ModelConverter.ProjectViewToProject(ProjectView)));
+                    File.WriteAllText(Path, ModelSerializer.SerializeProject(Project));
                 }
             }
             else
             {
-                File.WriteAllText(Path, ModelSerializer.SerializeProject(ModelConverter.ProjectViewToProject(ProjectView)));
+                File.WriteAllText(Path, ModelSerializer.SerializeProject(Project));
             }
         }
 
@@ -101,7 +99,7 @@ namespace DotHome.Config
             var result = await MessageBoxManager.GetMessageBoxStandardWindow("Close Project", "Do you want to save project?", ButtonEnum.YesNoCancel, MessageBox.Avalonia.Enums.Icon.Warning).ShowDialog(this);
             if (result == ButtonResult.No)
             {
-                ProjectView = null;
+                Project = null;
             }
             else if (result == ButtonResult.Yes)
             {
@@ -112,14 +110,14 @@ namespace DotHome.Config
                     if (path != null)
                     {
                         Path = path;
-                        File.WriteAllText(Path, ModelSerializer.SerializeProject(ModelConverter.ProjectViewToProject(ProjectView)));
-                        ProjectView = null;
+                        File.WriteAllText(Path, ModelSerializer.SerializeProject(Project));
+                        Project = null;
                     }
                 }
                 else
                 {
-                    File.WriteAllText(Path, ModelSerializer.SerializeProject(ModelConverter.ProjectViewToProject(ProjectView)));
-                    ProjectView = null;
+                    File.WriteAllText(Path, ModelSerializer.SerializeProject(Project));
+                    Project = null;
                 }
             }
         }
@@ -132,19 +130,19 @@ namespace DotHome.Config
             if(paths.Length == 1 && paths[0] != null)
             {
                 Path = paths[0];
-                ProjectView = ModelConverter.ProjectToProjectView(ModelSerializer.DeserializeProject(File.ReadAllText(Path)));
+                Project = ModelSerializer.DeserializeProject(File.ReadAllText(Path));
             }
         }
 
         private async void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            if(ProjectView != null)
+            if(Project != null)
             {
                 e.Cancel = true;
                 var result = await MessageBoxManager.GetMessageBoxStandardWindow("Exit", "Do you want to save project?", ButtonEnum.YesNoCancel, MessageBox.Avalonia.Enums.Icon.Warning).ShowDialog(this);
                 if(result == ButtonResult.No)
                 {
-                    ProjectView = null;
+                    Project = null;
                     Close();
                 }
                 else if(result == ButtonResult.Yes)
@@ -156,15 +154,15 @@ namespace DotHome.Config
                         if (paths.Length == 1 && paths[0] != null)
                         {
                             Path = paths[0];
-                            ProjectView = ModelConverter.ProjectToProjectView(ModelSerializer.DeserializeProject(File.ReadAllText(Path)));
-                            ProjectView = null;
+                            File.WriteAllText(Path, ModelSerializer.SerializeProject(Project));
+                            Project = null;
                             Close();
                         }
                     }
                     else
                     {
-                        File.WriteAllText(Path, ModelSerializer.SerializeProject(ModelConverter.ProjectViewToProject(ProjectView)));
-                        ProjectView = null;
+                        File.WriteAllText(Path, ModelSerializer.SerializeProject(Project));
+                        Project = null;
                         Close();
                     }
                 }

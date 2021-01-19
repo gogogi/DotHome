@@ -1,8 +1,11 @@
-﻿using Avalonia.Controls;
+﻿using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using DotHome.Config.Tools;
+using DotHome.ProgrammingModel;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -13,40 +16,8 @@ namespace DotHome.Config.Views
     {
         private static Cursor cursor = new Cursor(StandardCursorType.SizeAll);
 
-        private double x, y;
-
-        public int Id { get; set; }
-
-        public bool Selected
-        {
-            get => Background == Brushes.Black;
-            set
-            {
-                Background = value ? Brushes.Black : Brushes.Gray;
-                Command.ForceChanges();
-                ZIndex = value ? 2 : 1;
-            }
-        }
-
-        public double X
-        {
-            get => x;
-            set
-            {
-                x = value;
-                Canvas.SetLeft(this, Math.Round(value));
-            }
-        }
-        public double Y
-        {
-            get => y;
-            set
-            {
-                y = value;
-                Canvas.SetTop(this, Math.Round(value));
-            }
-        }
-
+        public ABlock Block => (ABlock)DataContext;
+                        
         public new double Width => Bounds.Width;
         public new double Height => Bounds.Height;
 
@@ -56,6 +27,16 @@ namespace DotHome.Config.Views
         public ABlockView()
         {
             Cursor = cursor;
+            Padding = new Thickness(2);
+        }
+
+        protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+        {
+            base.OnAttachedToVisualTree(e);
+            Parent.Bind(Canvas.LeftProperty, new Binding("X"));
+            Parent.Bind(Canvas.TopProperty, new Binding("Y"));
+            Parent.Bind(ZIndexProperty, new Binding("Selected") { Converter = SelectedToZIndexConverter.Instance });
+            this.Bind(BackgroundProperty, new Binding("Selected") { Converter = SelectedToBackgroundConverter.Instance });
         }
     }
 }

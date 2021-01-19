@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 
 namespace DotHome.ProgrammingModel
 {
-    [Serializable]
-    public class Project
+    public class Project : INotifyPropertyChanged
     {
-        public List<Page> Pages { get; set; } = new List<Page>();
+        public ObservableCollection<Page> Pages { get; set; } = new ObservableCollection<Page>();
+
+        public event PropertyChangedEventHandler PropertyChanged;
     }
 }

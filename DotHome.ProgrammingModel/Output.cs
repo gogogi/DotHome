@@ -1,12 +1,12 @@
 ﻿using DotHome.Definitions;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 
 namespace DotHome.ProgrammingModel
 {
-    [Serializable]
-    public class Output : IOutput
+    public class Output : IOutput, INotifyPropertyChanged
     {
         public OutputDefinition Definition { get; set; }
 
@@ -17,5 +17,7 @@ namespace DotHome.ProgrammingModel
             Definition = definition;
             Disabled = definition.DefaultDisabled;
         }
+
+        public event PropertyChangedEventHandler PropertyChanged;
     }
 }

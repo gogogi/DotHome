@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 
 namespace DotHome.ProgrammingModel
 {
-    [Serializable]
-    public class Const : ABlock, IOutput
+    public class Const : ABlock, IOutput, INotifyPropertyChanged
     {
         public override IOutput[] GetOutputs() => new IOutput[] { this };
 

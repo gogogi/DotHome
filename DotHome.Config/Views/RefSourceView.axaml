@@ -4,10 +4,9 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:local="clr-namespace:DotHome.Config.Views;assembly=DotHome.Config"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="DotHome.Config.Views.RefSourceView"
-			 Padding="2" Background="Gray">
+             x:Class="DotHome.Config.Views.RefSourceView">
 	<Grid Background="Green" ColumnDefinitions="*,*">
-		<TextBlock x:Name="textBlock" Grid.Column="0"/>
-		<local:OutputView x:Name="outputView" Grid.Column="1"/>
+		<TextBlock Text="{Binding Reference}" Grid.Column="0"/>
+		<local:OutputView x:Name="outputView" Grid.Column="1" PointerPressed="Output_PointerPressed" PointerReleased="Output_PointerReleased" AttachedToVisualTree="Output_AttachedToVisualTree" DetachedFromVisualTree="Output_DetachedFromVisualTree"/>
 	</Grid>
 </UserControl>

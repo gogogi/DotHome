@@ -2,6 +2,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:local="clr-namespace:DotHome.Config.Views;assembly=DotHome.Config"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="DotHome.Config.MainWindow"
 		Icon="/Assets/Icons/Home_256x.png"
@@ -92,6 +93,9 @@
 				</MenuItem>
 			</MenuItem>
 		</Menu>
-		<ContentControl x:Name="projectContentControl" />
+
+		<ContentControl IsVisible="{Binding Project, Converter={x:Static ObjectConverters.IsNotNull}}">
+			<local:ProjectView DataContext="{Binding Project}"/>	
+		</ContentControl>
 	</DockPanel>
 </Window>

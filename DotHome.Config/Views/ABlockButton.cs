@@ -1,7 +1,9 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
+using Avalonia.Media;
 using Avalonia.Styling;
+using DotHome.ProgrammingModel;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -12,28 +14,28 @@ namespace DotHome.Config.Views
     {
         Type IStyleable.StyleKey => typeof(Button);
 
-        private ABlockView block;
+        private ABlockView blockView;
 
-        public ABlockButton(ABlockView block)
+        public ABlockButton(ABlockView blockView)
         {
-            this.block = block;
+            this.blockView = blockView;
 
-            block.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center;
-            block.IsEnabled = false;
+            blockView.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center;
+            blockView.IsEnabled = false;
 
             string title = null;
-            if (block is RefSinkView) title = "RefSink";
-            else if (block is RefSourceView) title = "RefSource";
-            else if (block is ConstView) title = "Const";
-            else if (block is BlockView bw)
+            if (blockView is RefSinkView) title = "RefSink";
+            else if (blockView is RefSourceView) title = "RefSource";
+            else if (blockView is ConstView) title = "Const";
+            else if (blockView is BlockView bw)
             {
-                title = bw.BlockDefinition.Name;
-                ToolTip.SetTip(this, bw.BlockDefinition.Description);
+                title = ((Block)bw.Block).Definition.Name;
+                ToolTip.SetTip(this, ((Block)bw.Block).Definition.Description);
             }
 
 
             var stackPanel = new StackPanel();
-            stackPanel.Children.Add(block);
+            stackPanel.Children.Add(blockView);
             stackPanel.Children.Add(new TextBlock() { HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center, Text = title });
             Content = stackPanel;
             MinWidth = 60;
@@ -44,7 +46,7 @@ namespace DotHome.Config.Views
         {
             base.OnPointerPressed(e);
             DataObject dataObject = new DataObject();
-            dataObject.Set("add_block", block);
+            dataObject.Set("add_block", blockView.DataContext);
             DragDrop.DoDragDrop(e, dataObject, DragDropEffects.Copy);
         }
     }
