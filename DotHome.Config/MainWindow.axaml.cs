@@ -18,13 +18,14 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Avalonia.Data;
 
 namespace DotHome.Config
 {
     public partial class MainWindow : Window
     {
 
-        private ContentControl projectContentControl;
+        private ProjectView projectView;
 
         private Command NewProjectCommand { get; }
         private Command OpenProjectCommand { get; }
@@ -46,7 +47,7 @@ namespace DotHome.Config
 #if DEBUG
             this.AttachDevTools();
 #endif
-            projectContentControl = this.FindControl<ContentControl>("projectContentControl");
+            //projectContentControl = this.FindControl<ContentControl>("projectContentControl");
 
             NewProjectCommand = new Command(() => Project == null, () => { Project = ConfigTools.NewProject(); Path = null; });
             OpenProjectCommand = new Command(() => Project == null, OpenProject_Executed);
@@ -55,14 +56,18 @@ namespace DotHome.Config
             SaveProjectAsCommand = new Command(() => Project != null, SaveProjectAs_Executed);
             ExitCommand = new Command(() => true, () => Close());
 
-            //CancelCommand = new Command(() => ProjectView?.SelectedPage != null, () => ProjectView.SelectedPage.Cancel());
-            //SelectAllCommand = new Command(() => ProjectView?.SelectedPage != null, () => ProjectView.SelectedPage.SelectAll());
-            //CopyCommand = new Command(() => ProjectView?.SelectedPage != null && ProjectView.SelectedPage.Blocks.Any(b => b.Selected), () => ProjectView.SelectedPage.Copy());
-            //CutCommand = new Command(() => ProjectView?.SelectedPage != null && ProjectView.SelectedPage.Blocks.Any(b => b.Selected), () => ProjectView.SelectedPage.Cut());
-            //PasteCommand = new Command(() => ProjectView?.SelectedPage != null, () => ProjectView.SelectedPage.Paste());
-            //DeleteCommand = new Command(() => ProjectView?.SelectedPage != null && ProjectView.SelectedPage.Blocks.Any(b => b.Selected), () => ProjectView.SelectedPage.Delete());
+            CancelCommand = new Command(() => true, () => projectView?.SelectedPageView?.Cancel());
+            SelectAllCommand = new Command(() => true, () => projectView?.SelectedPageView?.SelectAll());
+            CopyCommand = new Command(() => true, () => projectView?.SelectedPageView?.Copy());
+            CutCommand = new Command(() => true, () => projectView?.SelectedPageView?.Cut());
+            PasteCommand = new Command(() => true, () => projectView?.SelectedPageView?.Paste(Project.Definitions));
+            DeleteCommand = new Command(() => true, () => projectView?.SelectedPageView?.Delete());
+
+            var b = new Binding("SelectedPage") { Source = Project };
 
             DataContext = this;
+
+            
         }
 
         private async Task SaveProjectAs_Executed()
@@ -172,6 +177,16 @@ namespace DotHome.Config
         private void InitializeComponent()
         {
             AvaloniaXamlLoader.Load(this);
+        }
+
+        private void Project_AttachedToVisualTree(object sender, VisualTreeAttachmentEventArgs e)
+        {
+            projectView = (ProjectView)sender;
+        }
+
+        private void Project_DetachedFromVisualTree(object sender, VisualTreeAttachmentEventArgs e)
+        {
+            project = null;
         }
     }
 }

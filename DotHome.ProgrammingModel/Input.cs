@@ -6,9 +6,9 @@ using System.Text;
 
 namespace DotHome.ProgrammingModel
 {
-    public class Input : IInput, INotifyPropertyChanged
+    public class Input : INotifyPropertyChanged
     {
-        public InputDefinition Definition { get; private set; }
+        public InputDefinition Definition { get; set; }
 
         public bool Disabled { get; set; }
 

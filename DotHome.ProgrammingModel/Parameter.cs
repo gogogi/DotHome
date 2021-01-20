@@ -13,5 +13,11 @@ namespace DotHome.ProgrammingModel
         public object Value { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+        public Parameter(ParameterDefinition definition)
+        {
+            Definition = definition;
+            Value = definition.DefaultValue;
+        }
     }
 }

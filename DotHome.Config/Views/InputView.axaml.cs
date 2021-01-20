@@ -11,7 +11,7 @@ namespace DotHome.Config.Views
 {
     public class InputView : UserControl
     {
-        public IInput Input => (IInput)DataContext;
+        public Input Input => (Input)DataContext;
 
         private TextBlock textBlockName;
         private Polygon polygon;

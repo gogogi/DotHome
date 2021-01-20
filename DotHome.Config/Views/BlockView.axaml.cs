@@ -1,61 +1,66 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Data;
+using Avalonia.Input;
 using Avalonia.Markup.Xaml;
+using DotHome.Config.Tools;
 using DotHome.Definitions;
+using DotHome.ProgrammingModel;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
 namespace DotHome.Config.Views
 {
-    public class BlockView : ABlockView
+    public class BlockView : UserControl
     {
-        private TextBlock textBlockName;
-        private StackPanel stackPanelInputs;
-        private StackPanel stackPanelOutputs;
+        private static Cursor cursor = new Cursor(StandardCursorType.SizeAll);
 
-        private InputView[] inputs;
-        private OutputView[] outputs;
+        public event EventHandler<PointerPressedEventArgs> InputPointerPressed;
+        public event EventHandler<PointerReleasedEventArgs> InputPointerReleased;
+        public event EventHandler<VisualTreeAttachmentEventArgs> InputAttachedToVisualTree;
+        public event EventHandler<VisualTreeAttachmentEventArgs> InputDetachedFromVisualTree;
+        public event EventHandler<PointerPressedEventArgs> OutputPointerPressed;
+        public event EventHandler<PointerReleasedEventArgs> OutputPointerReleased;
+        public event EventHandler<VisualTreeAttachmentEventArgs> OutputAttachedToVisualTree;
+        public event EventHandler<VisualTreeAttachmentEventArgs> OutputDetachedFromVisualTree;
 
-        public override InputView[] Inputs => inputs;
-        public override OutputView[] Outputs => outputs;
+        public Block Block => (Block)DataContext;
+        public new double Width => Bounds.Width;
+        public new double Height => Bounds.Height;
 
         public BlockDefinition BlockDefinition { get; }
-        //public BlockView()
-        //{
-        //    //BlockDefinition = blockDefinition;
-
-        //    //textBlockName = this.FindControl<TextBlock>("textBlockName");
-        //    //stackPanelInputs = this.FindControl<StackPanel>("stackPanelInputs");
-        //    //stackPanelOutputs = this.FindControl<StackPanel>("stackPanelOutputs");
-
-        //    //Debug.WriteLine(blockDefinition.Name);
-
-        //    //textBlockName.Text = blockDefinition.Name;
-
-        //    //foreach(var input in blockDefinition.Inputs)
-        //    //{
-        //    //    stackPanelInputs.Children.Add(new InputView(input));
-        //    //}
-
-        //    //foreach (var output in blockDefinition.Outputs)
-        //    //{
-        //    //    stackPanelOutputs.Children.Add(new OutputView(output));
-        //    //}
-
-        //    //inputs = stackPanelInputs.Children.Cast<InputView>().ToArray();
-        //    //outputs = stackPanelOutputs.Children.Cast<OutputView>().ToArray();
-
-        //    //Debug.WriteLine(inputs.Length);
-        //}
+        
         public BlockView()
         {
             this.InitializeComponent();
+
+            Cursor = cursor;
+            Padding = new Thickness(2);
         }
 
         private void InitializeComponent()
         {
             AvaloniaXamlLoader.Load(this);
         }
+
+        protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+        {
+            base.OnAttachedToVisualTree(e);
+            Parent.Bind(Canvas.LeftProperty, new Binding("X"));
+            Parent.Bind(Canvas.TopProperty, new Binding("Y"));
+            Parent.Bind(ZIndexProperty, new Binding("Selected") { Converter = SelectedToZIndexConverter.Instance });
+            this.Bind(BackgroundProperty, new Binding("Selected") { Converter = SelectedToBackgroundConverter.Instance });
+        }
+
+        private void Input_PointerPressed(object sender, PointerPressedEventArgs e) => InputPointerPressed?.Invoke(sender, e);
+        private void Input_PointerReleased(object sender, PointerReleasedEventArgs e) => InputPointerReleased?.Invoke(sender, e);
+        private void Input_DetachedFromVisualTree(object sender, VisualTreeAttachmentEventArgs e) => InputDetachedFromVisualTree?.Invoke(sender, e);
+        private void Input_AttachedToVisualTree(object sender, VisualTreeAttachmentEventArgs e) => InputAttachedToVisualTree?.Invoke(sender, e);
+        private void Output_PointerPressed(object sender, PointerPressedEventArgs e) => OutputPointerPressed?.Invoke(sender, e);
+        private void Output_PointerReleased(object sender, PointerReleasedEventArgs e) => OutputPointerReleased?.Invoke(sender, e);
+        private void Output_DetachedFromVisualTree(object sender, VisualTreeAttachmentEventArgs e) => OutputDetachedFromVisualTree?.Invoke(sender, e);
+        private void Output_AttachedToVisualTree(object sender, VisualTreeAttachmentEventArgs e) => OutputAttachedToVisualTree?.Invoke(sender, e);
     }
 }

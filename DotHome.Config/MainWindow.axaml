@@ -95,7 +95,7 @@
 		</Menu>
 
 		<ContentControl IsVisible="{Binding Project, Converter={x:Static ObjectConverters.IsNotNull}}">
-			<local:ProjectView DataContext="{Binding Project}"/>	
+			<local:ProjectView DataContext="{Binding Project}" AttachedToVisualTree="Project_AttachedToVisualTree" DetachedFromVisualTree="Project_DetachedFromVisualTree"/>	
 		</ContentControl>
 	</DockPanel>
 </Window>

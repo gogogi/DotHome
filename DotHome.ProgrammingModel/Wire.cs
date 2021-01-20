@@ -7,9 +7,9 @@ namespace DotHome.ProgrammingModel
 {
     public class Wire : INotifyPropertyChanged
     {
-        public IInput Input { get; set; }
+        public Input Input { get; set; }
 
-        public IOutput Output { get; set; }
+        public Output Output { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
     }

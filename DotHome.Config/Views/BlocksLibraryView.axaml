@@ -6,11 +6,31 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="DotHome.Config.Views.BlocksLibraryView">
 	<ScrollViewer HorizontalScrollBarVisibility="Disabled">
-		<StackPanel>
-			<Expander Header="Builtin" Background="LightGray" IsExpanded="True">
-				<WrapPanel x:Name="wrapPanelBuiltin"/>
-			</Expander>
-			<StackPanel x:Name="stackPanelCategories"/>
-		</StackPanel>
+		<ItemsControl Items="{Binding Definitions.BlockCategories}">
+			<ItemsControl.ItemsPanel>
+				<ItemsPanelTemplate>
+					<StackPanel/>
+				</ItemsPanelTemplate>
+			</ItemsControl.ItemsPanel>
+			<ItemsControl.ItemTemplate>
+				<DataTemplate>
+					<Expander Header="{Binding Name}">
+						<ItemsControl Items="{Binding BlockDefinitions}">
+							<ItemsControl.ItemsPanel>
+								<ItemsPanelTemplate>
+									<WrapPanel/>
+								</ItemsPanelTemplate>
+							</ItemsControl.ItemsPanel>
+							<ItemsControl.ItemTemplate>
+								<DataTemplate>
+									<local:BlockButton/>
+								</DataTemplate>
+							</ItemsControl.ItemTemplate>
+						</ItemsControl>
+					</Expander>
+				</DataTemplate>
+			</ItemsControl.ItemTemplate>
+		</ItemsControl>
+		<!--<StackPanel x:Name="stackPanelCategories"/>-->
 	</ScrollViewer>
 </UserControl>

@@ -10,7 +10,10 @@ using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using Avalonia.Styling;
 using DotHome.Config.Tools;
+using DotHome.Definitions;
 using DotHome.ProgrammingModel;
+using MessageBox.Avalonia;
+using MessageBox.Avalonia.Enums;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -25,21 +28,16 @@ namespace DotHome.Config.Views
 {
     public class PageView : UserControl
     {
-        private Page Page => (Page)DataContext;
+        public Page Page => (Page)DataContext;
 
-        private Dictionary<ABlock, ABlockView> blockViewDictionary = new Dictionary<ABlock, ABlockView>();
-        private Dictionary<IInput, InputView> inputViewDictionary = new Dictionary<IInput, InputView>();
-        private Dictionary<IOutput, OutputView> outputViewDictionary = new Dictionary<IOutput, OutputView>();
+        private Dictionary<Block, BlockView> blockViewDictionary = new Dictionary<Block, BlockView>();
+        private Dictionary<Input, InputView> inputViewDictionary = new Dictionary<Input, InputView>();
+        private Dictionary<Output, OutputView> outputViewDictionary = new Dictionary<Output, OutputView>();
 
-        private TextBlock textBlockHeader;
         private ScrollViewer scrollViewer;
-        private Panel panel;
-        private LayoutTransformControl layoutTransformControl;
         private Canvas canvas;
         private Rectangle previewRectangle;
         private Line previewLine;
-        //private Canvas blocksCanvas;
-        private Panel wiresPanel;
 
         private bool panning;
         private Point panningPoint;
@@ -47,37 +45,18 @@ namespace DotHome.Config.Views
         private Point draggingPoint;
         private Point draggingOverflowDelta;
         private Point previewRectangleOrigin;
-        private IInput draggingInput;
-        private IOutput draggingOutput;
-        private bool shouldUpdateWires;
-        private bool shouldClose;
+        private Input draggingInput;
+        private Output draggingOutput;
 
-        //public IEnumerable<ABlockView> Blocks => blocksCanvas.Children.Cast<ABlockView>();
-
-        public IEnumerable<WireView> Wires => wiresPanel.Children.Cast<WireView>();
 
         public PageView()
         {
-            Debug.WriteLine("New PW");
             this.InitializeComponent();
 
-            //textBlockHeader = this.FindControl<TextBlock>("textBlockHeader");
             scrollViewer = this.FindControl<ScrollViewer>("scrollViewer");
-            //panel = this.FindControl<Panel>("panel1");
-            layoutTransformControl = this.FindControl<LayoutTransformControl>("layoutTransformControl");
             canvas = this.FindControl<Canvas>("canvas");
             previewRectangle = this.FindControl<Rectangle>("previewRectangle");
             previewLine = this.FindControl<Line>("previewLine");
-            //blocksCanvas = this.FindControl<Canvas>("blocksCanvas");
-            wiresPanel = this.FindControl<Panel>("wiresPanel");
-
-            //for(int i = 0; i < 100; i++)
-            //{
-            //    if (i % 2 == 0)
-            //        AddBlock(new RefSinkView() { Reference = "Ahoj", X = 40 * (i % 20), Y = 25 * (i / 20) });
-            //    else
-            //        AddBlock(new RefSourceView() { Reference = "Ahoj", X = 40 * (i % 20), Y = 25 * (i / 20) });
-            //}
 
             canvas.AddHandler(DragDrop.DropEvent, Canvas_Drop);
         }
@@ -87,164 +66,10 @@ namespace DotHome.Config.Views
             AvaloniaXamlLoader.Load(this);
         }
 
-        //internal void Delete()
-        //{
-        //    var blocksToRemove = Blocks.Where(b => b.Selected).ToArray();
-        //    foreach (var block in blocksToRemove) RemoveBlock(block);
-        //}
-
-        //internal async void Paste()
-        //{
-        //    try
-        //    {
-        //        var container = ContainerSerializer.DeserializeProject(await Application.Current.Clipboard.GetTextAsync()).ToBlockViewContainer();
-        //        foreach(ABlockView block in Blocks)
-        //        {
-        //            block.Selected = false;
-        //        }
-        //        foreach(ABlockView block in container.Blocks)
-        //        {
-        //            AddBlock(block);
-        //            block.Selected = true;
-        //        }
-        //        foreach(WireView wireView in container.Wires)
-        //        {
-        //            AddWire(wireView);
-        //        }
-        //    }
-        //    catch
-        //    {
-
-        //    }
-        //}
-
-        //internal async void Copy()
-        //{
-        //    await Application.Current.Clipboard.SetTextAsync(ContainerSerializer.SerializeContainer(CreateBlockViewContainer().ToBlockContainer()));
-        //}
-
-        //internal void Cut()
-        //{
-        //    Copy();
-        //    Delete();
-        //}
-
-        //internal void SelectAll()
-        //{
-        //    foreach (var block in Blocks) block.Selected = true;
-        //}
-
-        //internal void Cancel()
-        //{
-        //    foreach (var block in Blocks) block.Selected = false;
-        //}
-
-        //private BlockViewContainer CreateBlockViewContainer()
-        //{
-        //    BlockViewContainer blockViewContainer = new BlockViewContainer();
-        //    foreach(ABlockView block in Blocks)
-        //    {
-        //        if(block.Selected)
-        //        {
-        //            blockViewContainer.Blocks.Add(block);
-        //        }
-        //    }
-        //    foreach(WireView wire in Wires)
-        //    {
-        //        if(Blocks.Any(b => b.Selected && b.Inputs.Contains(wire.InputView)) && Blocks.Any(b => b.Selected && b.Outputs.Contains(wire.OutputView)))
-        //        {
-        //            blockViewContainer.Wires.Add(wire);
-        //        }
-        //    }
-        //    return blockViewContainer;
-        //}
-
-        //private void Header_PointerPressed(object sender, PointerPressedEventArgs e)
-        //{
-        //    var point = e.GetCurrentPoint(this);
-        //    if (point.Properties.PointerUpdateKind == PointerUpdateKind.MiddleButtonPressed) shouldClose = true;
-        //}
-
-        //private void Header_PointerMoved(object sender, PointerEventArgs e)
-        //{
-        //    shouldClose = false;
-        //}
-
-        //private void Header_PointerReleased(object sender, PointerReleasedEventArgs e)
-        //{
-        //    if(shouldClose)
-        //    {
-        //        Close();
-        //    }
-        //}
-
-        //private void CloseButton_Click(object sender, RoutedEventArgs e)
-        //{
-        //    Close();
-        //}
-
-        //private void Close()
-        //{
-        //    TabControl tabControl = (TabControl)Parent;
-        //    if (tabControl.SelectedItem == this)
-        //    {
-        //        int index = tabControl.SelectedIndex;
-        //        if (index > 0) tabControl.SelectedIndex = index - 1;
-        //        else tabControl.SelectedIndex = 0;
-        //    }
-        //    Visible = false;
-        //}
-
-        //public void AddBlock(ABlockView block)
-        //{
-        //    blocksCanvas.Children.Add(block);
-        //    block.PointerPressed += Block_PointerPressed;
-        //    foreach (InputView inputView in block.Inputs)
-        //    {
-        //        inputView.PointerPressed += Input_PointerPressed;
-        //        inputView.PointerReleased += Input_PointerReleased;
-        //    }
-        //    foreach (OutputView outputView in block.Outputs)
-        //    {
-        //        outputView.PointerPressed += Output_PointerPressed;
-        //        outputView.PointerReleased += Output_PointerReleased;
-        //    }
-
-        //    block.LayoutUpdated += Block_LayoutUpdated;
-        //}
-
-        //public void RemoveBlock(ABlockView block)
-        //{
-        //    blocksCanvas.Children.Remove(block);
-        //    wiresPanel.Children.RemoveAll(wiresPanel.Children.Cast<WireView>().Where(ww => block.Inputs.Contains(ww.InputView) || block.Outputs.Contains(ww.OutputView)).ToList());
-        //    Command.ForceChanges();
-        //}
-
-        //private void Block_LayoutUpdated(object sender, EventArgs e)
-        //{
-        //    var block = (ABlockView)sender;
-        //    block.LayoutUpdated -= Block_LayoutUpdated;
-        //    if (block.X + block.Width > Width) block.X = Width - block.Width;
-        //    if (block.Y + block.Height > Height) block.Y = Height - block.Height;
-        //}
-
-        //public void AddWire(WireView wire)
-        //{
-        //    wiresPanel.Children.Add(wire);
-        //    wire.PointerPressed += Wire_PointerPressed;
-        //}
-
-        //public void RemoveWire(WireView wire)
-        //{
-        //    wiresPanel.Children.Remove(wire);
-        //}
-
-        //private void Wire_PointerPressed(object sender, PointerPressedEventArgs e)
-        //{
-        //    RemoveWire((WireView)sender);
-        //}
-
-
+        private void Wire_PointerPressed(object sender, PointerPressedEventArgs e)
+        {
+            Page.Wires.Remove((Wire)((WireView)sender).DataContext);
+        }
 
         private void Panel_Wheel(object sender, PointerWheelEventArgs e)
         {
@@ -270,9 +95,96 @@ namespace DotHome.Config.Views
             {
                 panning = true;
                 panningPoint = point.Position;
-                e.Pointer.Capture(panel);
             }
             e.Handled = true;
+        }
+
+        internal async void Paste(DefinitionsContainer definitions)
+        {
+            try
+            {
+                var container = ContainerSerializer.DeserializeContainer(await Application.Current.Clipboard.GetTextAsync(), definitions).Copy();
+                var offset = scrollViewer.Offset / Page.Scale;
+                if(Page.Width < container.MaxX - container.MinX || Page.Height < container.MaxY - container.MinY)
+                {
+                    await MessageBoxManager.GetMessageBoxStandardWindow("Paste", "Page is too small", ButtonEnum.Ok, Icon.Error).ShowDialog(ConfigTools.MainWindow);
+                    return;
+                }
+                if (Page.Width - offset.X < container.MaxX - container.MinX) offset = offset.WithX(Page.Width - (container.MaxX - container.MinX));
+                if (Page.Height - offset.Y < container.MaxY - container.MinY) offset = offset.WithY(Page.Height - (container.MaxY - container.MinY));
+                Debug.WriteLine(offset);
+                foreach (Block b in Page.Blocks)
+                {
+                    b.Selected = false;
+                }
+                foreach (Block b in container.Blocks)
+                {
+                    b.X += (int)(offset.X - container.MinX);
+                    b.Y += (int)(offset.Y - container.MinY);
+                    Page.Blocks.Add(b);
+                    b.Selected = true;
+                }
+                foreach (Wire w in container.Wires)
+                {
+                    Page.Wires.Add(w);
+                }
+            }
+            catch
+            {
+                await MessageBoxManager.GetMessageBoxStandardWindow("Paste", "Failed to paste", ButtonEnum.Ok, Icon.Error).ShowDialog(ConfigTools.MainWindow);
+            }
+        }
+
+        public async void Copy()
+        {
+            await Application.Current.Clipboard.SetTextAsync(ContainerSerializer.SerializeContainer(CreateBlockContainer().Copy()));
+        }
+
+        public void Cut()
+        {
+            Copy();
+            Delete();
+        }
+
+        public void Delete()
+        {
+            var blocksToRemove = Page.Blocks.Where(b => b.Selected).ToArray();
+            foreach (var block in blocksToRemove) Page.Blocks.Remove(block);
+        }
+
+
+        public void SelectAll()
+        {
+            foreach (var b in Page.Blocks) b.Selected = true;
+        }
+
+        public void Cancel()
+        {
+            foreach (var b in Page.Blocks) b.Selected = false;
+        }
+
+        public BlockContainer CreateBlockContainer()
+        {
+            double minX = Page.Blocks.Where(b => b.Selected).MinOrDefault(b => b.X);
+            double minY = Page.Blocks.Where(b => b.Selected).MinOrDefault(b => b.Y);
+            double maxX = Page.Blocks.Where(b => b.Selected).MaxOrDefault(b => b.X + blockViewDictionary[b].Width);
+            double maxY = Page.Blocks.Where(b => b.Selected).MaxOrDefault(b => b.Y + blockViewDictionary[b].Height);
+            BlockContainer blockContainer = new BlockContainer() { MinX = minX, MaxX = maxX, MinY = minY, MaxY = maxY };
+            foreach (Block b in Page.Blocks)
+            {
+                if (b.Selected)
+                {
+                    blockContainer.Blocks.Add(b);
+                }
+            }
+            foreach (Wire w in Page.Wires)
+            {
+                if (Page.Blocks.Any(b => b.Selected && b.Inputs.Contains(w.Input)) && Page.Blocks.Any(b => b.Selected && b.Outputs.Contains(w.Output)))
+                {
+                    blockContainer.Wires.Add(w);
+                }
+            }
+            return blockContainer;
         }
 
         private void Panel_PointerReleased(object sender, PointerReleasedEventArgs e)
@@ -304,7 +216,7 @@ namespace DotHome.Config.Views
             var point = e.GetCurrentPoint(canvas);
             if (point.Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonPressed)
             {
-                ABlock block = ((ABlockView)sender).Block;
+                Block block = ((BlockView)sender).Block;
                 if (e.KeyModifiers.HasFlag(KeyModifiers.Shift))
                 {
                     block.Selected = !block.Selected;
@@ -313,7 +225,7 @@ namespace DotHome.Config.Views
                 {
                     if (!block.Selected)
                     {
-                        foreach (ABlock b in Page.Blocks)
+                        foreach (Block b in Page.Blocks)
                         {
                             b.Selected = false;
                         }
@@ -344,7 +256,7 @@ namespace DotHome.Config.Views
                 else if (maxY + delta.Y > Page.Height) delta = delta.WithY(Page.Height - maxY);
                 delta = new Point(Math.Round(delta.X), Math.Round(delta.Y));
                 draggingOverflowDelta = draggingOverflowDelta - delta;
-                foreach (ABlock b in Page.Blocks)
+                foreach (Block b in Page.Blocks)
                 {
                     if (b.Selected)
                     {
@@ -352,7 +264,6 @@ namespace DotHome.Config.Views
                         b.Y += (int)delta.Y;
                     }
                 }
-                //ForceUpdateWires();
                 draggingPoint = point.Position;
             }
             else if (previewRectangle.IsVisible)
@@ -374,7 +285,7 @@ namespace DotHome.Config.Views
             dragging = false;
             if (previewRectangle.IsVisible)
             {
-                foreach (ABlock b in Page.Blocks)
+                foreach (Block b in Page.Blocks)
                 {
                     b.Selected = (b.X >= Canvas.GetLeft(previewRectangle) && b.Y >= Canvas.GetTop(previewRectangle)
                         && b.X + blockViewDictionary[b].Width <= Canvas.GetLeft(previewRectangle) + previewRectangle.Width
@@ -390,7 +301,7 @@ namespace DotHome.Config.Views
             var point = e.GetCurrentPoint(canvas);
             if (point.Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonPressed)
             {
-                foreach (ABlock b in Page.Blocks)
+                foreach (Block b in Page.Blocks)
                 {
                     b.Selected = false;
                 }
@@ -410,7 +321,7 @@ namespace DotHome.Config.Views
             if (previewLine.IsVisible && draggingOutput != null && point.Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonReleased)
             {
                 InputView inputView = (InputView)sender;
-                Page.Wires.Add(new Wire() { Input = inputView.Input, Output = draggingOutput });
+                Page.AddWire(new Wire() { Input = inputView.Input, Output = draggingOutput });
             }
         }
 
@@ -434,9 +345,7 @@ namespace DotHome.Config.Views
             if (previewLine.IsVisible && draggingInput != null && point.Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonReleased)
             {
                 OutputView outputView = (OutputView)sender;
-                Page.Wires.Add(new Wire() { Input = draggingInput, Output = outputView.Output });
-                //Page.Wires.Add
-                //AddWire(new WireView(draggingInput, (OutputView)sender));
+                Page.AddWire(new Wire() { Input = draggingInput, Output = outputView.Output });
             }
         }
 
@@ -453,28 +362,6 @@ namespace DotHome.Config.Views
                 e.Handled = true;
             }
         }
-
-        //private void ForceUpdateWires()
-        //{
-        //    shouldUpdateWires = true;
-        //}
-
-        private void PageView_LayoutUpdated(object sender, EventArgs e)
-        {
-            //if (shouldUpdateWires)
-            //{
-            //    UpdateWires();
-            //    shouldUpdateWires = false;
-            //}
-        }
-
-        //private void UpdateWires()
-        //{
-        //    foreach(WireView wireView in wiresPanel.Children)
-        //    {
-        //        wireView.UpdatePoints();
-        //    }
-        //}
 
         private void PageView_KeyDown(object sender, KeyEventArgs e)
         {
@@ -503,7 +390,7 @@ namespace DotHome.Config.Views
             else if (maxX + delta.X > Width) delta = delta.WithX(Width - maxX);
             if (minY + delta.Y < 0) delta = delta.WithY(-minY);
             else if (maxY + delta.Y > Height) delta = delta.WithY(Height - maxY);
-            foreach (ABlock b in Page.Blocks)
+            foreach (Block b in Page.Blocks)
             {
                 if (b.Selected)
                 {
@@ -512,29 +399,24 @@ namespace DotHome.Config.Views
                 }
             }
             e.Handled = true;
-            //ForceUpdateWires();
         }
 
         private void Canvas_Drop(object sender, DragEventArgs e)
         {
             var point = e.GetPosition(canvas);
             var data = e.Data.Get("add_block");
-
-            if (data is RefSink) Page.Blocks.Add(new RefSink() { Reference = "Ref", X = (int)point.X, Y = (int)point.Y });
-            else if (data is RefSource) Page.Blocks.Add(new RefSource() { Reference = "Ref", X = (int)point.X, Y = (int)point.Y });
-            else if (data is Const) Page.Blocks.Add(new Const() { Type = typeof(int), Value = 0, X = (int)point.X, Y = (int)point.Y });
-            else if (data is Block b) Page.Blocks.Add(new Block(b.Definition) { X = (int)point.X, Y = (int)point.Y });
+            if (data is BlockDefinition bd) Page.Blocks.Add(new Block(bd) { X = (int)point.X, Y = (int)point.Y });
         }
 
         private void Block_AttachedToVisualTree(object sender, VisualTreeAttachmentEventArgs e)
         {
-            ABlockView aBlockView = (ABlockView)sender;
+            BlockView aBlockView = (BlockView)sender;
             blockViewDictionary.Add(aBlockView.Block, aBlockView);
         }
 
         private void Block_DetachedFromVisualTree(object sender, VisualTreeAttachmentEventArgs e)
         {
-            ABlockView aBlockView = (ABlockView)sender;
+            BlockView aBlockView = (BlockView)sender;
             blockViewDictionary.Remove(aBlockView.Block);
         }
 
@@ -570,8 +452,8 @@ namespace DotHome.Config.Views
             InputView inputView = inputViewDictionary[wire.Input];
             OutputView outputView = outputViewDictionary[wire.Output];
 
-            var inputBlock = Page.Blocks.Single(b => b.GetInputs().Contains(wire.Input));
-            var outputBlock = Page.Blocks.Single(b => b.GetOutputs().Contains(wire.Output));
+            var inputBlock = Page.Blocks.Single(b => b.Inputs.Contains(wire.Input));
+            var outputBlock = Page.Blocks.Single(b => b.Outputs.Contains(wire.Output));
 
 
             wireView.Bind(WireView.PointsProperty, new MultiBinding()

@@ -97,7 +97,7 @@ namespace DotHome.Config.Windows
                 if (maxX > numericUpDownWidth.Value)
                 {
                     double delta = maxX - numericUpDownWidth.Value;
-                    foreach (ABlock b in page.Blocks)
+                    foreach (Block b in page.Blocks)
                     {
                         b.X -= (int)delta;
                     }
@@ -106,7 +106,7 @@ namespace DotHome.Config.Windows
                 if (maxY > numericUpDownHeight.Value)
                 {
                     double delta = maxY - numericUpDownHeight.Value;
-                    foreach (ABlock b in page.Blocks)
+                    foreach (Block b in page.Blocks)
                     {
                         b.Y -= (int)delta;
                     }

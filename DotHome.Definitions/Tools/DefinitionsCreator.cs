@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -21,6 +22,7 @@ namespace DotHome.Definitions.Tools
                 Assembly assembly = Assembly.LoadFile(dll);
                 AddBlocksFromAssembly(definitionsContainer, assembly);
             }
+            definitionsContainer.BlockCategories.Sort((a, b) => a.Name.CompareTo(b.Name));
             return definitionsContainer;
         }
 
@@ -33,7 +35,11 @@ namespace DotHome.Definitions.Tools
                     BlockDefinition blockDefinition = new BlockDefinition();
                     blockDefinition.Name = type.Name;
                     blockDefinition.Description = type.GetCustomAttribute<DescriptionAttribute>()?.Description;
-                    foreach(PropertyInfo propertyInfo in type.GetProperties())
+                    blockDefinition.Color = type.GetCustomAttribute<ColorAttribute>()?.Color ?? Color.SlateGray;
+                    Dictionary<ParameterDefinition, Type> parameterDeclaringTypesDictionary = new Dictionary<ParameterDefinition, Type>();
+                    Dictionary<ParameterDefinition, int> parameterOriginalOrderDictionary = new Dictionary<ParameterDefinition, int>();
+                    int i = 0;
+                    foreach (PropertyInfo propertyInfo in type.GetProperties())
                     {
                         if(propertyInfo.PropertyType.IsGenericType && propertyInfo.PropertyType.GetGenericTypeDefinition() == typeof(Input<>))
                         {
@@ -55,16 +61,32 @@ namespace DotHome.Definitions.Tools
                             outputDefinition.DefaultDisabled = propertyInfo.GetCustomAttribute<DisablableAttribute>()?.DefaultDisabled ?? false;
                             blockDefinition.Outputs.Add(outputDefinition);
                         }
-                        else if(propertyInfo.GetCustomAttributes<ParameterAttribute>() != null)
+                        else if(propertyInfo.GetCustomAttribute<ParameterAttribute>() != null)
                         {
                             ParameterDefinition parameterDefinition = new ParameterDefinition();
                             parameterDefinition.Name = propertyInfo.Name;
                             parameterDefinition.Type = propertyInfo.PropertyType;
+                            parameterDefinition.ShowInBlock = propertyInfo.GetCustomAttribute<ParameterAttribute>().ShowInBlock;
                             parameterDefinition.Description = propertyInfo.GetCustomAttribute<DescriptionAttribute>()?.Description;
                             parameterDefinition.DefaultValue = propertyInfo.GetValue(Activator.CreateInstance(type));
                             blockDefinition.Parameters.Add(parameterDefinition);
+                            parameterDeclaringTypesDictionary[parameterDefinition] = propertyInfo.DeclaringType;
+                            parameterOriginalOrderDictionary[parameterDefinition] = i++; ;
                         }
                     }
+                    blockDefinition.Parameters.Sort((a, b) => 
+                    {
+                        if (parameterDeclaringTypesDictionary[a].IsSubclassOf(parameterDeclaringTypesDictionary[b]))
+                        {
+                            return 1;
+                        }
+                        else if(parameterDeclaringTypesDictionary[b].IsSubclassOf(parameterDeclaringTypesDictionary[a]))
+                        {
+                            return -1;
+                        }
+                        return parameterOriginalOrderDictionary[a].CompareTo(parameterOriginalOrderDictionary[b]);
+                    });
+
                     string categoryName = type.GetCustomAttribute<CategoryAttribute>()?.Category ?? "Default";
                     BlocksCategory blocksCategory = definitionsContainer.BlockCategories.SingleOrDefault(c => c.Name == categoryName);
                     if(blocksCategory == null)

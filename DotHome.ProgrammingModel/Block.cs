@@ -8,17 +8,21 @@ using System.Text;
 
 namespace DotHome.ProgrammingModel
 {
-    public class Block : ABlock, INotifyPropertyChanged
+    public class Block : INotifyPropertyChanged
     {
+        public int X { get; set; }
+
+        public int Y { get; set; }
+
+        public bool Selected { get; set; }
+
         public BlockDefinition Definition { get; set; }
 
         public ObservableCollection<Input> Inputs { get; } = new ObservableCollection<Input>();
 
         public ObservableCollection<Output> Outputs { get; } = new ObservableCollection<Output>();
 
-        public override IInput[] GetInputs() => (IInput[])Inputs.ToArray();
-
-        public override IOutput[] GetOutputs() => (IOutput[])Outputs.ToArray();
+        public ObservableCollection<Parameter> Parameters { get; } = new ObservableCollection<Parameter>();
 
         public Block(BlockDefinition definition)
         {
@@ -32,6 +36,15 @@ namespace DotHome.ProgrammingModel
             {
                 Outputs.Add(new Output(output));
             }
+
+            foreach(var parameter in Definition.Parameters)
+            {
+                Parameters.Add(new Parameter(parameter));
+            }
         }
+
+        public Block() { }
+
+        public event PropertyChangedEventHandler PropertyChanged;
     }
 }

@@ -8,7 +8,7 @@ using System.Text;
 namespace DotHome.StandardBlocks.Times
 {
     [Description("Generates pulses on output"), Category("Times")]
-    public class PulseGenerator : ABlock
+    public class PulseGenerator : ANamedBlock
     {
         [Description("Disable")]
         public Input<bool> D { get; set; }
@@ -26,10 +26,10 @@ namespace DotHome.StandardBlocks.Times
             throw new NotImplementedException();
         }
 
-        [Parameter, Description("Time On [ms]")]
+        [Parameter(true), Description("Time On [ms]")]
         public int TimeOn { get; set; } = 1000;
 
-        [Parameter, Description("Time Off [ms]")]
+        [Parameter(true), Description("Time Off [ms]")]
         public int TimeOff { get; set; } = 1000;
     }
 }

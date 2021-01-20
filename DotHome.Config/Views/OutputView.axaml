@@ -5,11 +5,8 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 			 HorizontalAlignment="Right"
              x:Class="DotHome.Config.Views.OutputView">
-	<UserControl.RenderTransform>
-		<TranslateTransform X="2"/>
-	</UserControl.RenderTransform>
 	<StackPanel Orientation="Horizontal">
-		<TextBlock x:Name="textBlockName" IsEnabled="False"/>
+		<TextBlock Text="{Binding Definition.Name}" IsEnabled="False"/>
 		<Polygon x:Name="polygon" Fill="Silver" Points="0,0 4,4 0,8 10,8 10,0" VerticalAlignment="Center" Cursor="Hand"/>
 	</StackPanel>
 </UserControl>

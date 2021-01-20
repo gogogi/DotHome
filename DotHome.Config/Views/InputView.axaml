@@ -5,9 +5,6 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 			 HorizontalAlignment="Left"
              x:Class="DotHome.Config.Views.InputView">
-	<UserControl.RenderTransform>
-		<TranslateTransform X="-2"/>
-	</UserControl.RenderTransform>
 	<StackPanel Orientation="Horizontal">
 		<Polygon x:Name="polygon" Fill="Silver" Points="0,0 6,0 10,4 6,8 0,8" VerticalAlignment="Center" Cursor="Hand"/>
 		<TextBlock Text="{Binding Definition.Name}" IsEnabled="False"/>

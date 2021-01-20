@@ -10,7 +10,7 @@ namespace DotHome.Config.Views
 {
     public class OutputView : UserControl
     {
-        public IOutput Output => (IOutput)DataContext;
+        public Output Output => (Output)DataContext;
 
         private TextBlock textBlockName;
         private Polygon polygon;

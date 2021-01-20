@@ -4,8 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:model="clr-namespace:DotHome.ProgrammingModel;assembly=DotHome.ProgrammingModel"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-			 LayoutUpdated="PageView_LayoutUpdated"
 			 xmlns:local="clr-namespace:DotHome.Config.Views;assembly=DotHome.Config"
+			 xmlns:tool="clr-namespace:DotHome.Config.Tools;assembly=DotHome.Config"
 			 KeyDown="PageView_KeyDown"
 			 Focusable="True"
              x:Class="DotHome.Config.Views.PageView">
@@ -23,17 +23,22 @@
 								<Canvas Width="{Binding Width}" Height="{Binding Height}" />
 							</ItemsPanelTemplate>
 						</ItemsControl.ItemsPanel>
-						<ItemsControl.DataTemplates>
-							<DataTemplate DataType="{x:Type model:RefSink}">
-								<local:RefSinkView PointerPressed="Block_PointerPressed" AttachedToVisualTree="Block_AttachedToVisualTree" DetachedFromVisualTree="Block_DetachedFromVisualTree" InputPointerPressed="Block_InputPointerPressed" InputPointerReleased="Block_InputPointerReleased" InputAttachedToVisualTree="Block_InputAttachedToVisualTree" InputDetachedFromVisualTree="Block_InputDetachedFromVisualTree"/>
+						<ItemsControl.ItemTemplate>
+							<DataTemplate>
+								<local:BlockView 
+									PointerPressed="Block_PointerPressed" 
+									AttachedToVisualTree="Block_AttachedToVisualTree" 
+									DetachedFromVisualTree="Block_DetachedFromVisualTree" 
+									OutputPointerReleased="Block_OutputPointerReleased" 
+									OutputPointerPressed="Block_OutputPointerPressed" 
+									OutputAttachedToVisualTree="Block_OutputAttachedToVisualTree" 
+									OutputDetachedFromVisualTree="Block_OutputDetachedFromVisualTree" 
+									InputPointerPressed="Block_InputPointerPressed" 
+									InputPointerReleased="Block_InputPointerReleased" 
+									InputAttachedToVisualTree="Block_InputAttachedToVisualTree" 
+									InputDetachedFromVisualTree="Block_InputDetachedFromVisualTree"/>
 							</DataTemplate>
-							<DataTemplate DataType="{x:Type model:RefSource}">
-								<local:RefSourceView PointerPressed="Block_PointerPressed" AttachedToVisualTree="Block_AttachedToVisualTree" DetachedFromVisualTree="Block_DetachedFromVisualTree" OutputPointerReleased="Block_OutputPointerReleased" OutputPointerPressed="Block_OutputPointerPressed" OutputAttachedToVisualTree="Block_OutputAttachedToVisualTree" OutputDetachedFromVisualTree="Block_OutputDetachedFromVisualTree"/>
-							</DataTemplate>
-							<DataTemplate DataType="{x:Type model:Const}">
-								<local:ConstView PointerPressed="Block_PointerPressed" AttachedToVisualTree="Block_AttachedToVisualTree" DetachedFromVisualTree="Block_DetachedFromVisualTree"/>
-							</DataTemplate>
-						</ItemsControl.DataTemplates>
+						</ItemsControl.ItemTemplate>
 					</ItemsControl>
 					<ItemsControl Items="{Binding Wires}" ZIndex="1">
 						<ItemsControl.ItemsPanel>
@@ -41,13 +46,13 @@
 								<Canvas Width="{Binding Width}" Height="{Binding Height}" />
 							</ItemsPanelTemplate>
 						</ItemsControl.ItemsPanel>
-						<ItemsControl.DataTemplates>
-							<DataTemplate DataType="{x:Type model:Wire}">
-								<local:WireView AttachedToVisualTree="Wire_AttachedToVisualTree" DetachedFromVisualTree="Wire_DetachedFromVisualTree"/>
+						<ItemsControl.ItemTemplate>
+							<DataTemplate>
+								<local:WireView AttachedToVisualTree="Wire_AttachedToVisualTree" DetachedFromVisualTree="Wire_DetachedFromVisualTree" PointerPressed="Wire_PointerPressed"/>
 							</DataTemplate>
-						</ItemsControl.DataTemplates>
+						</ItemsControl.ItemTemplate>
 					</ItemsControl>
-					<Rectangle x:Name="previewRectangle" Stroke="Blue" Fill="LightBlue" StrokeThickness="2" Opacity="0.5" IsVisible="False"/>
+					<Rectangle x:Name="previewRectangle" Stroke="Blue" Fill="LightBlue" StrokeThickness="2" Opacity="0.5" IsVisible="False" ZIndex="3"/>
 				</Canvas>
 			</LayoutTransformControl>
 		</Panel>

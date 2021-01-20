@@ -116,7 +116,7 @@
 			</TabItem>
 		</TabControl>
 		<GridSplitter Grid.Column="1" Width="5"/>
-		<TabControl x:Name="pagesTabControl" Grid.Column="2" Items="{Binding Pages}">
+		<TabControl x:Name="pagesTabControl" Grid.Column="2" Items="{Binding Pages}" SelectedItem="{Binding SelectedPage, Mode=OneWayToSource}">
 			<TabControl.Styles>
 				<Style Selector=":is(TabItem)">
 					<Setter Property="Padding" Value="0"/>
@@ -135,7 +135,7 @@
 			</TabControl.ItemTemplate>
 			<TabControl.ContentTemplate>
 				<DataTemplate>
-					<local:PageView IsVisible="{Binding Visible}"/>
+					<local:PageView IsVisible="{Binding Visible}" AttachedToVisualTree="Page_AttachedToVisualTree" DetachedFromVisualTree="Page_DetachedFromVisualTree" DataContextChanged="Page_DataContextChanged"/>
 				</DataTemplate>
 			</TabControl.ContentTemplate>
 		</TabControl>

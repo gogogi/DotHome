@@ -15,8 +15,6 @@ namespace DotHome.Config.Tools
     {
         public static WirePointsConverter Instance { get; } = new WirePointsConverter();
 
-        private static Random random = new Random();
-
         private WirePointsConverter() { }
 
         public object Convert(IList<object> values, Type targetType, object parameter, CultureInfo culture)

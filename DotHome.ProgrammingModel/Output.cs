@@ -6,7 +6,7 @@ using System.Text;
 
 namespace DotHome.ProgrammingModel
 {
-    public class Output : IOutput, INotifyPropertyChanged
+    public class Output : INotifyPropertyChanged
     {
         public OutputDefinition Definition { get; set; }
 

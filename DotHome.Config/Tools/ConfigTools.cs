@@ -25,12 +25,12 @@ namespace DotHome.Config.Tools
 
             for(int i = 0; i < 200; i++)
             {
-                project.Pages[0].Blocks.Add(new RefSink() { Reference = "Ahoj", X = 40 * (i % 20), Y = 30 * (i / 20) });
+                //project.Pages[0].Blocks.Add(new RefSink() { Reference = "Ahoj", X = 40 * (i % 20), Y = 30 * (i / 20) });
             }
 
             for (int i = 0; i < 200; i++)
             {
-                project.Pages[0].Blocks.Add(new RefSource() { Reference = "Ahoj", X = 40 * (i % 20), Y = 500 + 30 * (i / 20) });
+                //project.Pages[0].Blocks.Add(new RefSource() { Reference = "Ahoj", X = 40 * (i % 20), Y = 500 + 30 * (i / 20) });
             }
 
             return project;
