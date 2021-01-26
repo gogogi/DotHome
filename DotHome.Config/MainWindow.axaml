@@ -92,6 +92,41 @@
 					</MenuItem.Icon>
 				</MenuItem>
 			</MenuItem>
+			<MenuItem Header="_Server">
+				<MenuItem Header="_Connect" Command="{Binding ConnectCommand}" HotKey="Ctrl+B" InputGesture="Ctrl+B">
+					<MenuItem.Icon>
+						<Image Source="/Assets/Icons/Connect_256x.png"/>
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem Header="Disconnec_t" Command="{Binding DisconnectCommand}" HotKey="Ctrl+T" InputGesture="Ctrl+T">
+					<MenuItem.Icon>
+						<Image Source="/Assets/Icons/Disconnect_256x.png"/>
+					</MenuItem.Icon>
+				</MenuItem>
+				<Separator Background="LightGray"/>
+				<MenuItem Header="_Download Project" Command="{Binding DownloadProjectCommand}" HotKey="Ctrl+D" InputGesture="Ctrl+D">
+					<MenuItem.Icon>
+						<Image Source="/Assets/Icons/Download_256x.png"/>
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem Header="_Upload Project" Command="{Binding UploadProjectCommand}" HotKey="Ctrl+U" InputGesture="Ctrl+U">
+					<MenuItem.Icon>
+						<Image Source="/Assets/Icons/Upload_256x.png"/>
+					</MenuItem.Icon>
+				</MenuItem>
+				<Separator Background="LightGray"/>
+				<MenuItem Header="Download D_LLs" Command="{Binding DownloadDllsCommand}">
+					<MenuItem.Icon>
+						<Image Source="/Assets/Icons/Download_grey_256x.png"/>
+					</MenuItem.Icon>
+				</MenuItem>
+				<Separator Background="LightGray"/>
+				<MenuItem Header="Change _Credentials" Command="{Binding ChangeCredentialsCommand}">
+					<MenuItem.Icon>
+						<Image Source="/Assets/Icons/Key_256x.png"/>
+					</MenuItem.Icon>
+				</MenuItem>
+			</MenuItem>
 		</Menu>
 
 		<ContentControl IsVisible="{Binding Project, Converter={x:Static ObjectConverters.IsNotNull}}">

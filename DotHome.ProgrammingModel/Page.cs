@@ -27,10 +27,10 @@ namespace DotHome.ProgrammingModel
         public double Scale { get; set; } = 1;
 
         [JsonIgnore]
-        public double XOffset { get; set; }
+        public ObservableCollection<Block> SelectedBlocks { get; } = new ObservableCollection<Block>();
 
         [JsonIgnore]
-        public Point point { get; set; }
+        public Block SelectedBlock { get; private set; }
 
         public ObservableCollection<Block> Blocks { get; } = new ObservableCollection<Block>();
 
@@ -41,13 +41,23 @@ namespace DotHome.ProgrammingModel
         public Page()
         {
             Blocks.CollectionChanged += Blocks_CollectionChanged;
+            SelectedBlocks.CollectionChanged += SelectedBlocks_CollectionChanged;
+        }
+
+        private void SelectedBlocks_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (SelectedBlocks.Count == 1) SelectedBlock = SelectedBlocks[0];
+            else SelectedBlock = null;
         }
 
         public void AddWire(Wire wire)
         {
-            var other = Wires.SingleOrDefault(o => wire.Input == o.Input);
-            if (other != null) Wires.Remove(other);
-            Wires.Add(wire);
+            if (!Blocks.Any(b => b.Inputs.Contains(wire.Input) && b.Outputs.Contains(wire.Output)))
+            {
+                var other = Wires.SingleOrDefault(o => wire.Input == o.Input);
+                if (other != null) Wires.Remove(other);
+                Wires.Add(wire);
+            }
         }
 
         private void Blocks_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -58,7 +68,55 @@ namespace DotHome.ProgrammingModel
                 {
                     var wiresToRemove = Wires.Where(w => b.Inputs.Contains(w.Input) || b.Outputs.Contains(w.Output)).ToArray();
                     foreach (Wire w in wiresToRemove) Wires.Remove(w);
+                    if (b.Selected) SelectedBlocks.Remove(b);
                 }
+            }
+            else if(e.Action == NotifyCollectionChangedAction.Add)
+            {
+                foreach (Block b in e.NewItems)
+                {
+                    if (b.Selected) SelectedBlocks.Add(b);
+                    b.PropertyChanged += Block_PropertyChanged;
+                    foreach(Input i in b.Inputs)
+                    {
+                        i.PropertyChanged += Input_PropertyChanged;
+                    }
+                    foreach (Output o in b.Outputs)
+                    {
+                        o.PropertyChanged += Output_PropertyChanged;
+                    }
+                }
+            }
+
+        }
+
+        private void Output_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if(e.PropertyName == nameof(Input.Disabled))
+            {
+                Output output = (Output)sender;
+                var wiresToRemove = Wires.Where(w => w.Output == output).ToArray();
+                foreach (Wire wire in wiresToRemove) Wires.Remove(wire);
+            }
+        }
+
+        private void Input_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(Output.Disabled))
+            {
+                Input input = (Input)sender;
+                var wiresToRemove = Wires.Where(w => w.Input == input).ToArray();
+                foreach (Wire wire in wiresToRemove) Wires.Remove(wire);
+            }
+        }
+
+        private void Block_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            Block block = (Block)sender;
+            if(e.PropertyName == nameof(Block.Selected))
+            {
+                if (block.Selected) SelectedBlocks.Add(block);
+                else SelectedBlocks.Remove(block);
             }
         }
     }

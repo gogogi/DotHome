@@ -12,5 +12,7 @@ namespace DotHome.Definitions
         public List<OutputDefinition> Outputs { get; } = new List<OutputDefinition>();
         public List<ParameterDefinition> Parameters { get; } = new List<ParameterDefinition>();
         public Color Color { get; set; }
+
+        public Type Type { get; set; }
     }
 }

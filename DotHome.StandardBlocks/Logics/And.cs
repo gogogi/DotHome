@@ -7,7 +7,7 @@ using System.Text;
 
 namespace DotHome.StandardBlocks.Logics
 {
-    [Description("Output is TRUE if all enabled inputs are TRUE"), Category("Logics")]
+    [Description("Output is HIGH if all enabled inputs are HIGH"), Category("Logics")]
     public class And : ABlock
     {
         [Description("Input 1")]

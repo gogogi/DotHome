@@ -9,9 +9,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotHome.Config", "DotHome.C
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotHome.StandardBlocks", "DotHome.StandardBlocks\DotHome.StandardBlocks.csproj", "{7C4F243E-1E6E-44CE-9E32-75D6CF4ADD72}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotHome.ProgrammingModel", "DotHome.ProgrammingModel\DotHome.ProgrammingModel.csproj", "{4F4017C5-E3E5-4B64-ACB4-131ECEB32FA7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotHome.ProgrammingModel", "DotHome.ProgrammingModel\DotHome.ProgrammingModel.csproj", "{4F4017C5-E3E5-4B64-ACB4-131ECEB32FA7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotHome.Definitions", "DotHome.Definitions\DotHome.Definitions.csproj", "{CE7EA0B3-8872-4DCA-9BFF-FBBC5442D456}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotHome.Definitions", "DotHome.Definitions\DotHome.Definitions.csproj", "{CE7EA0B3-8872-4DCA-9BFF-FBBC5442D456}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotHome.Core.Server", "DotHome.Core\Server\DotHome.Core.Server.csproj", "{F8DDDB75-5F83-4686-94F2-37EB4FA3CBED}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotHome.Core.Client", "DotHome.Core\Client\DotHome.Core.Client.csproj", "{03AB1393-93EE-48E1-A029-BE2E9284401B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotHome.Core.Shared", "DotHome.Core\Shared\DotHome.Core.Shared.csproj", "{35172646-FA5A-4D28-A5B1-D4FFB00B1E5C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +45,18 @@ Global
 		{CE7EA0B3-8872-4DCA-9BFF-FBBC5442D456}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CE7EA0B3-8872-4DCA-9BFF-FBBC5442D456}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CE7EA0B3-8872-4DCA-9BFF-FBBC5442D456}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F8DDDB75-5F83-4686-94F2-37EB4FA3CBED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F8DDDB75-5F83-4686-94F2-37EB4FA3CBED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F8DDDB75-5F83-4686-94F2-37EB4FA3CBED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F8DDDB75-5F83-4686-94F2-37EB4FA3CBED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{03AB1393-93EE-48E1-A029-BE2E9284401B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{03AB1393-93EE-48E1-A029-BE2E9284401B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{03AB1393-93EE-48E1-A029-BE2E9284401B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{03AB1393-93EE-48E1-A029-BE2E9284401B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{35172646-FA5A-4D28-A5B1-D4FFB00B1E5C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35172646-FA5A-4D28-A5B1-D4FFB00B1E5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35172646-FA5A-4D28-A5B1-D4FFB00B1E5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35172646-FA5A-4D28-A5B1-D4FFB00B1E5C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

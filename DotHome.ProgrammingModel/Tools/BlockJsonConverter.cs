@@ -16,41 +16,23 @@ namespace DotHome.ProgrammingModel.Tools
             serializer.Converters.Remove(this);
             Block block = serializer.Deserialize<Block>(reader);
             serializer.Converters.Add(this);
-            foreach (InputDefinition inputDefinition in block.Definition.Inputs)
+
+            // Inputs, outputs and parameters now do have only empty definitions with names
+
+            foreach (Input input in block.Inputs)
             {
-                var input = block.Inputs.SingleOrDefault(i => i.Definition.Name == inputDefinition.Name);
-                if (input != null)
-                {
-                    input.Definition = inputDefinition;
-                }
-                else
-                {
-                    //block.Inputs.Add(new Input(inputDe) { Definition = inputDefinition, Disabled = inputDefinition.DefaultDisabled });
-                }
+                input.Definition = block.Definition.Inputs.Single(id => id.Name == input.Definition.Name);
             }
-            foreach (OutputDefinition outputDefinition in block.Definition.Outputs)
+
+            foreach (Output output in block.Outputs)
             {
-                var output = block.Outputs.SingleOrDefault(o => o.Definition.Name == outputDefinition.Name);
-                if (output != null)
-                {
-                    output.Definition = outputDefinition;
-                }
-                else
-                {
-                    //block.Outputs.Add(new Output() { Definition = outputDefinition, Disabled = outputDefinition.DefaultDisabled });
-                }
+                output.Definition = block.Definition.Outputs.Single(od => od.Name == output.Definition.Name);
             }
-            foreach (ParameterDefinition parameterDefinition in block.Definition.Parameters)
+
+            foreach (Parameter parameter in block.Parameters)
             {
-                var parameter = block.Parameters.SingleOrDefault(p => p.Definition.Name == parameterDefinition.Name);
-                if (parameter != null)
-                {
-                    parameter.Definition = parameterDefinition;
-                }
-                else
-                {
-                    //block.Parameters.Add(new Parameter() { Definition = parameterDefinition, Value = parameterDefinition.DefaultValue });
-                }
+                parameter.Definition = block.Definition.Parameters.Single(pd => pd.Name == parameter.Definition.Name);
+                parameter.Value = Convert.ChangeType(parameter.Value, parameter.Definition.Type); // Type can be wrong which can cause issues later (Int32 vs Int64...)
             }
             return block;
         }

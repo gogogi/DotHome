@@ -14,7 +14,8 @@ namespace DotHome.Config.Tools
         {
             Formatting = Formatting.Indented,
             PreserveReferencesHandling = PreserveReferencesHandling.All,
-            TypeNameHandling = TypeNameHandling.Auto, Converters = { new BlockJsonConverter(), new DefinitionJsonConverter() }
+            TypeNameHandling = TypeNameHandling.Auto, 
+            Converters = { new BlockJsonConverter(), new DefinitionJsonConverter() }
         };
 
         public static string SerializeContainer(BlockContainer container)

@@ -11,6 +11,12 @@ namespace DotHome.Config.Views
             this.InitializeComponent();
         }
 
+        private void DataGrid_CollectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            DataGrid dataGrid = (DataGrid)sender;
+            dataGrid.SelectedItems.Clear();
+        }
+
         private void InitializeComponent()
         {
             AvaloniaXamlLoader.Load(this);

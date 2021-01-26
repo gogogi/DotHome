@@ -115,7 +115,7 @@
 
 			</TabItem>
 		</TabControl>
-		<GridSplitter Grid.Column="1" Width="5"/>
+		<GridSplitter Grid.Column="1" Width="5" Background="White" BorderBrush="DarkGray" BorderThickness="1 0"/>
 		<TabControl x:Name="pagesTabControl" Grid.Column="2" Items="{Binding Pages}" SelectedItem="{Binding SelectedPage, Mode=OneWayToSource}">
 			<TabControl.Styles>
 				<Style Selector=":is(TabItem)">

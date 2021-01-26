@@ -19,6 +19,8 @@ using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Avalonia.Data;
+using System.Text;
+using DotHome.Config.Windows;
 
 namespace DotHome.Config
 {
@@ -41,15 +43,21 @@ namespace DotHome.Config
         private Command PasteCommand { get; }
         private Command DeleteCommand { get; }
 
+        private Command ConnectCommand { get; }
+        private Command DisconnectCommand { get; }
+        private Command DownloadProjectCommand { get; }
+        private Command UploadProjectCommand { get; }
+        private Command DownloadDllsCommand { get; }
+        private Command ChangeCredentialsCommand { get; }
+
         public MainWindow()
         {
             InitializeComponent();
 #if DEBUG
             this.AttachDevTools();
 #endif
-            //projectContentControl = this.FindControl<ContentControl>("projectContentControl");
 
-            NewProjectCommand = new Command(() => Project == null, () => { Project = ConfigTools.NewProject(); Path = null; });
+            NewProjectCommand = new Command(() => Project == null, NewProject_Executed);
             OpenProjectCommand = new Command(() => Project == null, OpenProject_Executed);
             CloseProjectCommand = new Command(() => Project != null, CloseProject_Executed);
             SaveProjectCommand = new Command(() => Project != null, SaveProject_Executed);
@@ -63,11 +71,61 @@ namespace DotHome.Config
             PasteCommand = new Command(() => true, () => projectView?.SelectedPageView?.Paste(Project.Definitions));
             DeleteCommand = new Command(() => true, () => projectView?.SelectedPageView?.Delete());
 
+            ConnectCommand = new Command(() => Server == null, Connect_Executed);
+            DisconnectCommand = new Command(() => Server != null, Disconnect_Executed);
+            DownloadProjectCommand = new Command(() => Server != null && Project == null, DownloadProject_Executed);
+            UploadProjectCommand = new Command(() => Server != null && Project != null, UploadProject_Executed);
+            DownloadDllsCommand = new Command(() => Server != null, DownloadDlls_Executed);
+            ChangeCredentialsCommand = new Command(() => Server != null, ChangeCredentials_Executed);
+
             var b = new Binding("SelectedPage") { Source = Project };
 
             DataContext = this;
 
             
+        }
+
+        private async Task ChangeCredentials_Executed()
+        {
+            ChangeCredentialsWindow changeCredentialsWindow = new ChangeCredentialsWindow(Server);
+            await changeCredentialsWindow.ShowDialog(this);
+        }
+
+        private async Task DownloadDlls_Executed()
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog() { Title = "Download DLLs", Filters = { new FileDialogFilter() { Name = "ZIP", Extensions = { "zip" } } }, DefaultExtension = "zip" };
+            string path = await saveFileDialog.ShowAsync(this);
+            if (path != null)
+            {
+                using (var stream = await Server.DownloadAssemblies())
+                using (var file = File.Create(path))
+                {
+                    await stream.CopyToAsync(file);
+                }
+            }
+        }
+
+        private async Task DownloadProject_Executed()
+        {
+            Project = await Server.DownloadProject();
+            Path = null;
+        }
+
+        private async Task UploadProject_Executed()
+        {
+            await Server.UploadAssemblies();
+            await Server.UploadProject(Project);
+        }
+
+        private async Task Disconnect_Executed()
+        {
+            await Server.Disconnect();
+            Server = null;
+        }
+
+        private async Task Connect_Executed()
+        {
+            Server = await new ConnectWindow().ShowDialog<Server>(this);
         }
 
         private async Task SaveProjectAs_Executed()
@@ -135,8 +193,14 @@ namespace DotHome.Config
             if(paths.Length == 1 && paths[0] != null)
             {
                 Path = paths[0];
-                Project = ModelSerializer.DeserializeProject(File.ReadAllText(Path));
+                Project = ModelSerializer.DeserializeProject(File.ReadAllText(Path), DefinitionsCreator.CreateDefinitions(AppConfig.Configuration["AssembliesPath"]));
             }
+        }
+
+        private void NewProject_Executed()
+        {
+            Project = ConfigTools.NewProject();
+            Path = null;
         }
 
         private async void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)

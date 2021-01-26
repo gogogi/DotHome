@@ -9,5 +9,12 @@ namespace DotHome.RunningModel
         public abstract Type Type { get; }
 
         public bool Disabled { get; set; }
+
+        public event Action TransferEvent;
+
+        public void Transfer()
+        {
+            TransferEvent?.Invoke();
+        }
     }
 }

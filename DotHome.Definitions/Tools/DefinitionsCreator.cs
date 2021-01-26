@@ -33,12 +33,13 @@ namespace DotHome.Definitions.Tools
                 if(!type.IsAbstract && type.IsSubclassOf(typeof(ABlock)))
                 {
                     BlockDefinition blockDefinition = new BlockDefinition();
+                    blockDefinition.Type = type;
                     blockDefinition.Name = type.Name;
                     blockDefinition.Description = type.GetCustomAttribute<DescriptionAttribute>()?.Description;
                     blockDefinition.Color = type.GetCustomAttribute<ColorAttribute>()?.Color ?? Color.SlateGray;
                     Dictionary<ParameterDefinition, Type> parameterDeclaringTypesDictionary = new Dictionary<ParameterDefinition, Type>();
                     Dictionary<ParameterDefinition, int> parameterOriginalOrderDictionary = new Dictionary<ParameterDefinition, int>();
-                    int i = 0;
+                    int i = 0;  // Counter for original order
                     foreach (PropertyInfo propertyInfo in type.GetProperties())
                     {
                         if(propertyInfo.PropertyType.IsGenericType && propertyInfo.PropertyType.GetGenericTypeDefinition() == typeof(Input<>))

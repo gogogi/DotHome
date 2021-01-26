@@ -7,29 +7,15 @@
 		CanResize="False"
         Icon="/Assets/Icons/Document_256x.png"
         Title="PageWindow">
-	<Grid Margin="5">
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="auto"/>
-			<ColumnDefinition Width="*"/>
-		</Grid.ColumnDefinitions>
-		<Grid.RowDefinitions>
-			<RowDefinition Height="auto"/>
-			<RowDefinition Height="auto"/>
-			<RowDefinition Height="auto"/>
-			<RowDefinition Height="*"/>
-		</Grid.RowDefinitions>
+	<Grid Margin="5" ColumnDefinitions="auto,*" RowDefinitions="auto,auto,auto,*">
 		<TextBlock Text="Name" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="40 0 5 0"/>
 		<TextBlock Text="Width" Grid.Column="0" Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="40 0 5 0"/>
 		<TextBlock Text="Height" Grid.Column="0" Grid.Row="2" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="40 0 5 0"/>
 
-		<TextBox Name="textBoxName" Grid.Column="1" Grid.Row="0" Height="34" Margin="1"/>
+		<TextBox Name="textBoxName" Grid.Column="1" Grid.Row="0" Height="34" Margin="1" VerticalContentAlignment="Center"/>
 		<NumericUpDown Name="numericUpDownWidth" Minimum="400" Maximum="4000" Increment="200" ClipValueToMinMax="True" Grid.Column="1" Grid.Row="1" Margin="1" ValueChanged="NumericUpDownWidth_ValueChanged"/>
 		<NumericUpDown Name="numericUpDownHeight" Minimum="400" Maximum="4000" Increment="200" ClipValueToMinMax="True" Grid.Column="1" Grid.Row="2" Margin="1" ValueChanged="NumericUpDownHeight_ValueChanged"/>
-		<Grid Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2">
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="*"/>
-				<ColumnDefinition Width="*"/>
-			</Grid.ColumnDefinitions>
+		<Grid Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" ColumnDefinitions="*,*">
 			<Button Content="OK" Grid.Column="0" Margin="1" Click="ButtonOk_Click" IsDefault="True"/>
 			<Button Content="Cancel" Grid.Column="1" Margin="1" Click="ButtonCancel_Click" IsCancel="True"/>
 		</Grid>

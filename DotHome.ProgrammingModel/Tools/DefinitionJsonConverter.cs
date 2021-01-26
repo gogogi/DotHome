@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 
 namespace DotHome.ProgrammingModel.Tools
@@ -14,7 +15,7 @@ namespace DotHome.ProgrammingModel.Tools
             DefinitionsContainer definitions = (DefinitionsContainer)serializer.Context.Context;
             if (objectType == typeof(BlockDefinition))
             {
-                return GetBlockByName(definitions, (string)reader.Value);
+                return GetBlockDefinitionByFullName(definitions, (string)reader.Value);
             }
             else if (objectType == typeof(InputDefinition))
             {
@@ -36,7 +37,8 @@ namespace DotHome.ProgrammingModel.Tools
 
         public override void WriteJson(JsonWriter writer, ADefinition value, JsonSerializer serializer)
         {
-            writer.WriteValue(value.Name);
+            if (value is BlockDefinition bd) writer.WriteValue(bd.Type.FullName);
+            else writer.WriteValue(value.Name);
         }
 
         public static BlockDefinition GetBlockByName(DefinitionsContainer definitionsContainer, string name)
@@ -46,6 +48,36 @@ namespace DotHome.ProgrammingModel.Tools
                 foreach (BlockDefinition blockDefinition in category.BlockDefinitions)
                 {
                     if (blockDefinition.Name == name)
+                    {
+                        return blockDefinition;
+                    }
+                }
+            }
+            return null;
+        }
+
+        public static BlockDefinition GetBlockDefinitionByFullName(DefinitionsContainer definitionsContainer, string name)
+        {
+            foreach (BlocksCategory category in definitionsContainer.BlockCategories)
+            {
+                foreach (BlockDefinition blockDefinition in category.BlockDefinitions)
+                {
+                    if (blockDefinition.Type.FullName == name)
+                    {
+                        return blockDefinition;
+                    }
+                }
+            }
+            return null;
+        }
+
+        public static BlockDefinition GetBlockByType(DefinitionsContainer definitionsContainer, Type type)
+        {
+            foreach (BlocksCategory category in definitionsContainer.BlockCategories)
+            {
+                foreach (BlockDefinition blockDefinition in category.BlockDefinitions)
+                {
+                    if (blockDefinition.Type == type)
                     {
                         return blockDefinition;
                     }

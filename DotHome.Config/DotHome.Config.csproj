@@ -7,36 +7,60 @@
     <AvaloniaResource Include="Assets\Icons\*" />
   </ItemGroup>
   <ItemGroup>
+    <None Remove="appconfig.json" />
     <None Remove="Assets\Icons\Add_256x.png" />
     <None Remove="Assets\Icons\Cancel_256x.png" />
     <None Remove="Assets\Icons\Close_256x.png" />
+    <None Remove="Assets\Icons\Connect_256x.png" />
     <None Remove="Assets\Icons\Const.png" />
     <None Remove="Assets\Icons\Copy_256x.png" />
     <None Remove="Assets\Icons\Cut_256x.png" />
+    <None Remove="Assets\Icons\Disconnect_256x.png" />
     <None Remove="Assets\Icons\DocumentCollection_256x.png" />
     <None Remove="Assets\Icons\Document_256x.png" />
+    <None Remove="Assets\Icons\Download_256x.png" />
+    <None Remove="Assets\Icons\Download_grey_256x.png" />
     <None Remove="Assets\Icons\Edit_256x.png" />
     <None Remove="Assets\Icons\GeoLocation_256x.png" />
     <None Remove="Assets\Icons\Group_256x.png" />
     <None Remove="Assets\Icons\Home_256x.png" />
+    <None Remove="Assets\Icons\Key_256x.png" />
     <None Remove="Assets\Icons\ParallelPort_256x.png" />
     <None Remove="Assets\Icons\Paste_256x.png" />
     <None Remove="Assets\Icons\RefSink.png" />
     <None Remove="Assets\Icons\RefSource.png" />
     <None Remove="Assets\Icons\SelectAll_256x.png" />
     <None Remove="Assets\Icons\Trash_256x.png" />
+    <None Remove="Assets\Icons\Upload_256x.png" />
     <None Remove="Assets\Icons\UserGroup_256x.png" />
+    <None Remove="rwsettings.json" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Avalonia" Version="0.10.0-rc1" />
-    <PackageReference Include="Avalonia.Desktop" Version="0.10.0-rc1" />
-    <PackageReference Include="Avalonia.Diagnostics" Version="0.10.0-rc1" />
+    <Content Include="rwsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="0.10.0-rc2" />
+    <PackageReference Include="Avalonia.Controls.DataGrid" Version="0.10.0-rc2" />
+    <PackageReference Include="Avalonia.Desktop" Version="0.10.0-rc2" />
+    <PackageReference Include="Avalonia.Diagnostics" Version="0.10.0-rc2" />
     <PackageReference Include="MessageBox.Avalonia" Version="0.10.7-rc1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="5.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="RWConfiguration_Vojtech_Lukes" Version="1.0.0" />
+    <PackageReference Include="System.Net.Http.Json" Version="5.0.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DotHome.ProgrammingModel\DotHome.ProgrammingModel.csproj" />
     <ProjectReference Include="..\DotHome.RunningModel\DotHome.RunningModel.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="appconfig.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Views\SelectionPropertiesView.axaml.cs">

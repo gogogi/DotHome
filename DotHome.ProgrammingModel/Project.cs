@@ -20,14 +20,5 @@ namespace DotHome.ProgrammingModel
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public Project()
-        {
-            string path = @"C:\Users\Vojta\Desktop\Bakalarka\Assemblies";
-            if (System.Environment.OSVersion.Platform == System.PlatformID.Unix)
-            {
-                path = "/mnt/shared/Assemblies";
-            }
-            Definitions = DefinitionsCreator.CreateDefinitions(path);
-        }
     }
 }
