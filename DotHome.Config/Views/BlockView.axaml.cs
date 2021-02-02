@@ -1,5 +1,6 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Markup.Xaml;
@@ -13,7 +14,7 @@ using System.Linq;
 
 namespace DotHome.Config.Views
 {
-    public class BlockView : UserControl
+    public class BlockView : Border
     {
         private static Cursor cursor = new Cursor(StandardCursorType.SizeAll);
 

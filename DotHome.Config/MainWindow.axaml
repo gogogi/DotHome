@@ -126,9 +126,28 @@
 						<Image Source="/Assets/Icons/Key_256x.png"/>
 					</MenuItem.Icon>
 				</MenuItem>
+				<Separator Background="LightGray"/>
+				<MenuItem Header="_Start Debugging" Command="{Binding StartDebuggingCommand}">
+					<MenuItem.Icon>
+						<Image Source="/Assets/Icons/EnableDebugging_256x.png"/>
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem Header="_Stop Debugging" Command="{Binding StopDebuggingCommand}">
+					<MenuItem.Icon>
+						<Image Source="/Assets/Icons/DisableDebugging_256x.png"/>
+					</MenuItem.Icon>
+				</MenuItem>
 			</MenuItem>
 		</Menu>
 
+		<Border DockPanel.Dock="Bottom" BorderThickness="0 1 0 0" BorderBrush="Gray" IsVisible="{Binding Server, Converter={x:Static ObjectConverters.IsNull}}" Padding="2 0" Background="LightGray">
+			<TextBlock Text="Disconnected"/>
+		</Border>
+
+		<Border DockPanel.Dock="Bottom" BorderThickness="0 1 0 0" BorderBrush="Gray" IsVisible="{Binding Server, Converter={x:Static ObjectConverters.IsNotNull}}" Padding="2 0" Background="#64b464">
+			<TextBlock Text="{Binding Server.Host}"/>
+		</Border>
+		
 		<ContentControl IsVisible="{Binding Project, Converter={x:Static ObjectConverters.IsNotNull}}">
 			<local:ProjectView DataContext="{Binding Project}" AttachedToVisualTree="Project_AttachedToVisualTree" DetachedFromVisualTree="Project_DetachedFromVisualTree"/>	
 		</ContentControl>

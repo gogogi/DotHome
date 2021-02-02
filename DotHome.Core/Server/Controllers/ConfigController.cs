@@ -84,10 +84,25 @@ namespace DotHome.Core.Server.Controllers
             }
         }
 
+        [HttpPost("startcore")]
+        public void StartCore()
+        {
+            programCore.Start();
+        }
+
+        [HttpPost("stopcore")]
+        public void StopCore()
+        {
+            programCore.Stop();
+        }
+
         [HttpGet("download")]
         public IActionResult DownloadProject()
         {
-            return File(System.IO.File.OpenRead(configuration["ProjectPath"]), "application/json", "project.json");
+            if (System.IO.File.Exists(configuration["ProjectPath"]))
+                return File(System.IO.File.OpenRead(configuration["ProjectPath"]), "application/json", "project.json");
+            else
+                return null;
         }
 
         [HttpPost("upload")]
@@ -134,12 +149,6 @@ namespace DotHome.Core.Server.Controllers
                 await Request.Body.CopyToAsync(fs);
             }
             return Ok();
-        }
-
-        [HttpPost("Reload")]
-        public void Reload()
-        {
-            programCore.Reload();
         }
     }
 }

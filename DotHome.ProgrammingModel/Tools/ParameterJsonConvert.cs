@@ -5,7 +5,7 @@ using System.Text;
 
 namespace DotHome.ProgrammingModel.Tools
 {
-    class ParameterSerializer : JsonConverter<Parameter>
+    class ParameterJsonConvert : JsonConverter<Parameter>
     {
         public override bool CanWrite => false;
         public override Parameter ReadJson(JsonReader reader, Type objectType, Parameter existingValue, bool hasExistingValue, JsonSerializer serializer)

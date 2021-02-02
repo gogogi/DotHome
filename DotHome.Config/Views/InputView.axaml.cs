@@ -9,7 +9,7 @@ using DotHome.ProgrammingModel;
 
 namespace DotHome.Config.Views
 {
-    public class InputView : UserControl
+    public class InputView : StackPanel
     {
         public Input Input => (Input)DataContext;
 

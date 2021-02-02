@@ -1,4 +1,4 @@
-﻿<UserControl xmlns="https://github.com/avaloniaui"
+﻿<Border xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -43,15 +43,28 @@
 			</ItemsControl.ItemTemplate>
 		</ItemsControl>
 		<ItemsControl Grid.Row="2" Grid.Column="0" Items="{Binding Inputs}">
-			<ItemsControl.RenderTransform>
-				<TranslateTransform X="-2" Y="0"/>
-			</ItemsControl.RenderTransform>
 			<ItemsControl.ItemTemplate>
 				<DataTemplate>
-					<local:InputView PointerPressed="Input_PointerPressed" PointerReleased="Input_PointerReleased" AttachedToVisualTree="Input_AttachedToVisualTree" DetachedFromVisualTree="Input_DetachedFromVisualTree" IsVisible="{Binding !Disabled}"/>						
+					<Grid>
+						<local:InputView PointerPressed="Input_PointerPressed" PointerReleased="Input_PointerReleased" AttachedToVisualTree="Input_AttachedToVisualTree" DetachedFromVisualTree="Input_DetachedFromVisualTree" IsVisible="{Binding !Disabled}"/>
+					</Grid>
 				</DataTemplate>
 			</ItemsControl.ItemTemplate>
 		</ItemsControl>
+
+		<tool:NoSizeDecorator Grid.Column="0" Grid.Row="2" HorizontalAlignment="Left">
+			<ItemsControl Items="{Binding Inputs}" IsHitTestVisible="False" HorizontalAlignment="Right" Width="100">
+				<ItemsControl.RenderTransform>
+					<TranslateTransform X="-4" Y="-6"/>
+				</ItemsControl.RenderTransform>
+				<ItemsControl.ItemTemplate>
+					<DataTemplate>
+						<TextBlock Text="{Binding DebugValue}" IsVisible="{Binding !Disabled}" FontSize="10" Foreground="Blue" HorizontalAlignment="Right"/>
+					</DataTemplate>
+				</ItemsControl.ItemTemplate>
+			</ItemsControl>
+		</tool:NoSizeDecorator>
+		
 		<ItemsControl Grid.Row="2" Grid.Column="1" Items="{Binding Outputs}">
 			<ItemsControl.RenderTransform>
 				<TranslateTransform X="2" Y="0"/>
@@ -62,5 +75,18 @@
 				</DataTemplate>
 			</ItemsControl.ItemTemplate>
 		</ItemsControl>
+
+		<tool:NoSizeDecorator Grid.Column="1" Grid.Row="2" HorizontalAlignment="Right">
+			<ItemsControl Items="{Binding Outputs}" IsHitTestVisible="False">
+				<ItemsControl.RenderTransform>
+					<TranslateTransform X="4" Y="-6"/>
+				</ItemsControl.RenderTransform>
+				<ItemsControl.ItemTemplate>
+					<DataTemplate>
+						<TextBlock Text="{Binding DebugValue}" IsVisible="{Binding !Disabled}" FontSize="10" Foreground="Blue"/>
+					</DataTemplate>
+				</ItemsControl.ItemTemplate>
+			</ItemsControl>
+		</tool:NoSizeDecorator>
 	</Grid>
-</UserControl>
+</Border>

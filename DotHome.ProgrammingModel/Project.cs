@@ -10,6 +10,8 @@ namespace DotHome.ProgrammingModel
 {
     public class Project : INotifyPropertyChanged
     {
+        public int ProgramPeriod { get; set; } = 100;
+
         public ObservableCollection<Page> Pages { get; set; } = new ObservableCollection<Page>();
 
         [JsonIgnore]

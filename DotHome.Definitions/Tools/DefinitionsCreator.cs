@@ -8,6 +8,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Loader;
 using System.Text;
 
 namespace DotHome.Definitions.Tools
@@ -17,9 +18,9 @@ namespace DotHome.Definitions.Tools
         public static DefinitionsContainer CreateDefinitions(string dllsDirectory)
         {
             DefinitionsContainer definitionsContainer = new DefinitionsContainer();
-            foreach(string dll in Directory.GetFiles(dllsDirectory, "*.dll"))
+            foreach (string dll in Directory.GetFiles(dllsDirectory, "*.dll"))
             {
-                Assembly assembly = Assembly.LoadFile(dll);
+                Assembly assembly = Assembly.Load(File.ReadAllBytes(dll));
                 AddBlocksFromAssembly(definitionsContainer, assembly);
             }
             definitionsContainer.BlockCategories.Sort((a, b) => a.Name.CompareTo(b.Name));
@@ -30,7 +31,7 @@ namespace DotHome.Definitions.Tools
         {
             foreach(Type type in assembly.GetTypes())
             {
-                if(!type.IsAbstract && type.IsSubclassOf(typeof(ABlock)))
+                if(!type.IsAbstract && type.IsAssignableTo(typeof(ABlock)))
                 {
                     BlockDefinition blockDefinition = new BlockDefinition();
                     blockDefinition.Type = type;
@@ -69,7 +70,7 @@ namespace DotHome.Definitions.Tools
                             parameterDefinition.Type = propertyInfo.PropertyType;
                             parameterDefinition.ShowInBlock = propertyInfo.GetCustomAttribute<ParameterAttribute>().ShowInBlock;
                             parameterDefinition.Description = propertyInfo.GetCustomAttribute<DescriptionAttribute>()?.Description;
-                            parameterDefinition.DefaultValue = propertyInfo.GetValue(Activator.CreateInstance(type));
+                            parameterDefinition.DefaultValue = propertyInfo.GetValue(Activator.CreateInstance(type, Enumerable.Repeat<object>(null, type.GetConstructors().Single().GetParameters().Length).ToArray()));
                             blockDefinition.Parameters.Add(parameterDefinition);
                             parameterDeclaringTypesDictionary[parameterDefinition] = propertyInfo.DeclaringType;
                             parameterOriginalOrderDictionary[parameterDefinition] = i++; ;

@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
     <AvaloniaResource Include="Assets\Icons\*" />
@@ -15,12 +15,14 @@
     <None Remove="Assets\Icons\Const.png" />
     <None Remove="Assets\Icons\Copy_256x.png" />
     <None Remove="Assets\Icons\Cut_256x.png" />
+    <None Remove="Assets\Icons\DisableDebugging_256x.png" />
     <None Remove="Assets\Icons\Disconnect_256x.png" />
     <None Remove="Assets\Icons\DocumentCollection_256x.png" />
     <None Remove="Assets\Icons\Document_256x.png" />
     <None Remove="Assets\Icons\Download_256x.png" />
     <None Remove="Assets\Icons\Download_grey_256x.png" />
     <None Remove="Assets\Icons\Edit_256x.png" />
+    <None Remove="Assets\Icons\EnableDebugging_256x.png" />
     <None Remove="Assets\Icons\GeoLocation_256x.png" />
     <None Remove="Assets\Icons\Group_256x.png" />
     <None Remove="Assets\Icons\Home_256x.png" />
@@ -46,6 +48,8 @@
     <PackageReference Include="Avalonia.Desktop" Version="0.10.0-rc2" />
     <PackageReference Include="Avalonia.Diagnostics" Version="0.10.0-rc2" />
     <PackageReference Include="MessageBox.Avalonia" Version="0.10.7-rc1" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="5.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Protocols.NewtonsoftJson" Version="5.0.2" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="5.0.0" />

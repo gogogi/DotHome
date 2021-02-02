@@ -1,3 +1,4 @@
+using DotHome.Core.Server.Hubs;
 using DotHome.Core.Server.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
@@ -42,7 +43,7 @@ namespace DotHome.Core.Server
                  });
             services.AddControllersWithViews();
             services.AddRazorPages();
-            
+            services.AddSignalR().AddNewtonsoftJsonProtocol(); 
 
             //services.AddSession();
 
@@ -78,10 +79,11 @@ namespace DotHome.Core.Server
             {
                 endpoints.MapRazorPages();
                 endpoints.MapControllers();
-                //endpoints.MapFallbackToFile("index.html");
+                endpoints.MapHub<DebuggingHub>("debug");
+                endpoints.MapFallbackToFile("index.html");
             });
 
-            app.ApplicationServices.GetService<IProgramCore>();  // To force the service provider to create an instance
+            app.ApplicationServices.GetService<IProgramCore>().Start();  // To force the service provider to create an instance
         }
     }
 }

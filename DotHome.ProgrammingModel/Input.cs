@@ -1,4 +1,5 @@
 ﻿using DotHome.Definitions;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -11,6 +12,9 @@ namespace DotHome.ProgrammingModel
         public InputDefinition Definition { get; set; }
 
         public bool Disabled { get; set; }
+
+        [JsonIgnore]
+        public object DebugValue { get; set; }
 
         public Input(InputDefinition definition)
         {

@@ -1,7 +1,12 @@
-﻿using DotHome.ProgrammingModel;
+﻿using DotHome.Core.Server.Hubs;
+using DotHome.Core.Server.Tools;
+using DotHome.Definitions.Tools;
+using DotHome.ProgrammingModel;
 using DotHome.RunningModel;
+using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
@@ -12,46 +17,88 @@ namespace DotHome.Core.Server.Services
     public class BasicProgramCore : IProgramCore
     {
         private ProgrammingModelLoader programmingModelLoader;
+        private IHubContext<DebuggingHub> debuggingHubContext;
+
+        private List<IBlockService> services;
         private List<ABlock> blocks;
         private CancellationTokenSource cancellationTokenSource;
         private Task runTask;
+        private Stopwatch stopwatch = new Stopwatch();
+        private int period;
+        private bool isDebugging;
+        private Dictionary<int, Tuple<object[], object[]>> debugValues = new Dictionary<int, Tuple<object[], object[]>>();
 
-        public BasicProgramCore(ProgrammingModelLoader modelLoader)
+
+        public BasicProgramCore(ProgrammingModelLoader modelLoader, IHubContext<DebuggingHub> debuggingHubContext)
         {
             this.programmingModelLoader = modelLoader;
-            Start();
+            this.debuggingHubContext = debuggingHubContext;
         }
 
-        public void Reload()
+        public void StartDebugging()
         {
-            Stop();
-            Start();
+            foreach(ABlock block in blocks)
+            {
+                debugValues.Add(block.Id, new Tuple<object[], object[]>(Enumerable.Repeat<object>(null, block.Inputs.Count).ToArray(), Enumerable.Repeat<object>(null, block.Inputs.Count).ToArray())); ;
+            }
+            isDebugging = true;
         }
 
-        private void Start()
+        public void StopDebugging()
+        {
+            isDebugging = false;
+            debugValues.Clear();
+        }
+
+        public void Start()
         {
             Load();
             cancellationTokenSource = new CancellationTokenSource();
             runTask = Task.Factory.StartNew(() => Run(cancellationTokenSource.Token), TaskCreationOptions.LongRunning);
         }
 
-        private void Stop()
+        public void Stop()
         {
-            cancellationTokenSource.Cancel();
+            cancellationTokenSource?.Cancel();
+            runTask?.Wait();
         }
 
         private void Load()
         {
-            var programmingModel = programmingModelLoader.LoadProgrammingModel();
+            Project programmingModel = programmingModelLoader.LoadProgrammingModel();
+            period = programmingModel.ProgramPeriod;
             blocks = new List<ABlock>();
+
+            services = new List<IBlockService>();
+
             foreach (Page page in programmingModel.Pages)
             {
                 Dictionary<Input, AValue> inputsDictionary = new Dictionary<Input, AValue>();
                 Dictionary<Output, AValue> outputsDictionary = new Dictionary<Output, AValue>();
-                foreach (Block b in page.Blocks)
+                Dictionary<AValue, ABlock> inputsBlocksDictionary = new Dictionary<AValue, ABlock>();
+
+                List<Block> sortedBlocks = BlocksSorter.SortTopological(page.Blocks.ToList(), page.Wires.ToList());
+
+                foreach (Block b in sortedBlocks)
                 {
                     Type type = b.Definition.Type;
-                    ABlock block = (ABlock)Activator.CreateInstance(type);
+                    ConstructorInfo[] constructors = type.GetConstructors();
+
+                    ConstructorInfo constructor = constructors.First(c => c.GetParameters().All(p => p.ParameterType.IsAssignableTo(typeof(IBlockService))));
+                    List<IBlockService> parameters = new List<IBlockService>();
+                    foreach (ParameterInfo parameterInfo in constructor.GetParameters())
+                    {
+                        IBlockService parameter = services.SingleOrDefault(s => s.GetType().IsAssignableTo(parameterInfo.ParameterType));
+                        if (parameter == null)
+                        {
+                            parameter = (IBlockService)Activator.CreateInstance(parameterInfo.ParameterType);
+                            services.Add(parameter);
+                        }
+                        parameters.Add(parameter);
+                    }
+
+                    ABlock block = (ABlock)Activator.CreateInstance(type, parameters.Cast<object>().ToArray());
+                    block.Id = b.Id;
 
                     foreach (Input i in b.Inputs)
                     {
@@ -61,6 +108,8 @@ namespace DotHome.Core.Server.Services
                         pi.SetValue(block, input);
                         inputsDictionary.Add(i, input);
                         block.Inputs.Add(input);
+
+                        inputsBlocksDictionary.Add(input, block);
                     }
 
                     foreach (Output o in b.Outputs)
@@ -84,51 +133,31 @@ namespace DotHome.Core.Server.Services
                 {
                     var input = inputsDictionary[wire.Input];
                     var output = outputsDictionary[wire.Output];
-
-
-                    if (output is Output<bool> o_b)
-                    {
-                        if (input is Input<bool> i_b) o_b.TransferEvent += () => i_b.Val = o_b.Val;
-                        else if (input is Input<int> i_i) o_b.TransferEvent += () => i_i.Val = o_b.Val ? 1 : 0;
-                        else if (input is Input<float> i_f) o_b.TransferEvent += () => i_f.Val = o_b.Val ? 1 : 0;
-                        else if (input is Input<string> i_s) o_b.TransferEvent += () => i_s.Val = o_b.Val.ToString();
-                    }
-                    else if (output is Output<int> o_i)
-                    {
-                        if (input is Input<bool> i_b) o_i.TransferEvent += () => i_b.Val = o_i.Val != 0;
-                        else if (input is Input<int> i_i) o_i.TransferEvent += () => i_i.Val = o_i.Val;
-                        else if (input is Input<float> i_f) o_i.TransferEvent += () => i_f.Val = o_i.Val;
-                        else if (input is Input<string> i_s) o_i.TransferEvent += () => i_s.Val = o_i.Val.ToString();
-                    }
-                    else if (output is Output<float> o_f)
-                    {
-                        if (input is Input<bool> i_b) o_f.TransferEvent += () => i_b.Val = Math.Abs(o_f.Val) > 1e-5;
-                        else if (input is Input<int> i_i) o_f.TransferEvent += () => i_i.Val = (int)o_f.Val;
-                        else if (input is Input<float> i_f) o_f.TransferEvent += () => i_f.Val = o_f.Val;
-                        else if (input is Input<string> i_s) o_f.TransferEvent += () => i_s.Val = o_f.Val.ToString();
-                    }
-                    else if (output is Output<string> o_s)
-                    {
-                        if (input is Input<bool> i_b) o_s.TransferEvent += () => { if (bool.TryParse(o_s.Val, out bool b)) i_b.Val = b; else i_b.Val = false; };
-                        else if (input is Input<int> i_i) o_s.TransferEvent += () => { if (int.TryParse(o_s.Val, out int i)) i_i.Val = i; else i_i.Val = 0; };
-                        else if (input is Input<float> i_f) o_s.TransferEvent += () => { if (float.TryParse(o_s.Val, out float f)) i_f.Val = f; else i_f.Val = 0; };
-                        else if (input is Input<string> i_s) o_s.TransferEvent += () => i_s.Val = o_s.Val;
-                    }
+                    output.AttachValue(input);
                 }
             }
         }
 
-        private void Run(CancellationToken cancellationToken)
+        private async Task Run(CancellationToken cancellationToken)
         {
             Init();
             while(!cancellationToken.IsCancellationRequested)
             {
+                stopwatch.Restart();
                 Loop();
+                stopwatch.Stop();
+                int elapsed = (int)stopwatch.ElapsedMilliseconds;
+                Debug.WriteLine(elapsed);
+                if (period > elapsed) await Task.Delay((int)(period - stopwatch.ElapsedMilliseconds));
             }
         }
 
         private void Init()
         {
+            foreach(IBlockService service in services)
+            {
+                service.Init();
+            }
             foreach(ABlock block in blocks)
             {
                 block.Init();
@@ -137,12 +166,36 @@ namespace DotHome.Core.Server.Services
 
         private void Loop()
         {
+            foreach (IBlockService service in services)
+            {
+                service.Run();
+            }
             foreach (ABlock block in blocks)
             {
                 block.Run();
                 foreach(AValue output in block.Outputs)
                 {
                     output.Transfer();
+                }
+                if(isDebugging)
+                {
+                    var tuple = debugValues[block.Id];
+                    for(int i = 0; i < block.Inputs.Count; i++)
+                    {
+                        if(!Equals(block.Inputs[i].ValAsObject, tuple.Item1[i]))
+                        {
+                            tuple.Item1[i] = block.Inputs[i].ValAsObject;
+                            debuggingHubContext.Clients.All.SendAsync("Input", block.Id, i, tuple.Item1[i]);
+                        }
+                    }
+                    for (int i = 0; i < block.Outputs.Count; i++)
+                    {
+                        if (!Equals(block.Outputs[i].ValAsObject, tuple.Item2[i]))
+                        {
+                            tuple.Item2[i] = block.Outputs[i].ValAsObject;
+                            debuggingHubContext.Clients.All.SendAsync("Output", block.Id, i, tuple.Item2[i]);
+                        }
+                    }
                 }
             }
         }

@@ -7,6 +7,13 @@ namespace DotHome.Core.Server.Services
 {
     public interface IProgramCore
     {
-        public void Reload();
+        public void Start();
+
+        public void Stop();
+
+        public void StartDebugging();
+
+        public void StopDebugging();
+
     }
 }

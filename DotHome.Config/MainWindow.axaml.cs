@@ -21,6 +21,7 @@ using System.Windows.Input;
 using Avalonia.Data;
 using System.Text;
 using DotHome.Config.Windows;
+using System.Security.Cryptography;
 
 namespace DotHome.Config
 {
@@ -49,6 +50,8 @@ namespace DotHome.Config
         private Command UploadProjectCommand { get; }
         private Command DownloadDllsCommand { get; }
         private Command ChangeCredentialsCommand { get; }
+        private Command StartDebuggingCommand { get; }
+        private Command StopDebuggingCommand { get; }
 
         public MainWindow()
         {
@@ -77,12 +80,24 @@ namespace DotHome.Config
             UploadProjectCommand = new Command(() => Server != null && Project != null, UploadProject_Executed);
             DownloadDllsCommand = new Command(() => Server != null, DownloadDlls_Executed);
             ChangeCredentialsCommand = new Command(() => Server != null, ChangeCredentials_Executed);
+            StartDebuggingCommand = new Command(() => Server != null && Project != null, StartDebugging_Executed);
+            StopDebuggingCommand = new Command(() => Server != null && Project != null, StopDebugging_Executed);
 
             var b = new Binding("SelectedPage") { Source = Project };
 
             DataContext = this;
 
             
+        }
+
+        private async Task StopDebugging_Executed()
+        {
+            await Server.StopDebugging();
+        }
+
+        private async Task StartDebugging_Executed()
+        {
+            await Server.StartDebugging(Project);
         }
 
         private async Task ChangeCredentials_Executed()
@@ -113,8 +128,11 @@ namespace DotHome.Config
 
         private async Task UploadProject_Executed()
         {
+            ProgrammingModelTools.SetBlockIDs(Project);
+            await Server.StopCore();
             await Server.UploadAssemblies();
             await Server.UploadProject(Project);
+            await Server.StartCore();
         }
 
         private async Task Disconnect_Executed()
@@ -135,6 +153,7 @@ namespace DotHome.Config
             if (path != null)
             {
                 Path = path;
+                ProgrammingModelTools.SetBlockIDs(Project);
                 File.WriteAllText(Path, ModelSerializer.SerializeProject(Project));
             }
         }
@@ -148,11 +167,13 @@ namespace DotHome.Config
                 if (path != null)
                 {
                     Path = path;
+                    ProgrammingModelTools.SetBlockIDs(Project);
                     File.WriteAllText(Path, ModelSerializer.SerializeProject(Project));
                 }
             }
             else
             {
+                ProgrammingModelTools.SetBlockIDs(Project);
                 File.WriteAllText(Path, ModelSerializer.SerializeProject(Project));
             }
         }

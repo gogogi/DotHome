@@ -19,10 +19,10 @@ namespace DotHome.Config.Tools
 
         private WirePointsConverter() { }
 
-        public object Convert(IList<object> values, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(IList<object> values, Type targetType, dynamic parameter, CultureInfo culture)
         {
-            InputView inputView = ((dynamic)parameter).InputView;
-            OutputView outputView = ((dynamic)parameter).OutputView;
+            InputView inputView = parameter.InputView;
+            OutputView outputView = parameter.OutputView;
 
             //Point po = outputView.Position;
             //Point pi = inputView.Position;
