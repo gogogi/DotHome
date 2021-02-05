@@ -29,6 +29,7 @@
     <None Remove="Assets\Icons\Key_256x.png" />
     <None Remove="Assets\Icons\ParallelPort_256x.png" />
     <None Remove="Assets\Icons\Paste_256x.png" />
+    <None Remove="Assets\Icons\Question_256x.png" />
     <None Remove="Assets\Icons\RefSink.png" />
     <None Remove="Assets\Icons\RefSource.png" />
     <None Remove="Assets\Icons\SelectAll_256x.png" />
@@ -43,17 +44,17 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Avalonia" Version="0.10.0-rc2" />
-    <PackageReference Include="Avalonia.Controls.DataGrid" Version="0.10.0-rc2" />
-    <PackageReference Include="Avalonia.Desktop" Version="0.10.0-rc2" />
-    <PackageReference Include="Avalonia.Diagnostics" Version="0.10.0-rc2" />
-    <PackageReference Include="MessageBox.Avalonia" Version="0.10.7-rc1" />
+    <PackageReference Include="Avalonia" Version="0.10.0" />
+    <PackageReference Include="Avalonia.Controls.DataGrid" Version="0.10.0" />
+    <PackageReference Include="Avalonia.Desktop" Version="0.10.0" />
+    <PackageReference Include="Avalonia.Diagnostics" Version="0.10.0" />
+    <PackageReference Include="MessageBox.Avalonia" Version="1.0.5" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="5.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Protocols.NewtonsoftJson" Version="5.0.2" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="5.0.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1-beta1" />
     <PackageReference Include="RWConfiguration_Vojtech_Lukes" Version="1.0.0" />
     <PackageReference Include="System.Net.Http.Json" Version="5.0.0" />
   </ItemGroup>

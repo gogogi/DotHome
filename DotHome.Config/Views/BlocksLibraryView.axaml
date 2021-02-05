@@ -15,7 +15,7 @@
 			<ItemsControl.ItemTemplate>
 				<DataTemplate>
 					<Expander Header="{Binding Name}">
-						<ItemsControl Items="{Binding BlockDefinitions}">
+						<ItemsControl Items="{Binding AgregatedBlockDefinitions}">
 							<ItemsControl.ItemsPanel>
 								<ItemsPanelTemplate>
 									<WrapPanel/>

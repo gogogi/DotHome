@@ -9,22 +9,22 @@ using System.Text;
 namespace DotHome.StandardBlocks.Builtin
 {
     [Description("Provides constant value"), Category("Builtin"), Color("DarkGray")]
-    class Const : ABlock
+    class Const<T> : ABlock
     {
         [Description("Output")]
-        public Output<object> O { get; set; }
+        public Output<T> O { get; set; }
 
         [Parameter(true)]
-        public object Value { get; set; } = 0;
+        public T Value { get; set; } = default;
 
         public override void Init()
         {
-            throw new NotImplementedException();
+            O.Val = Value;
         }
 
         public override void Run()
         {
-            throw new NotImplementedException();
+            
         }
     }
 }

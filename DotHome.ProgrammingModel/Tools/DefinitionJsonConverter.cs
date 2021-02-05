@@ -17,6 +17,7 @@ namespace DotHome.ProgrammingModel.Tools
             {
                 return GetBlockDefinitionByFullName(definitions, (string)reader.Value);
             }
+            // For now just create dummy IO definitions
             else if (objectType == typeof(InputDefinition))
             {
                 return new InputDefinition() { Name = (string)reader.Value };

@@ -83,7 +83,7 @@ namespace DotHome.Core.Server
                 endpoints.MapFallbackToFile("index.html");
             });
 
-            app.ApplicationServices.GetService<IProgramCore>().Start();  // To force the service provider to create an instance
+            app.ApplicationServices.GetService<IProgramCore>();  // To force the service provider to create an instance
         }
     }
 }

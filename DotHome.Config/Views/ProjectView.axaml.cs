@@ -21,7 +21,7 @@ namespace DotHome.Config.Views
 
         public Project Project => (Project)DataContext;
 
-        public PageView SelectedPageView => pageViewsDictionary[Project.SelectedPage];
+        public PageView SelectedPageView => Project?.SelectedPage == null ? null : pageViewsDictionary?[Project.SelectedPage];
 
         private TabControl pagesTabControl;
 
@@ -81,19 +81,21 @@ namespace DotHome.Config.Views
         {
             var pageView = (PageView)sender;
             pageViewsDictionary[pageView.Page] = pageView;
-            Debug.WriteLine("Attached");
+            Command.ForceChanges();
         }
 
         private void Page_DetachedFromVisualTree(object sender, VisualTreeAttachmentEventArgs e)
         {
             var pageView = (PageView)sender;
             pageViewsDictionary.Remove(pageView.Page);
+            Command.ForceChanges();
         }
 
         private void Page_DataContextChanged(object sender, System.EventArgs e)
         {
             var pageView = (PageView)sender;
             if(pageView.DataContext != null) pageViewsDictionary[pageView.Page] = pageView;
+            Command.ForceChanges();
         }
     }
 }

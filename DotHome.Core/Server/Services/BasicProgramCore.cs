@@ -16,8 +16,13 @@ namespace DotHome.Core.Server.Services
 {
     public class BasicProgramCore : IProgramCore
     {
+        private const int usageSamples = 100;
+
         private ProgrammingModelLoader programmingModelLoader;
         private IHubContext<DebuggingHub> debuggingHubContext;
+        private double[] usageHistory = new double[usageSamples];
+        private int usageIndex = 0;
+        private int usageCount = 0;
 
         private List<IBlockService> services;
         private List<ABlock> blocks;
@@ -28,18 +33,22 @@ namespace DotHome.Core.Server.Services
         private bool isDebugging;
         private Dictionary<int, Tuple<object[], object[]>> debugValues = new Dictionary<int, Tuple<object[], object[]>>();
 
+        public double AverageCpuUsage => usageHistory.Take(usageCount).Average();
 
-        public BasicProgramCore(ProgrammingModelLoader modelLoader, IHubContext<DebuggingHub> debuggingHubContext)
+        public double MaxCpuUsage => usageHistory.Take(usageCount).Max();
+
+        public BasicProgramCore(ProgrammingModelLoader programmingModelLoader, IHubContext<DebuggingHub> debuggingHubContext)
         {
-            this.programmingModelLoader = modelLoader;
+            this.programmingModelLoader = programmingModelLoader;
             this.debuggingHubContext = debuggingHubContext;
+            Start();
         }
 
         public void StartDebugging()
         {
             foreach(ABlock block in blocks)
             {
-                debugValues.Add(block.Id, new Tuple<object[], object[]>(Enumerable.Repeat<object>(null, block.Inputs.Count).ToArray(), Enumerable.Repeat<object>(null, block.Inputs.Count).ToArray())); ;
+                debugValues.Add(block.Id, new Tuple<object[], object[]>(Enumerable.Repeat<object>(null, block.Inputs.Count).ToArray(), Enumerable.Repeat<object>(null, block.Outputs.Count).ToArray())); ;
             }
             isDebugging = true;
         }
@@ -50,17 +59,11 @@ namespace DotHome.Core.Server.Services
             debugValues.Clear();
         }
 
-        public void Start()
+        private void Start()
         {
             Load();
             cancellationTokenSource = new CancellationTokenSource();
             runTask = Task.Factory.StartNew(() => Run(cancellationTokenSource.Token), TaskCreationOptions.LongRunning);
-        }
-
-        public void Stop()
-        {
-            cancellationTokenSource?.Cancel();
-            runTask?.Wait();
         }
 
         private void Load()
@@ -146,9 +149,16 @@ namespace DotHome.Core.Server.Services
                 stopwatch.Restart();
                 Loop();
                 stopwatch.Stop();
-                int elapsed = (int)stopwatch.ElapsedMilliseconds;
-                Debug.WriteLine(elapsed);
-                if (period > elapsed) await Task.Delay((int)(period - stopwatch.ElapsedMilliseconds));
+
+                double usage = stopwatch.Elapsed.TotalMilliseconds / period;
+                usageHistory[usageIndex] = usage;
+                usageIndex = (usageIndex + 1) % usageSamples;
+                if (usageCount < usageSamples) usageCount++;
+                
+                //Debug.WriteLine("Elapsed " + stopwatch.Elapsed);
+                //Debug.WriteLine(AverageCpuUsage);
+                //Debug.WriteLine(MaxCpuUsage);
+                if (period > stopwatch.Elapsed.TotalMilliseconds) await Task.Delay(TimeSpan.FromMilliseconds(period) - stopwatch.Elapsed);
             }
         }
 
@@ -172,32 +182,71 @@ namespace DotHome.Core.Server.Services
             }
             foreach (ABlock block in blocks)
             {
-                block.Run();
-                foreach(AValue output in block.Outputs)
+                //Debug.WriteLine("Running " + block.Id);
+                try
+                {
+                    block.ClearDebugString();
+                    block.Run();
+                    if (isDebugging)
+                    {
+                        debuggingHubContext.Clients.All.SendAsync("BlockException", block.Id, null);
+                        debuggingHubContext.Clients.All.SendAsync("Block", block.Id, block.DebugString);
+                    }
+                }
+                catch (Exception e)
+                {
+                    if (isDebugging)
+                    {
+                        debuggingHubContext.Clients.All.SendAsync("BlockException", block.Id, e);
+                    }
+                }
+
+                foreach (AValue output in block.Outputs)
                 {
                     output.Transfer();
                 }
+
                 if(isDebugging)
                 {
                     var tuple = debugValues[block.Id];
+                    //Debug.WriteLine("A");
                     for(int i = 0; i < block.Inputs.Count; i++)
                     {
-                        if(!Equals(block.Inputs[i].ValAsObject, tuple.Item1[i]))
+                      //  Debug.WriteLine("B");
+                        if (!Equals(block.Inputs[i].ValAsObject, tuple.Item1[i]))
                         {
+                        //    Debug.WriteLine("C");
                             tuple.Item1[i] = block.Inputs[i].ValAsObject;
+                          //  Debug.WriteLine("D");
                             debuggingHubContext.Clients.All.SendAsync("Input", block.Id, i, tuple.Item1[i]);
                         }
+                        //Debug.WriteLine("E");
                     }
+                    //Debug.WriteLine("F");
                     for (int i = 0; i < block.Outputs.Count; i++)
                     {
+                      //  Debug.WriteLine("G");
                         if (!Equals(block.Outputs[i].ValAsObject, tuple.Item2[i]))
                         {
+                        //    Debug.WriteLine("H");
                             tuple.Item2[i] = block.Outputs[i].ValAsObject;
+                          //  Debug.WriteLine("I");
                             debuggingHubContext.Clients.All.SendAsync("Output", block.Id, i, tuple.Item2[i]);
                         }
                     }
+                    //Debug.WriteLine("J");
                 }
             }
+        }
+
+        public void Restart()
+        {
+            bool wasDebugging = isDebugging;
+            StopDebugging();
+            cancellationTokenSource?.Cancel();
+            runTask?.Wait();
+            Start();
+            if (wasDebugging) StartDebugging();
         }
     }
 }

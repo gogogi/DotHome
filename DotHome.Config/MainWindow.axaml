@@ -2,6 +2,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:tool="clr-namespace:DotHome.Config.Tools;assembly=DotHome.Config"
 		xmlns:local="clr-namespace:DotHome.Config.Views;assembly=DotHome.Config"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="DotHome.Config.MainWindow"
@@ -59,34 +60,34 @@
 				</MenuItem>
 			</MenuItem>
 			<MenuItem Header="_Edit">
-				<MenuItem Header="Cance_l" Command="{Binding CancelCommand}" HotKey="Escape" InputGesture="Escape">
+				<MenuItem Header="Cance_l" Command="{Binding CancelCommand}" InputGesture="Escape">
 					<MenuItem.Icon>
 						<Image Source="/Assets/Icons/Cancel_256x.png"/>
 					</MenuItem.Icon>
 				</MenuItem>
-				<MenuItem Header="Select _all" Command="{Binding SelectAllCommand}" HotKey="Ctrl+A" InputGesture="Ctrl+A">
+				<MenuItem Header="Select _all" Command="{Binding SelectAllCommand}" InputGesture="Ctrl+A">
 					<MenuItem.Icon>
 						<Image Source="/Assets/Icons/SelectAll_256x.png"/>
 					</MenuItem.Icon>
 				</MenuItem>
 				<Separator Background="LightGray"/>
-				<MenuItem Header="_Copy" Command="{Binding CopyCommand}" HotKey="Ctrl+C" InputGesture="Ctrl+C">
+				<MenuItem Header="_Copy" Command="{Binding CopyCommand}" InputGesture="Ctrl+C">
 					<MenuItem.Icon>
 						<Image Source="/Assets/Icons/Copy_256x.png"/>
 					</MenuItem.Icon>
 				</MenuItem>
-				<MenuItem Header="C_ut" Command="{Binding CutCommand}" HotKey="Ctrl+X" InputGesture="Ctrl+X">
+				<MenuItem Header="C_ut" Command="{Binding CutCommand}" InputGesture="Ctrl+X">
 					<MenuItem.Icon>
 						<Image Source="/Assets/Icons/Cut_256x.png"/>
 					</MenuItem.Icon>
 				</MenuItem>
-				<MenuItem Header="_Paste" Command="{Binding PasteCommand}" HotKey="Ctrl+V" InputGesture="Ctrl+V">
+				<MenuItem Header="_Paste" Command="{Binding PasteCommand}" InputGesture="Ctrl+V">
 					<MenuItem.Icon>
 						<Image Source="/Assets/Icons/Paste_256x.png"/>
 					</MenuItem.Icon>
 				</MenuItem>
 				<Separator Background="LightGray"/>
-				<MenuItem Header="_Delete" Command="{Binding DeleteCommand}" HotKey="Delete" InputGesture="Delete">
+				<MenuItem Header="_Delete" Command="{Binding DeleteCommand}" InputGesture="Delete">
 					<MenuItem.Icon>
 						<Image Source="/Assets/Icons/Trash_256x.png"/>
 					</MenuItem.Icon>
@@ -139,13 +140,29 @@
 				</MenuItem>
 			</MenuItem>
 		</Menu>
-
-		<Border DockPanel.Dock="Bottom" BorderThickness="0 1 0 0" BorderBrush="Gray" IsVisible="{Binding Server, Converter={x:Static ObjectConverters.IsNull}}" Padding="2 0" Background="LightGray">
+		
+		<Border DockPanel.Dock="Bottom" BorderThickness="0 1 0 0" BorderBrush="Gray" IsVisible="{Binding Server, Converter={x:Static ObjectConverters.IsNull}}" Padding="2 0" Background="LightGray" Height="20">
 			<TextBlock Text="Disconnected"/>
 		</Border>
 
-		<Border DockPanel.Dock="Bottom" BorderThickness="0 1 0 0" BorderBrush="Gray" IsVisible="{Binding Server, Converter={x:Static ObjectConverters.IsNotNull}}" Padding="2 0" Background="#64b464">
-			<TextBlock Text="{Binding Server.Host}"/>
+		<Border DockPanel.Dock="Bottom" BorderThickness="0 1 0 0" BorderBrush="Gray" IsVisible="{Binding Server, Converter={x:Static ObjectConverters.IsNotNull}}" Padding="2 0" Background="#64b464" Height="20">
+			<Grid ColumnDefinitions="*,2*,*">
+				<TextBlock Grid.Column="0" Text="{Binding Server.Host}"/>
+				<Border Grid.Column="3" BorderBrush="Black" BorderThickness="1">
+					<Panel>
+						<ProgressBar  Minimum="0" Maximum="1" Value="{Binding Server.MaxUsage}" Foreground="#FF8888" Background="#88FF88" MinWidth="0"/>
+						<ProgressBar Minimum="0" Maximum="1" Value="{Binding Server.AverageUsage}" Foreground="#8888FF" Background="Transparent" MinWidth="0"/>
+						<StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+							<TextBlock Text=" Usage "/>
+							<TextBlock Text="{Binding Server.AverageUsage, Converter={x:Static tool:PercentageValueConverter.Instance}}"/>
+							<TextBlock Text=" (Max "/>
+							<TextBlock Text="{Binding Server.MaxUsage, Converter={x:Static tool:PercentageValueConverter.Instance}}"/>
+							<TextBlock Text=")"/>
+						</StackPanel>
+					</Panel>
+				</Border>
+			</Grid>
+			
 		</Border>
 		
 		<ContentControl IsVisible="{Binding Project, Converter={x:Static ObjectConverters.IsNotNull}}">

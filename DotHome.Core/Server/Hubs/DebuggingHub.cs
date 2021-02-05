@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DotHome.Core.Server.Hubs
 {
-    //[Authorize(Roles = "Administrator")]
+    [Authorize(Roles = "Administrator")]
     public class DebuggingHub : Hub
     {
         private IProgramCore programCore;

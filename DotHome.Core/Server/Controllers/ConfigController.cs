@@ -84,18 +84,6 @@ namespace DotHome.Core.Server.Controllers
             }
         }
 
-        [HttpPost("startcore")]
-        public void StartCore()
-        {
-            programCore.Start();
-        }
-
-        [HttpPost("stopcore")]
-        public void StopCore()
-        {
-            programCore.Stop();
-        }
-
         [HttpGet("download")]
         public IActionResult DownloadProject()
         {
@@ -112,6 +100,7 @@ namespace DotHome.Core.Server.Controllers
             {
                 await Request.Body.CopyToAsync(fs);
             }
+            programCore.Restart();
             return Ok();
         }
 
@@ -128,17 +117,6 @@ namespace DotHome.Core.Server.Controllers
             ms.Seek(0, SeekOrigin.Begin);
             System.IO.File.Delete("dlls.zip");
             return File(ms, "application/x-zip-compressed", "dlls.zip");
-
-            //var stream = new MemoryStream();
-            //using(var archive = new ZipArchive(stream, ZipArchiveMode.Create, true))
-            //{
-            //    foreach (string dll in Directory.GetFiles(configuration["AssembliesPath"], "*.dll"))
-            //    {
-            //        archive.CreateEntryFromFile(dll, Path.GetFileName(dll));
-            //    }
-            //}
-            //stream.Seek(0, SeekOrigin.Begin);
-            //return new FileStreamResult(stream, "application/x-zip-compressed");
         }
 
         [HttpPost("dllupload")]
@@ -149,6 +127,12 @@ namespace DotHome.Core.Server.Controllers
                 await Request.Body.CopyToAsync(fs);
             }
             return Ok();
+        }
+
+        [HttpGet("getusages")]
+        public Tuple<double, double> GetUsages()
+        {
+            return new Tuple<double, double>(programCore.AverageCpuUsage, programCore.MaxCpuUsage);
         }
     }
 }

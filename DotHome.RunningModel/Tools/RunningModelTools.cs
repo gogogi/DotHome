@@ -8,20 +8,9 @@ namespace DotHome.RunningModel.Tools
     {
         public static Type[] SupportedTypes { get; } = { typeof(bool), typeof(int), typeof(uint), typeof(double), typeof(string), typeof(byte[]) };
 
-        public static Dictionary<Type, Type[]> SupportedConversions { get; } = new Dictionary<Type, Type[]>()
-        {
-            [typeof(bool)] = new[] { typeof(int), typeof(uint), typeof(double), typeof(string) },
-            [typeof(int)] = new[] { typeof(bool), typeof(uint), typeof(double), typeof(string) },
-            [typeof(uint)] = new[] { typeof(bool), typeof(int), typeof(double), typeof(string) },
-            [typeof(double)] = new[] { typeof(int), typeof(uint), typeof(string) },
-            [typeof(string)] = { },
-            [typeof(byte[])] = { }
-        };
+        //public static bool IsTypeSupported(Type type) => IsConversionSupported(type, type);
 
-        //public static Dictionary<Tuple<Type, Type>, Action<AValue, AValue>> TransferActions { get; } = new Dictionary<Tuple<Type, Type>, Action<AValue, AValue>>()
-        //{
-        //    [new Tuple<Type, Type>(typeof(bool), typeof(bool))] = (a, b) => ((Value<bool>)b).Val = ((Value<bool>)a).Val
-        //};
+        public static bool IsConversionSupported(Type first, Type second) => GetTransferAction((AValue)Activator.CreateInstance(typeof(Value<>).MakeGenericType(first)), (AValue)Activator.CreateInstance(typeof(Value<>).MakeGenericType(second))) != null;
 
         public static Action GetTransferAction(AValue first, AValue second)
         {
@@ -43,7 +32,7 @@ namespace DotHome.RunningModel.Tools
             }
             if (first is Value<uint> vu1)
             {
-                if (second is Value<bool> vb2) return () => vb2.Val = vu1.Val != 1;
+                if (second is Value<bool> vb2) return () => vb2.Val = vu1.Val != 0;
                 else if (second is Value<int> vi2) return () => vi2.Val = (int)vu1.Val;
                 else if (second is Value<uint> vu2) return () => vu2.Val = vu1.Val;
                 else if (second is Value<double> vd2) return () => vd2.Val = vu1.Val;
@@ -51,7 +40,7 @@ namespace DotHome.RunningModel.Tools
             }
             if (first is Value<double> vd1)
             {
-                if (second is Value<bool> vb2) return () => vb2.Val = Math.Abs(vd1.Val) < 1e-6;
+                if (second is Value<bool> vb2) return () => vb2.Val = Math.Abs(vd1.Val) > 1e-6;
                 else if (second is Value<int> vi2) return () => vi2.Val = (int)vd1.Val;
                 else if (second is Value<uint> vu2) return () => vu2.Val = (uint)vd1.Val;
                 else if (second is Value<double> vd2) return () => vd2.Val = vd1.Val;

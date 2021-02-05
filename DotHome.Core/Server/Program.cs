@@ -13,13 +13,11 @@ namespace DotHome.Core.Server
 {
     public class Program
     {
-        private static event Action ac;
         public static void Main(string[] args)
         {
             CreateHostBuilder(args).ConfigureAppConfiguration(b => b.Add(new RWConfigurationSource("rwsettings.json"))).Build().Run();
         }
-
-        
+                
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>

@@ -10,7 +10,8 @@ namespace DotHome.RunningModel.Attributes
         public Color Color { get; }
         public ColorAttribute(string color)
         {
-            Color = Color.FromName(color);
+            Color = ColorTranslator.FromHtml(color);
+            //Color = Color.FromName(color);
         }
     }
 }

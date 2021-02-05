@@ -23,11 +23,18 @@ namespace DotHome.Config.Tools
             return JsonConvert.SerializeObject(container, jsonSerializerSettings);
         }
 
-        public static BlockContainer DeserializeContainer(string text, DefinitionsContainer definitionsContainer)
+        public static BlockContainer TryDeserializeContainer(string text, DefinitionsContainer definitionsContainer)
         {
-            jsonSerializerSettings.Context = new StreamingContext(StreamingContextStates.All, definitionsContainer);
-            var v = JsonConvert.DeserializeObject<BlockContainer>(text, jsonSerializerSettings);
-            return v;
+            try
+            {
+                jsonSerializerSettings.Context = new StreamingContext(StreamingContextStates.All, definitionsContainer);
+                var v = JsonConvert.DeserializeObject<BlockContainer>(text, jsonSerializerSettings);
+                return v;
+            }
+            catch
+            {
+                return null;
+            }
         }
     }
 }

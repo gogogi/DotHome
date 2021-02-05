@@ -8,6 +8,8 @@
 			 xmlns:tool="clr-namespace:DotHome.Config.Tools;assembly=DotHome.Config"
 			 KeyDown="PageView_KeyDown"
 			 Focusable="True"
+			 GotFocus="PageView_GotFocus"
+			 LostFocus="PageView_LostFocus"
              x:Class="DotHome.Config.Views.PageView">
 	<ScrollViewer x:Name="scrollViewer" HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible">
 		<Panel x:Name="panel" Background="Gray" PointerWheelChanged="Panel_Wheel" PointerPressed="Panel_PointerPressed" PointerReleased="Panel_PointerReleased" PointerMoved="Panel_PointerMoved">

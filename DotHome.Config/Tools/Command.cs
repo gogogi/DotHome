@@ -11,10 +11,18 @@ namespace DotHome.Config.Tools
         private static List<Command> commands = new List<Command>();
 
         private Func<bool> canExecute;
+        private Func<Task<bool>> canExecuteTask;
         private Action executed;
         private Func<Task> executedTask;
 
         public event EventHandler CanExecuteChanged;
+
+        public Command(Func<Task<bool>> canExecuteTask, Action executed)
+        {
+            this.canExecuteTask = canExecuteTask;
+            this.executed = executed;
+            commands.Add(this);
+        }
 
         public Command(Func<bool> canExecute, Action executed)
         {
@@ -32,7 +40,13 @@ namespace DotHome.Config.Tools
 
         public bool CanExecute(object parameter)
         {
-            return canExecute();
+            if (canExecute != null) return canExecute();
+            else
+            {
+                var cet = canExecuteTask();
+                cet.Wait();
+                return cet.Result;
+            }
         }
 
         public async void Execute(object parameter)

@@ -10,8 +10,11 @@ using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using Avalonia.Styling;
 using DotHome.Config.Tools;
+using DotHome.Config.Windows;
 using DotHome.Definitions;
 using DotHome.ProgrammingModel;
+using DotHome.ProgrammingModel.Tools;
+using DotHome.RunningModel.Tools;
 using MessageBox.Avalonia;
 using MessageBox.Avalonia.Enums;
 using Newtonsoft.Json;
@@ -29,6 +32,8 @@ namespace DotHome.Config.Views
     public class PageView : UserControl
     {
         public Page Page => (Page)DataContext;
+
+        public Project Project => (Project)this.ParentOfType<ProjectView>().DataContext;
 
         private Dictionary<Block, BlockView> blockViewDictionary = new Dictionary<Block, BlockView>();
         private Dictionary<Input, InputView> inputViewDictionary = new Dictionary<Input, InputView>();
@@ -103,7 +108,7 @@ namespace DotHome.Config.Views
         {
             try
             {
-                var container = ContainerSerializer.DeserializeContainer(await Application.Current.Clipboard.GetTextAsync(), definitions).Copy();
+                var container = ContainerSerializer.TryDeserializeContainer(await Application.Current.Clipboard.GetTextAsync(), definitions).Copy();
                 var offset = scrollViewer.Offset / Page.Scale;
                 if(Page.Width < container.MaxX - container.MinX || Page.Height < container.MaxY - container.MinY)
                 {
@@ -158,9 +163,10 @@ namespace DotHome.Config.Views
             foreach (var b in Page.Blocks) b.Selected = true;
         }
 
-        public void Cancel()
+        public async void Cancel()
         {
             foreach (var b in Page.Blocks) b.Selected = false;
+            await Application.Current.Clipboard.ClearAsync();
         }
 
         public BlockContainer CreateBlockContainer()
@@ -236,6 +242,7 @@ namespace DotHome.Config.Views
                     draggingOverflowDelta = default;
                 }
                 e.Handled = true;
+                Command.ForceChanges();
             }
         }
 
@@ -292,6 +299,7 @@ namespace DotHome.Config.Views
                         && b.Y + blockViewDictionary[b].Height <= Canvas.GetTop(previewRectangle) + previewRectangle.Height);
                 }
                 previewRectangle.IsVisible = false;
+                Command.ForceChanges();
             }
             previewLine.IsVisible = false;
         }
@@ -312,6 +320,7 @@ namespace DotHome.Config.Views
                 Canvas.SetTop(previewRectangle, Math.Round(point.Position.Y));
                 previewRectangle.IsVisible = true;
                 e.Handled = true;
+                Command.ForceChanges();
             }
         }
 
@@ -321,7 +330,10 @@ namespace DotHome.Config.Views
             if (previewLine.IsVisible && draggingOutput != null && point.Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonReleased)
             {
                 InputView inputView = (InputView)sender;
-                Page.AddWire(new Wire() { Input = inputView.Input, Output = draggingOutput });
+                if (RunningModelTools.IsConversionSupported(draggingOutput.Definition.Type, inputView.Input.Definition.Type))
+                    Page.AddWire(new Wire() { Input = inputView.Input, Output = draggingOutput });
+                else
+                    MessageBoxManager.GetMessageBoxStandardWindow("Create wire", "Cannot connect this types", ButtonEnum.Ok, Icon.Error);
             }
         }
 
@@ -345,7 +357,10 @@ namespace DotHome.Config.Views
             if (previewLine.IsVisible && draggingInput != null && point.Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonReleased)
             {
                 OutputView outputView = (OutputView)sender;
-                Page.AddWire(new Wire() { Input = draggingInput, Output = outputView.Output });
+                if (RunningModelTools.IsConversionSupported(outputView.Output.Definition.Type, draggingInput.Definition.Type))
+                    Page.AddWire(new Wire() { Input = draggingInput, Output = outputView.Output });
+                else
+                    MessageBoxManager.GetMessageBoxStandardWindow("Create wire", "Cannot connect this types", ButtonEnum.Ok, Icon.Error);
             }
         }
 
@@ -380,32 +395,71 @@ namespace DotHome.Config.Views
                 case Key.Down:
                     delta = Vector.UnitY;
                     break;
+                case Key.Delete:
+                    Delete();
+                    break;
+                case Key.Escape:
+                    Cancel();
+                    break;
+                case Key.A:
+                    if (e.KeyModifiers.HasFlag(KeyModifiers.Control)) SelectAll();
+                    break;
+                case Key.C:
+                    if (e.KeyModifiers.HasFlag(KeyModifiers.Control)) Copy();
+                    break;
+                case Key.X:
+                    if (e.KeyModifiers.HasFlag(KeyModifiers.Control)) Cut();
+                    break;
+                case Key.V:
+                    if (e.KeyModifiers.HasFlag(KeyModifiers.Control)) Paste(Project.Definitions);
+                    break;
             }
-            delta *= e.KeyModifiers.HasFlag(KeyModifiers.Shift) ? 10 : 1;
-            double minX = Page.Blocks.Where(b => b.Selected).MinOrDefault(b => b.X);
-            double minY = Page.Blocks.Where(b => b.Selected).MinOrDefault(b => b.Y);
-            double maxX = Page.Blocks.Where(b => b.Selected).MaxOrDefault(b => b.X + blockViewDictionary[b].Width);
-            double maxY = Page.Blocks.Where(b => b.Selected).MaxOrDefault(b => b.Y + blockViewDictionary[b].Height);
-            if (minX + delta.X < 0) delta = delta.WithX(-minX);
-            else if (maxX + delta.X > Width) delta = delta.WithX(Width - maxX);
-            if (minY + delta.Y < 0) delta = delta.WithY(-minY);
-            else if (maxY + delta.Y > Height) delta = delta.WithY(Height - maxY);
-            foreach (Block b in Page.Blocks)
+            if(delta != default)
             {
-                if (b.Selected)
+                delta *= e.KeyModifiers.HasFlag(KeyModifiers.Shift) ? 10 : 1;
+                double minX = Page.Blocks.Where(b => b.Selected).MinOrDefault(b => b.X);
+                double minY = Page.Blocks.Where(b => b.Selected).MinOrDefault(b => b.Y);
+                double maxX = Page.Blocks.Where(b => b.Selected).MaxOrDefault(b => b.X + blockViewDictionary[b].Width);
+                double maxY = Page.Blocks.Where(b => b.Selected).MaxOrDefault(b => b.Y + blockViewDictionary[b].Height);
+                if (minX + delta.X < 0) delta = delta.WithX(-minX);
+                else if (maxX + delta.X > Width) delta = delta.WithX(Width - maxX);
+                if (minY + delta.Y < 0) delta = delta.WithY(-minY);
+                else if (maxY + delta.Y > Height) delta = delta.WithY(Height - maxY);
+                foreach (Block b in Page.Blocks)
                 {
-                    b.X += (int)delta.X;
-                    b.Y += (int)delta.Y;
+                    if (b.Selected)
+                    {
+                        b.X += (int)delta.X;
+                        b.Y += (int)delta.Y;
+                    }
                 }
             }
+            Command.ForceChanges();
             e.Handled = true;
         }
 
-        private void Canvas_Drop(object sender, DragEventArgs e)
+        private async void Canvas_Drop(object sender, DragEventArgs e)
         {
             var point = e.GetPosition(canvas);
             var data = e.Data.Get("add_block");
-            if (data is BlockDefinition bd) Page.Blocks.Add(new Block(bd) { X = (int)point.X, Y = (int)point.Y });
+            foreach (Block b in Page.Blocks) b.Selected = false;
+            if (data is BlockDefinition bd)
+            {
+                if(bd is GenericBlockDefinition gbd)
+                {
+                    Type type = await new SelectionWindow("Select type for which you want to create generic block", RunningModelTools.SupportedTypes).ShowDialog<Type>(ConfigTools.MainWindow);
+                    if(type != null)
+                    {
+                        Page.Blocks.Add(new Block(gbd.GetParticularBlockDefinition(type)) { X = (int)point.X, Y = (int)point.Y, Selected = true });
+                    }
+                }
+                else
+                {
+                    Page.Blocks.Add(new Block(bd) { X = (int)point.X, Y = (int)point.Y, Selected = true });
+                }
+            }
+
+            Command.ForceChanges();
         }
 
         private void Block_AttachedToVisualTree(object sender, VisualTreeAttachmentEventArgs e)
@@ -466,11 +520,23 @@ namespace DotHome.Config.Views
                 Converter = WirePointsConverter.Instance,
                 ConverterParameter = new { InputView = inputView, OutputView = outputView }
             });
+
+            wireView.Stroke = inputView.Input.Definition.Type == outputView.Output.Definition.Type ? Brushes.Black : Brushes.DarkRed;
         }
 
         private void Wire_DetachedFromVisualTree(object sender, VisualTreeAttachmentEventArgs e)
         {
+            
+        }
 
+        private void PageView_LostFocus(object sender, RoutedEventArgs e)
+        {
+            Command.ForceChanges();
+        }
+
+        private void PageView_GotFocus(object sender, GotFocusEventArgs e)
+        {
+            Command.ForceChanges();
         }
     }
 }

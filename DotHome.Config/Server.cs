@@ -6,33 +6,58 @@ using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace DotHome.Config
 {
-    public class Server
+    public class Server : INotifyPropertyChanged
     {
+        private CookieContainer cookies;
         private HttpClient httpClient = new HttpClient();
         private HubConnection hubConnection;
-        private Project project;
+        private Timer timer;
+        private double averageUsage, maxUsage;
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public Project Project { get; private set; }
 
         public string Host { get; private set; }
+
+        public bool IsDebugging { get; private set; }
+
+        public double AverageUsage { get => averageUsage; private set { averageUsage = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(AverageUsage))); } }
+
+        public double MaxUsage { get => maxUsage; private set { maxUsage = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(MaxUsage))); } }
+
 
         public static async Task<Server> Connect(string host, string username, string password)
         {
             try
             {
-                HttpClient httpClient = new HttpClient();
-                var res = await httpClient.PostAsJsonAsync($"https://{host}/config/login", new Dictionary<string, string>() { ["Username"] = username, ["Password"] = password });
+                CookieContainer cookies = new CookieContainer();
+                HttpClientHandler handler = new HttpClientHandler();
+                handler.CookieContainer = cookies;
+                HttpClient httpClient = new HttpClient(handler);
+                var res = await httpClient.PostAsJsonAsync($"https://{host}/config/login", new Dictionary<string, string>() 
+                { 
+                    ["Username"] = username, 
+                    ["Password"] = password 
+                });
                 if (res.IsSuccessStatusCode)
                 {
-                    return new Server() { Host = host, httpClient = httpClient };
+                    var server = new Server() { Host = host, httpClient = httpClient, cookies = cookies };
+                    await server.DownloadProject();
+                    return server;
                 }
                 else
                 {
@@ -45,35 +70,27 @@ namespace DotHome.Config
             }
         }
 
-        private Server() { }
+        private Server() 
+        {
+            timer = new Timer(UsageTimer_Callback, null, 0, 5_000);
+        }
+
+        private async void UsageTimer_Callback(object state)
+        {
+            var result = await httpClient.GetAsync($"https://{Host}/config/getusages");
+            if(result.IsSuccessStatusCode)
+            {
+                var tuple = await result.Content.ReadFromJsonAsync<Tuple<double, double>>();
+                AverageUsage = tuple.Item1;
+                MaxUsage = tuple.Item2;
+            }
+        }
 
         public async Task Disconnect()
         {
+            await StopDebugging();
             var res = await httpClient.PostAsync($"https://{Host}/config/logout", null);
-        }
-
-        public async Task<Project> DownloadProject()
-        {
-            var res = await httpClient.GetAsync($"https://{Host}/config/download");
-            if(res.IsSuccessStatusCode)
-            {
-                string text = await res.Content.ReadAsStringAsync();
-                return ModelSerializer.DeserializeProject(text, DefinitionsCreator.CreateDefinitions(AppConfig.Configuration["AssembliesPath"]));
-            }
-            else
-            {
-                return new Project() { Definitions =  DefinitionsCreator.CreateDefinitions(AppConfig.Configuration["AssembliesPath"]) };
-            }
-        }
-
-        public async Task StopCore()
-        {
-            var res = await httpClient.PostAsync($"https://{Host}/config/stopcore", null);
-        }
-
-        public async Task StartCore()
-        {
-            var res = await httpClient.PostAsync($"https://{Host}/config/startcore", null);
+            timer.Dispose();
         }
 
         public async Task UploadProject(Project project)
@@ -82,6 +99,7 @@ namespace DotHome.Config
             {
                 var res = await httpClient.PostAsync($"https://{Host}/config/upload", new StreamContent(stream));
             }
+            Project = project;
         }
 
         public async Task UploadAssemblies()
@@ -103,52 +121,91 @@ namespace DotHome.Config
             return await res.Content.ReadAsStreamAsync();
         }
 
+        public async Task<Project> DownloadProject()
+        {
+            var res = await httpClient.GetAsync($"https://{Host}/config/download");
+            if (res.IsSuccessStatusCode)
+            {
+                string text = await res.Content.ReadAsStringAsync();
+                Project = ModelSerializer.DeserializeProject(text, DefinitionsCreator.CreateDefinitions(AppConfig.Configuration["AssembliesPath"]));
+            }
+            else
+            {
+                Project = new Project() { Definitions = DefinitionsCreator.CreateDefinitions(AppConfig.Configuration["AssembliesPath"]) };
+            }
+            return Project;
+        }
+
         public async Task<bool> ChangeCredentials(string oldUsername, string oldPassword, string newUsername, string newPassword)
         {
-            var res = await httpClient.PostAsJsonAsync($"https://{Host}/config/changecredentials", new Dictionary<string, string>() { ["OldUsername"] = oldUsername, ["OldPassword"] = oldPassword, ["NewUsername"] = newUsername, ["NewPassword"] = newPassword });
+            var res = await httpClient.PostAsJsonAsync($"https://{Host}/config/changecredentials", new Dictionary<string, string>() 
+            { 
+                ["OldUsername"] = oldUsername, 
+                ["OldPassword"] = oldPassword, 
+                ["NewUsername"] = newUsername, 
+                ["NewPassword"] = newPassword 
+            });
             return res.IsSuccessStatusCode;
         }
 
-        public async Task StartDebugging(Project project)
+        private void DebugBlock(int blockId, string text)
         {
-            this.project = project;
-            hubConnection = new HubConnectionBuilder().WithAutomaticReconnect().WithUrl($"https://{Host}/debug").AddNewtonsoftJsonProtocol().Build();
-            hubConnection.On<int, int, object>("Input", DebugInput);
-            hubConnection.On<int, int, object>("Output", DebugOutput);
-            await hubConnection.StartAsync();
+            var block = GetBlockById(blockId);
+            if (block != null) block.DebugString = text;
         }
 
-        public async Task StopDebugging()
+        private void BlockException(int blockId, Exception exception)
         {
-            await hubConnection.StopAsync();
-            await hubConnection.DisposeAsync();
-            hubConnection = null;
-            foreach(Page p in project.Pages)
-            {
-                foreach(Block b in p.Blocks)
-                {
-                    foreach (Input i in b.Inputs) i.DebugValue = null;
-                    foreach (Output o in b.Outputs) o.DebugValue = null;
-                }
-            }
-            project = null;
+            var block = GetBlockById(blockId);
+            if (block != null) block.Exception = exception;
         }
 
         private void DebugOutput(int blockId, int outputIndex, object value)
         {
-            GetBlockById(blockId).Outputs[outputIndex].DebugValue = value;
-            Debug.WriteLine("output " + blockId + " " + outputIndex + " " + value);
+            var block = GetBlockById(blockId);
+            if (block != null) block.Outputs[outputIndex].DebugValue = value;
         }
 
         private void DebugInput(int blockId, int inputIndex, object value)
         {
-            GetBlockById(blockId).Inputs[inputIndex].DebugValue = value;
-            Debug.WriteLine("input " + blockId + " " + inputIndex + " " + value);
+            var block = GetBlockById(blockId);
+            if (block != null) block.Inputs[inputIndex].DebugValue = value;
+        }
+
+        public async Task StartDebugging()
+        {
+            hubConnection = new HubConnectionBuilder().WithAutomaticReconnect().WithUrl($"https://{Host}/debug", o => o.Cookies = cookies).AddNewtonsoftJsonProtocol().Build();
+            hubConnection.On<int, int, object>("Input", DebugInput);
+            hubConnection.On<int, int, object>("Output", DebugOutput);
+            hubConnection.On<int, string>("Block", DebugBlock);
+            hubConnection.On<int, Exception>("BlockException", BlockException);
+            await hubConnection.StartAsync();
+            IsDebugging = true;
+        }
+
+        public async Task StopDebugging()
+        {
+            if(IsDebugging)
+            {
+                await hubConnection.StopAsync();
+                await hubConnection.DisposeAsync();
+                hubConnection = null;
+                foreach (Page p in Project.Pages)
+                {
+                    foreach (Block b in p.Blocks)
+                    {
+                        foreach (Input i in b.Inputs) i.DebugValue = null;
+                        foreach (Output o in b.Outputs) o.DebugValue = null;
+                        b.Exception = null;
+                    }
+                }
+                IsDebugging = false;
+            }
         }
 
         private Block GetBlockById(int id)
         {
-            foreach(Page page in project.Pages)
+            foreach(Page page in Project.Pages)
             {
                 foreach(Block block in page.Blocks)
                 {

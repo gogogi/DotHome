@@ -67,27 +67,23 @@ namespace DotHome.Config
             SaveProjectAsCommand = new Command(() => Project != null, SaveProjectAs_Executed);
             ExitCommand = new Command(() => true, () => Close());
 
-            CancelCommand = new Command(() => true, () => projectView?.SelectedPageView?.Cancel());
-            SelectAllCommand = new Command(() => true, () => projectView?.SelectedPageView?.SelectAll());
-            CopyCommand = new Command(() => true, () => projectView?.SelectedPageView?.Copy());
-            CutCommand = new Command(() => true, () => projectView?.SelectedPageView?.Cut());
-            PasteCommand = new Command(() => true, () => projectView?.SelectedPageView?.Paste(Project.Definitions));
-            DeleteCommand = new Command(() => true, () => projectView?.SelectedPageView?.Delete());
+            CancelCommand = new Command(() => projectView?.SelectedPageView?.Page?.SelectedBlocks?.Any() ?? false, () => projectView?.SelectedPageView?.Cancel());
+            SelectAllCommand = new Command(() => projectView?.SelectedPageView?.Page?.Blocks.Any(b => !b.Selected) ?? false, () => projectView?.SelectedPageView?.SelectAll());
+            CopyCommand = new Command(() => projectView?.SelectedPageView?.Page?.SelectedBlocks?.Any() ?? false, () => projectView?.SelectedPageView?.Copy());
+            CutCommand = new Command(() => projectView?.SelectedPageView?.Page?.SelectedBlocks?.Any() ?? false, () => projectView?.SelectedPageView?.Cut());
+            PasteCommand = new Command(async () => Project?.Definitions != null && ContainerSerializer.TryDeserializeContainer(await Application.Current.Clipboard.GetTextAsync(), Project.Definitions) != null, () => projectView?.SelectedPageView?.Paste(Project.Definitions));
+            DeleteCommand = new Command(() => (projectView?.SelectedPageView?.Page?.SelectedBlocks?.Any() ?? false) && projectView.SelectedPageView.IsFocused, () => projectView?.SelectedPageView?.Delete());
 
             ConnectCommand = new Command(() => Server == null, Connect_Executed);
             DisconnectCommand = new Command(() => Server != null, Disconnect_Executed);
             DownloadProjectCommand = new Command(() => Server != null && Project == null, DownloadProject_Executed);
             UploadProjectCommand = new Command(() => Server != null && Project != null, UploadProject_Executed);
             DownloadDllsCommand = new Command(() => Server != null, DownloadDlls_Executed);
-            ChangeCredentialsCommand = new Command(() => Server != null, ChangeCredentials_Executed);
-            StartDebuggingCommand = new Command(() => Server != null && Project != null, StartDebugging_Executed);
-            StopDebuggingCommand = new Command(() => Server != null && Project != null, StopDebugging_Executed);
-
-            var b = new Binding("SelectedPage") { Source = Project };
+            ChangeCredentialsCommand = new Command(() => Server != null && !Server.IsDebugging, ChangeCredentials_Executed);
+            StartDebuggingCommand = new Command(() => Server != null && Server.Project == Project && !Server.IsDebugging, StartDebugging_Executed);
+            StopDebuggingCommand = new Command(() => Server != null && Server.IsDebugging, StopDebugging_Executed);
 
             DataContext = this;
-
-            
         }
 
         private async Task StopDebugging_Executed()
@@ -97,7 +93,7 @@ namespace DotHome.Config
 
         private async Task StartDebugging_Executed()
         {
-            await Server.StartDebugging(Project);
+            await Server.StartDebugging();
         }
 
         private async Task ChangeCredentials_Executed()
@@ -129,10 +125,8 @@ namespace DotHome.Config
         private async Task UploadProject_Executed()
         {
             ProgrammingModelTools.SetBlockIDs(Project);
-            await Server.StopCore();
             await Server.UploadAssemblies();
             await Server.UploadProject(Project);
-            await Server.StartCore();
         }
 
         private async Task Disconnect_Executed()
@@ -183,6 +177,7 @@ namespace DotHome.Config
             var result = await MessageBoxManager.GetMessageBoxStandardWindow("Close Project", "Do you want to save project?", ButtonEnum.YesNoCancel, MessageBox.Avalonia.Enums.Icon.Warning).ShowDialog(this);
             if (result == ButtonResult.No)
             {
+                await Server?.StopDebugging();
                 Project = null;
             }
             else if (result == ButtonResult.Yes)
@@ -196,12 +191,14 @@ namespace DotHome.Config
                         Path = path;
                         File.WriteAllText(Path, ModelSerializer.SerializeProject(Project));
                         Project = null;
+                        await Server?.StopDebugging();
                     }
                 }
                 else
                 {
                     File.WriteAllText(Path, ModelSerializer.SerializeProject(Project));
                     Project = null;
+                    await Server?.StopDebugging();
                 }
             }
         }
@@ -233,6 +230,7 @@ namespace DotHome.Config
                 if(result == ButtonResult.No)
                 {
                     Project = null;
+                    Server?.StopDebugging();
                     Close();
                 }
                 else if(result == ButtonResult.Yes)
@@ -246,6 +244,7 @@ namespace DotHome.Config
                             Path = paths[0];
                             File.WriteAllText(Path, ModelSerializer.SerializeProject(Project));
                             Project = null;
+                            Server?.StopDebugging();
                             Close();
                         }
                     }
@@ -253,6 +252,7 @@ namespace DotHome.Config
                     {
                         File.WriteAllText(Path, ModelSerializer.SerializeProject(Project));
                         Project = null;
+                        Server?.StopDebugging();
                         Close();
                     }
                 }
@@ -271,7 +271,7 @@ namespace DotHome.Config
 
         private void Project_DetachedFromVisualTree(object sender, VisualTreeAttachmentEventArgs e)
         {
-            project = null;
+            projectView = null;
         }
     }
 }

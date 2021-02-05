@@ -1,4 +1,5 @@
 ﻿using DotHome.Definitions;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -19,6 +20,12 @@ namespace DotHome.ProgrammingModel
         public bool Selected { get; set; }
 
         public BlockDefinition Definition { get; set; }
+
+        [JsonIgnore]
+        public Exception Exception { get; set; }
+
+        [JsonIgnore]
+        public string DebugString { get; set; }
 
         public ObservableCollection<Input> Inputs { get; } = new ObservableCollection<Input>();
 

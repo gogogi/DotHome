@@ -15,7 +15,6 @@
 			<TabControl.Styles>
 				<Style Selector="TabControl WrapPanel">
 					<Setter Property="Background" Value="#EEEEEE"/>
-					<!--<Setter Property="BorderThickness" Value="1"/>-->
 				</Style>
 			</TabControl.Styles>
 			<TabItem Header="Project">
@@ -121,6 +120,9 @@
 				<Style Selector=":is(TabItem)">
 					<Setter Property="Padding" Value="0"/>
 					<Setter Property="IsVisible" Value="{Binding Visible}"/>
+				</Style>
+				<Style Selector="TabControl WrapPanel">
+					<Setter Property="Background" Value="#EEEEEE"/>
 				</Style>
 			</TabControl.Styles>
 			<TabControl.ItemTemplate>

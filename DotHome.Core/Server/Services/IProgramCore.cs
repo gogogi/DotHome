@@ -7,13 +7,14 @@ namespace DotHome.Core.Server.Services
 {
     public interface IProgramCore
     {
-        public void Start();
-
-        public void Stop();
+        public void Restart();
 
         public void StartDebugging();
 
         public void StopDebugging();
+
+        public double AverageCpuUsage { get; }
+        public double MaxCpuUsage { get; }
 
     }
 }

@@ -13,6 +13,7 @@ namespace DotHome.Config.Views
 
         private void DataGrid_CollectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            // Do not allow user to select anything in grids
             DataGrid dataGrid = (DataGrid)sender;
             dataGrid.SelectedItems.Clear();
         }

@@ -1,0 +1,19 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+		SizeToContent="WidthAndHeight"
+		MinWidth="200"
+		MinHeight="150"
+		CanResize="False"
+        x:Class="DotHome.Config.Windows.SelectionWindow"
+		Icon="/Assets/Icons/Question_256x.png"
+        Title="Select">
+	<Grid ColumnDefinitions="*,*" RowDefinitions="*,*,*">
+		<TextBlock Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Text="{Binding Text}" FontSize="14" TextWrapping="Wrap" Margin="2"/>
+		<ListBox Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Items="{Binding Items}" SelectionMode="Single" SelectedItem="{Binding SelectedItem}" Margin="2"/>
+		<Button Grid.Column="0" Grid.Row="2" Content="OK" IsDefault="True" Margin="2" Click="Ok_Click"/>
+		<Button Grid.Column="1" Grid.Row="2" Content="Cancel" IsDefault="True" Margin="2" Click="Cancel_Click"/>
+	</Grid>
+</Window>
