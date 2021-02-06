@@ -13,12 +13,17 @@ namespace DotHome.StandardBlocks.Builtin
     {
         [Parameter(true)]
         public string Reference { get; set; } = "Ref";
+
+        public abstract AValue Target { get; }
     }
 
     [Description("Provides value from corresponding RefSinks"), Category("Builtin"), Color("Green")]
     public class RefSource<T> : RefSource
     {
         private RefProvider refProvider;
+        private Value<T> target;
+
+        public override AValue Target => target;
 
         [Description("Output")]
         public Output<T> O { get; set; }
@@ -30,13 +35,10 @@ namespace DotHome.StandardBlocks.Builtin
 
         public override void Init()
         {
-            if (refProvider.RefSinks.TryGetValue(Reference, out List<RefSink> sinks))
+            if (refProvider.RefSinks.TryGetValue(Reference, out RefSink sink))
             {
-                foreach (RefSink sink in sinks)
-                {
-                    var action = RunningModelTools.GetTransferAction(sink.Inputs[0], O);
-                    if (action != null) sink.Transfer += action;
-                }
+                var action = RunningModelTools.GetTransferAction(sink.Inputs[0], target);
+                if (action != null) sink.Transfer += action;
             }
             if (refProvider.RefSources.TryGetValue(Reference, out List<RefSource> sources))
             {
@@ -50,7 +52,7 @@ namespace DotHome.StandardBlocks.Builtin
 
         public override void Run()
         {
-
+            O.Val = target.Val;
         }
     }
 }

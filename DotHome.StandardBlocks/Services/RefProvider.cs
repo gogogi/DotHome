@@ -10,7 +10,7 @@ namespace DotHome.StandardBlocks.Services
 {
     public class RefProvider : IBlockService
     {
-        public Dictionary<string, List<RefSink>> RefSinks { get; } = new Dictionary<string, List<RefSink>>();
+        public Dictionary<string, RefSink> RefSinks { get; } = new Dictionary<string, RefSink>();
 
         public Dictionary<string, List<RefSource>> RefSources { get; } = new Dictionary<string, List<RefSource>>();
 

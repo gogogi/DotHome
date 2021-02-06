@@ -12,7 +12,7 @@ namespace DotHome.StandardBlocks.Builtin
 {
     public abstract class RefSink : ABlock
     {
-        [Parameter(true), Unique, RegularExpression("[A-Z][a-z]*")]
+        [Parameter(true), Unique]
         public string Reference { get; set; } = "Ref";
 
         public event Action Transfer;
@@ -43,18 +43,11 @@ namespace DotHome.StandardBlocks.Builtin
             {
                 foreach(RefSource source in sources)
                 {
-                    var action = RunningModelTools.GetTransferAction(I, source.Outputs[0]);
+                    var action = RunningModelTools.GetTransferAction(I, source.Target);
                     if (action != null) Transfer += action;
                 }
             }
-            if (refProvider.RefSinks.TryGetValue(Reference, out List<RefSink> sinks))
-            {
-                sinks.Add(this);
-            }
-            else
-            {
-                refProvider.RefSinks.Add(Reference, new List<RefSink>() { this });
-            }
+            refProvider.RefSinks.TryAdd(Reference, this);
         }
     }
 }
