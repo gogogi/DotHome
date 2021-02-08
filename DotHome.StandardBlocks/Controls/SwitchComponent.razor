@@ -1,0 +1,17 @@
+﻿@using Microsoft.AspNetCore.Components.Forms
+@inherits VisualBlockComponent<Switch>
+
+<div style="float:left; height:100%; display:flex">
+    <div style="margin: auto">
+        <b>@Block.Name</b>
+    </div>
+</div>
+<div style="float:right; display: flex">
+    <RadzenSwitch @bind-Value="Block.Val"/>
+</div>
+
+<style>
+    .rz-switch.rz-switch-checked .rz-switch-circle {
+        background: darkorange
+    }
+</style>

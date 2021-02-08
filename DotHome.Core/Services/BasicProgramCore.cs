@@ -23,19 +23,21 @@ namespace DotHome.Core.Services
         private double[] usageHistory = new double[usageSamples];
         private int usageIndex = 0;
         private int usageCount = 0;
-
+        private EventWaitHandle eventWaitHandle = new EventWaitHandle(false, EventResetMode.AutoReset);
         private List<IBlockService> services;
         private List<ABlock> blocks;
         private CancellationTokenSource cancellationTokenSource;
         private Task runTask;
         private Stopwatch stopwatch = new Stopwatch();
         private int period;
-        private bool isDebugging;
+        private bool isDebugging, isPaused;
         private Dictionary<int, Tuple<object[], object[]>> debugValues = new Dictionary<int, Tuple<object[], object[]>>();
 
         public double AverageCpuUsage => usageHistory.Take(usageCount).Average();
 
         public double MaxCpuUsage => usageHistory.Take(usageCount).Max();
+
+        public List<AVisualBlock> VisualBlocks { get; private set; }
 
         public BasicProgramCore(ProgrammingModelLoader programmingModelLoader, IHubContext<DebuggingHub> debuggingHubContext)
         {
@@ -56,7 +58,9 @@ namespace DotHome.Core.Services
         public void StopDebugging()
         {
             isDebugging = false;
+            isPaused = false;
             debugValues.Clear();
+            eventWaitHandle.Set();
         }
 
         private void Start()
@@ -71,6 +75,7 @@ namespace DotHome.Core.Services
             Project programmingModel = programmingModelLoader.LoadProgrammingModel();
             period = programmingModel.ProgramPeriod;
             blocks = new List<ABlock>();
+            VisualBlocks = new List<AVisualBlock>();
 
             services = new List<IBlockService>();
 
@@ -87,11 +92,11 @@ namespace DotHome.Core.Services
                     Type type = b.Definition.Type;
                     ConstructorInfo[] constructors = type.GetConstructors();
 
-                    ConstructorInfo constructor = constructors.First(c => c.GetParameters().All(p => p.ParameterType.IsAssignableTo(typeof(IBlockService))));
+                    ConstructorInfo constructor = constructors.First(c => c.GetParameters().All(p => typeof(IBlockService).IsAssignableFrom(p.ParameterType)));
                     List<IBlockService> parameters = new List<IBlockService>();
                     foreach (ParameterInfo parameterInfo in constructor.GetParameters())
                     {
-                        IBlockService parameter = services.SingleOrDefault(s => s.GetType().IsAssignableTo(parameterInfo.ParameterType));
+                        IBlockService parameter = services.SingleOrDefault(s => parameterInfo.ParameterType.IsAssignableFrom(s.GetType()));
                         if (parameter == null)
                         {
                             parameter = (IBlockService)Activator.CreateInstance(parameterInfo.ParameterType);
@@ -131,6 +136,7 @@ namespace DotHome.Core.Services
                         po.SetValue(block, p.Value);
                     }
                     blocks.Add(block);
+                    if (block is AVisualBlock vb) VisualBlocks.Add(vb);
                 }
                 foreach (Wire wire in page.Wires)
                 {
@@ -138,6 +144,7 @@ namespace DotHome.Core.Services
                     var output = outputsDictionary[wire.Output];
                     output.AttachValue(input);
                 }
+                VisualBlocks.Sort((a, b) => a.Name.CompareTo(b.Name));
             }
         }
 
@@ -155,10 +162,12 @@ namespace DotHome.Core.Services
                 usageIndex = (usageIndex + 1) % usageSamples;
                 if (usageCount < usageSamples) usageCount++;
 
-                //Debug.WriteLine("Elapsed " + stopwatch.Elapsed);
-                //Debug.WriteLine(AverageCpuUsage);
-                //Debug.WriteLine(MaxCpuUsage);
                 if (period > stopwatch.Elapsed.TotalMilliseconds) await Task.Delay(TimeSpan.FromMilliseconds(period) - stopwatch.Elapsed);
+
+                if(isPaused)
+                {
+                    eventWaitHandle.WaitOne();
+                }
             }
         }
 
@@ -182,7 +191,6 @@ namespace DotHome.Core.Services
             }
             foreach (ABlock block in blocks)
             {
-                //Debug.WriteLine("Running " + block.Id);
                 try
                 {
                     block.ClearDebugString();
@@ -209,32 +217,22 @@ namespace DotHome.Core.Services
                 if (isDebugging)
                 {
                     var tuple = debugValues[block.Id];
-                    //Debug.WriteLine("A");
                     for (int i = 0; i < block.Inputs.Count; i++)
                     {
-                        //  Debug.WriteLine("B");
                         if (!Equals(block.Inputs[i].ValAsObject, tuple.Item1[i]))
                         {
-                            //    Debug.WriteLine("C");
                             tuple.Item1[i] = block.Inputs[i].ValAsObject;
-                            //  Debug.WriteLine("D");
                             debuggingHubContext.Clients.All.SendAsync("Input", block.Id, i, tuple.Item1[i]);
                         }
-                        //Debug.WriteLine("E");
                     }
-                    //Debug.WriteLine("F");
                     for (int i = 0; i < block.Outputs.Count; i++)
                     {
-                        //  Debug.WriteLine("G");
                         if (!Equals(block.Outputs[i].ValAsObject, tuple.Item2[i]))
                         {
-                            //    Debug.WriteLine("H");
                             tuple.Item2[i] = block.Outputs[i].ValAsObject;
-                            //  Debug.WriteLine("I");
                             debuggingHubContext.Clients.All.SendAsync("Output", block.Id, i, tuple.Item2[i]);
                         }
                     }
-                    //Debug.WriteLine("J");
                 }
             }
         }
@@ -247,6 +245,22 @@ namespace DotHome.Core.Services
             runTask?.Wait();
             Start();
             if (wasDebugging) StartDebugging();
+        }
+
+        public void Pause()
+        {
+            if (isDebugging) isPaused = true;
+        }
+
+        public void Continue()
+        {
+            isPaused = false;
+            eventWaitHandle.Set();
+        }
+
+        public void Step()
+        {
+            eventWaitHandle.Set();
         }
     }
 }

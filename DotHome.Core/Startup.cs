@@ -1,6 +1,7 @@
 using DotHome.Core.Data;
 using DotHome.Core.Hubs;
 using DotHome.Core.Services;
+using LettuceEncrypt;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components;
@@ -12,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -30,6 +32,7 @@ namespace DotHome.Core
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddLettuceEncrypt(o => { o.DomainNames = new[] { "zeleznicarska34.duckdns.org" }; o.EmailAddress = "vojta.luk@seznam.cz"; o.AcceptTermsOfService = true; });
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
              .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme,
                  options =>

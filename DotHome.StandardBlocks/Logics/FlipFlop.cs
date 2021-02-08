@@ -24,7 +24,7 @@ namespace DotHome.StandardBlocks.Logics
         [Description("Output")]
         public Output<bool> O { get; set; }
 
-        [Parameter, Description("Value on Output if both Set and Reset are HIGH")]
+        [BlockParameter, Description("Value on Output if both Set and Reset are HIGH")]
         public bool DominantSet { get; set; } = false;
 
         private bool lastT;

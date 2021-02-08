@@ -35,6 +35,8 @@ namespace DotHome.Config
 
         public bool IsDebugging { get; private set; }
 
+        public bool IsPaused { get; private set; }
+
         public double AverageUsage { get => averageUsage; private set { averageUsage = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(AverageUsage))); } }
 
         public double MaxUsage { get => maxUsage; private set { maxUsage = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(MaxUsage))); } }
@@ -77,12 +79,19 @@ namespace DotHome.Config
 
         private async void UsageTimer_Callback(object state)
         {
-            var result = await httpClient.GetAsync($"https://{Host}/config/getusages");
-            if(result.IsSuccessStatusCode)
+            try
             {
-                var tuple = await result.Content.ReadFromJsonAsync<Tuple<double, double>>();
-                AverageUsage = tuple.Item1;
-                MaxUsage = tuple.Item2;
+                var result = await httpClient.GetAsync($"https://{Host}/config/getusages");
+                if (result.IsSuccessStatusCode)
+                {
+                    var tuple = await result.Content.ReadFromJsonAsync<Tuple<double, double>>();
+                    AverageUsage = tuple.Item1;
+                    MaxUsage = tuple.Item2;
+                }
+            }
+            catch
+            {
+                
             }
         }
 
@@ -200,6 +209,33 @@ namespace DotHome.Config
                     }
                 }
                 IsDebugging = false;
+                IsPaused = false;
+            }
+        }
+
+        public async Task Pause()
+        {
+            if(IsDebugging && !IsPaused)
+            {
+                await hubConnection.InvokeAsync("Pause");
+                IsPaused = true;
+            }
+        }
+
+        public async Task Continue()
+        {
+            if (IsDebugging && IsPaused)
+            {
+                await hubConnection.InvokeAsync("Continue");
+                IsPaused = false;
+            }
+        }
+
+        public async Task Step()
+        {
+            if (IsDebugging && IsPaused)
+            {
+                await hubConnection.InvokeAsync("Step");
             }
         }
 

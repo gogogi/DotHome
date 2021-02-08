@@ -19,10 +19,10 @@ namespace DotHome.StandardBlocks.Times
         [Description("Output")]
         public Output<bool> O { get; set; }
 
-        [Parameter(true), Description("Time On [ms]"), Range(500, 60 * 60_000)]
+        [BlockParameter(true), Description("Time On [ms]"), Range(500, 60 * 60_000)]
         public uint TimeOn { get; set; } = 1000;
 
-        [Parameter(true), Description("Time Off [ms]"), Range(500, 60 * 60_000)]
+        [BlockParameter(true), Description("Time Off [ms]"), Range(500, 60 * 60_000)]
         public uint TimeOff { get; set; } = 1000;
 
         private TimeProvider timeProvider;

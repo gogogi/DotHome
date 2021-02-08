@@ -1,4 +1,5 @@
 ﻿using DotHome.Core.Services;
+using DotHome.ProgrammingModel.Tools;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -90,7 +91,7 @@ namespace DotHome.Core.Controllers
             if (System.IO.File.Exists(configuration["ProjectPath"]))
                 return File(System.IO.File.OpenRead(configuration["ProjectPath"]), "application/json", "project.json");
             else
-                return null;
+                return NotFound();
         }
 
         [HttpPost("upload")]

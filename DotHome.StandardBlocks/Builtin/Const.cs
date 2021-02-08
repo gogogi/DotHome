@@ -14,7 +14,7 @@ namespace DotHome.StandardBlocks.Builtin
         [Description("Output")]
         public Output<T> O { get; set; }
 
-        [Parameter(true)]
+        [BlockParameter(true)]
         public T Value { get; set; } = default;
 
         public override void Init()

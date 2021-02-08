@@ -18,7 +18,7 @@ namespace DotHome.StandardBlocks.Math
         [Description("Outut")]
         public Output<double> O { get; set; }
 
-        [Parameter, Description("Number of decimal places")]
+        [BlockParameter, Description("Number of decimal places")]
         public uint DecimalPlaces { get; set; } = 0;
 
         public override void Init()

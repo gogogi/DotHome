@@ -19,7 +19,7 @@ namespace DotHome.Definitions
             {
                 Color = helperBlockDefinition.Color,
                 Description = helperBlockDefinition.Description,
-                Name = helperBlockDefinition.Name,
+                Name = helperBlockDefinition.Name.Remove(helperBlockDefinition.Name.IndexOf('<')) + "<>",
                 IsVisual = helperBlockDefinition.IsVisual,
                 Type = type,
                 particularDefinitions = definitions

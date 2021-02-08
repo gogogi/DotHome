@@ -52,6 +52,9 @@ namespace DotHome.Config
         private Command ChangeCredentialsCommand { get; }
         private Command StartDebuggingCommand { get; }
         private Command StopDebuggingCommand { get; }
+        private Command PauseCommand { get; }
+        private Command ContinueCommand { get; }
+        private Command StepCommand { get; }
 
         public MainWindow()
         {
@@ -82,8 +85,26 @@ namespace DotHome.Config
             ChangeCredentialsCommand = new Command(() => Server != null && !Server.IsDebugging, ChangeCredentials_Executed);
             StartDebuggingCommand = new Command(() => Server != null && Server.Project == Project && !Server.IsDebugging, StartDebugging_Executed);
             StopDebuggingCommand = new Command(() => Server != null && Server.IsDebugging, StopDebugging_Executed);
+            PauseCommand = new Command(() => Server != null && Server.IsDebugging && !Server.IsPaused, Pause_Executed);
+            ContinueCommand = new Command(() => Server != null && Server.IsDebugging && Server.IsPaused, Continue_Executed);
+            StepCommand = new Command(() => Server != null && Server.IsDebugging && Server.IsPaused, Step_Executed);
 
             DataContext = this;
+        }
+
+        private async Task Step_Executed()
+        {
+            await Server.Step();
+        }
+
+        private async Task Continue_Executed()
+        {
+            await Server.Continue();
+        }
+
+        private async Task Pause_Executed()
+        {
+            await Server.Pause();
         }
 
         private async Task StopDebugging_Executed()
@@ -177,7 +198,7 @@ namespace DotHome.Config
             var result = await MessageBoxManager.GetMessageBoxStandardWindow("Close Project", "Do you want to save project?", ButtonEnum.YesNoCancel, MessageBox.Avalonia.Enums.Icon.Warning).ShowDialog(this);
             if (result == ButtonResult.No)
             {
-                await Server?.StopDebugging();
+                if(Server != null) await Server.StopDebugging();
                 Project = null;
             }
             else if (result == ButtonResult.Yes)

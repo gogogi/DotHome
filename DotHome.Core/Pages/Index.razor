@@ -1,7 +1,12 @@
 ﻿@page "/"
+@using DotHome.Core.Services
+@using DotHome.RunningModel
+@using System.Diagnostics
+@inject IProgramCore ProgramCore
 
-<h1>Hello, world!</h1>
 
-Welcome to your new app.
-
-<SurveyPrompt Title="How is Blazor working for you?" />
+<RadzenDataList WrapItems="true" Data="ProgramCore.VisualBlocks">
+    <Template>
+        <GenericBlockComponent Block="context" />
+    </Template>
+</RadzenDataList>

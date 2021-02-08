@@ -138,6 +138,22 @@
 						<Image Source="/Assets/Icons/DisableDebugging_256x.png"/>
 					</MenuItem.Icon>
 				</MenuItem>
+				<Separator Background="LightGray"/>
+				<MenuItem Header="Pause" Command="{Binding PauseCommand}">
+					<MenuItem.Icon>
+						<Image Source="/Assets/Icons/Pause_256x.png"/>
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem Header="Continue" Command="{Binding ContinueCommand}">
+					<MenuItem.Icon>
+						<Image Source="/Assets/Icons/Run_256x.png"/>
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem Header="Step" Command="{Binding StepCommand}" HotKey="F8" InputGesture="F8">
+					<MenuItem.Icon>
+						<Image Source="/Assets/Icons/StepForward_256x.png"/>
+					</MenuItem.Icon>
+				</MenuItem>
 			</MenuItem>
 		</Menu>
 		

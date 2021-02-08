@@ -11,7 +11,7 @@ namespace DotHome.StandardBlocks.Builtin
 {
     public abstract class RefSource : ABlock
     {
-        [Parameter(true)]
+        [BlockParameter(true)]
         public string Reference { get; set; } = "Ref";
 
         public abstract AValue Target { get; }

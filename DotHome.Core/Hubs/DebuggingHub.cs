@@ -29,5 +29,20 @@ namespace DotHome.Core.Hubs
             programCore.StopDebugging();
             return base.OnDisconnectedAsync(exception);
         }
+
+        public void Pause()
+        {
+            programCore.Pause();
+        }
+
+        public void Continue()
+        {
+            programCore.Continue();
+        }
+
+        public void Step()
+        {
+            programCore.Step();
+        }
     }
 }

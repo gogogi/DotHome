@@ -12,7 +12,7 @@ namespace DotHome.StandardBlocks.Builtin
 {
     public abstract class RefSink : ABlock
     {
-        [Parameter(true), Unique]
+        [BlockParameter(true), Unique]
         public string Reference { get; set; } = "Ref";
 
         public event Action Transfer;

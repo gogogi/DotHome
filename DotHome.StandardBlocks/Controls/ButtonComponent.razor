@@ -1,0 +1,11 @@
+﻿@inherits VisualBlockComponent<Button>
+
+
+<div style="float:left; height:100%; display:flex">
+    <div style="margin: auto">
+        <b>@Block.Name</b>
+    </div>
+</div>
+<div style="float:right">
+    <RadzenButton @onpointerdown="Block.Pressed" @onpointerup="Block.Released" @onpointerout="Block.Released" Icon="adjust" Style="width:34px; height:34px; background:darkorange" />
+</div>

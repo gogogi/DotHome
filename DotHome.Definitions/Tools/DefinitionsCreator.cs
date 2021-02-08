@@ -10,7 +10,6 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.Loader;
 using System.Text;
 
 namespace DotHome.Definitions.Tools
@@ -34,10 +33,10 @@ namespace DotHome.Definitions.Tools
             foreach(Type type in assembly.GetTypes())
             {
                 if (!type.IsAbstract
-                    && type.IsAssignableTo(typeof(ABlock))
+                    && typeof(ABlock).IsAssignableFrom(type)
                     && type.GetConstructors().Count() == 1
                     && (type.GetConstructors().Single().GetParameters().Count() == 0
-                        || type.GetConstructors().Single().GetParameters().All(pi => pi.ParameterType.IsAssignableTo(typeof(IBlockService)))))
+                        || type.GetConstructors().Single().GetParameters().All(pi => typeof(IBlockService).IsAssignableFrom(pi.ParameterType))))
                 {
                     if (type.IsGenericType)
                     {
@@ -77,8 +76,12 @@ namespace DotHome.Definitions.Tools
         {
             BlockDefinition blockDefinition = new BlockDefinition();
             blockDefinition.Type = type;
-            int index = type.Name.IndexOf('`');
-            if (index > 0) blockDefinition.Name = type.Name.Remove(index);
+            if(type.IsGenericType)
+            {
+                int index = type.Name.IndexOf('`');
+                if (index > 0) blockDefinition.Name = type.Name.Remove(index);
+                blockDefinition.Name += $"<{type.GetGenericArguments().First().Name}>";
+            }
             else blockDefinition.Name = type.Name;
             blockDefinition.Description = type.GetCustomAttribute<DescriptionAttribute>()?.Description;
             blockDefinition.Color = type.GetCustomAttribute<ColorAttribute>()?.Color ?? Color.SlateGray;
@@ -109,13 +112,13 @@ namespace DotHome.Definitions.Tools
                     outputDefinition.DefaultDisabled = propertyInfo.GetCustomAttribute<DisablableAttribute>()?.DefaultDisabled ?? false;
                     blockDefinition.Outputs.Add(outputDefinition);
                 }
-                else if (propertyInfo.GetCustomAttribute<ParameterAttribute>() != null)
+                else if (propertyInfo.GetCustomAttribute<BlockParameterAttribute>() != null)
                 {
                     ParameterDefinition parameterDefinition = new ParameterDefinition();
                     parameterDefinition.PropertyInfo = propertyInfo;
                     parameterDefinition.Name = propertyInfo.Name;
                     parameterDefinition.Type = propertyInfo.PropertyType;
-                    parameterDefinition.ShowInBlock = propertyInfo.GetCustomAttribute<ParameterAttribute>().ShowInBlock;
+                    parameterDefinition.ShowInBlock = propertyInfo.GetCustomAttribute<BlockParameterAttribute>().ShowInBlock;
                     parameterDefinition.Description = propertyInfo.GetCustomAttribute<DescriptionAttribute>()?.Description;
                     parameterDefinition.DefaultValue = propertyInfo.GetValue(Activator.CreateInstance(type, Enumerable.Repeat<object>(null, type.GetConstructors().Single().GetParameters().Length).ToArray()));
                     parameterDefinition.ValidationAttributes.AddRange(propertyInfo.GetCustomAttributes<ValidationAttribute>(true));

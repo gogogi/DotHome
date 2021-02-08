@@ -29,10 +29,13 @@
     <None Remove="Assets\Icons\Key_256x.png" />
     <None Remove="Assets\Icons\ParallelPort_256x.png" />
     <None Remove="Assets\Icons\Paste_256x.png" />
+    <None Remove="Assets\Icons\Pause_256x.png" />
     <None Remove="Assets\Icons\Question_256x.png" />
     <None Remove="Assets\Icons\RefSink.png" />
     <None Remove="Assets\Icons\RefSource.png" />
+    <None Remove="Assets\Icons\Run_256x.png" />
     <None Remove="Assets\Icons\SelectAll_256x.png" />
+    <None Remove="Assets\Icons\StepForward_256x.png" />
     <None Remove="Assets\Icons\Trash_256x.png" />
     <None Remove="Assets\Icons\Upload_256x.png" />
     <None Remove="Assets\Icons\UserGroup_256x.png" />
