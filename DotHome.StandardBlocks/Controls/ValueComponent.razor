@@ -1,4 +1,5 @@
-﻿@typeparam T
+﻿@using System.Globalization;
+@typeparam T
 @inherits VisualBlockComponent<Value<T>>
 
 
@@ -9,6 +10,24 @@
 </div>
 <div style="float:right; display: flex">
     <div>
-        @Block.Val
+        @if (Block.Val is bool bv)
+        {
+            if (bv)
+            {
+                <RadzenIcon Icon="check" Style="color:green"/>
+            }
+            else
+            {
+                <RadzenIcon Icon="close" Style="color:red" />
+            }
+        }
+        else if (Block.Val is double dv)
+        {
+            @dv.ToString("0.00")
+        }
+        else
+        {
+            @Block.Val
+        }
     </div>
 </div>

@@ -19,7 +19,7 @@ namespace DotHome.StandardBlocks.Controls
 
         public override void Init()
         {
-
+            
         }
 
         public override void Run()

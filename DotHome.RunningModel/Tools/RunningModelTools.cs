@@ -8,8 +8,6 @@ namespace DotHome.RunningModel.Tools
     {
         public static Type[] SupportedTypes { get; } = { typeof(bool), typeof(int), typeof(uint), typeof(double), typeof(string), typeof(byte[]) };
 
-        //public static bool IsTypeSupported(Type type) => IsConversionSupported(type, type);
-
         public static bool IsConversionSupported(Type first, Type second) => GetTransferAction((AValue)Activator.CreateInstance(typeof(Value<>).MakeGenericType(first)), (AValue)Activator.CreateInstance(typeof(Value<>).MakeGenericType(second))) != null;
 
         public static Action GetTransferAction(AValue first, AValue second)
