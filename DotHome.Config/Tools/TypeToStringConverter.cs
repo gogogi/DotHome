@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Text;
 
 namespace DotHome.Config.Tools
@@ -14,7 +15,15 @@ namespace DotHome.Config.Tools
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return ((Type)value).Name;
+            Type t = (Type)value;
+            if(t.IsGenericType)
+            {
+                return t.Name.Remove(t.Name.IndexOf('`')) + "<" + string.Join(", ", t.GetGenericArguments().Select(tt => tt.Name)) + ">";
+            }
+            else
+            {
+                return ((Type)value).Name;
+            }
         }
 
 

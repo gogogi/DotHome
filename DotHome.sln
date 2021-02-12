@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotHome.ProgrammingModel", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotHome.Definitions", "DotHome.Definitions\DotHome.Definitions.csproj", "{CE7EA0B3-8872-4DCA-9BFF-FBBC5442D456}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotHome.Core", "DotHome.Core\DotHome.Core.csproj", "{A15DE28B-507E-48EA-910E-2B2CF11FAF75}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotHome.Core", "DotHome.Core\DotHome.Core.csproj", "{A15DE28B-507E-48EA-910E-2B2CF11FAF75}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -10,7 +10,7 @@
         x:Class="DotHome.Config.Windows.SelectionWindow"
 		Icon="/Assets/Icons/Question_256x.png"
         Title="Select">
-	<Grid ColumnDefinitions="*,*" RowDefinitions="*,*,*">
+	<Grid ColumnDefinitions="*,*" RowDefinitions="*,*,auto">
 		<TextBlock Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Text="{Binding Text}" FontSize="14" TextWrapping="Wrap" Margin="2"/>
 		<ListBox Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Items="{Binding Items}" SelectionMode="Single" SelectedItem="{Binding SelectedItem}" Margin="2"/>
 		<Button Grid.Column="0" Grid.Row="2" Content="OK" IsDefault="True" Margin="2" Click="Ok_Click"/>

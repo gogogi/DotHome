@@ -1,0 +1,30 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+		SizeToContent="Height"
+		Width="300"
+		WindowStartupLocation="CenterOwner"
+		MinHeight="150"
+		CanResize="False"
+		Icon="/Assets/Icons/UserGroup_256x.png"
+        x:Class="DotHome.Config.Windows.UsersWindow"
+        Title="Select Users">
+	<Grid ColumnDefinitions="*,*" RowDefinitions="*,auto">
+		<DataGrid Items="{Binding TableEntries}" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" GridLinesVisibility="All" AutoGenerateColumns="False" CanUserResizeColumns="True" SelectionChanged="DataGrid_CollectionChanged" RowBackground="White" AlternatingRowBackground="White" Background="Gray">
+			<DataGrid.Columns>
+				<DataGridTextColumn Header="User" Binding="{Binding User.Name}" Width="1*"/>
+				<DataGridTemplateColumn Header="Allow">
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate>
+							<CheckBox IsChecked="{Binding Selected}" HorizontalAlignment="Center"/>
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+			</DataGrid.Columns>
+		</DataGrid>
+		<Button Grid.Column="0" Grid.Row="1" Content="OK" IsDefault="True" Margin="2" Click="Ok_Click"/>
+		<Button Grid.Column="1" Grid.Row="1" Content="Cancel" IsDefault="True" Margin="2" Click="Cancel_Click"/>
+	</Grid>
+</Window>

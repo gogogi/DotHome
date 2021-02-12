@@ -2,19 +2,21 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace DotHome.Config.Tools
 {
-    class DataGridCountToHeightConverter : IValueConverter
+    public class ParameterToStringConverter : IValueConverter
     {
-        public static DataGridCountToHeightConverter Instance { get; } = new DataGridCountToHeightConverter();
+        public static ParameterToStringConverter Instance { get; } = new ParameterToStringConverter();
 
-        private DataGridCountToHeightConverter() { }
+        private ParameterToStringConverter() { }
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return ((int)value + 1) * 25 + 20;
+            throw new NotImplementedException();
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

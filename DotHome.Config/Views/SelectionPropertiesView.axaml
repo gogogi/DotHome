@@ -13,7 +13,7 @@
 				<TextBlock Text="{Binding SelectedPage.SelectedBlock.Definition.Description}" Margin="2" TextWrapping="Wrap"/>
 				<Separator Height="1" Background="DarkGray"/>
 				<Expander Header="Parameters" IsExpanded="True" HorizontalAlignment="Stretch" Grid.Row="0">
-					<DataGrid Items="{Binding SelectedPage.SelectedBlock.Parameters}" AutoGenerateColumns="False" CanUserResizeColumns="True" GridLinesVisibility="All" SelectionChanged="DataGrid_CollectionChanged" RowBackground="White" Height="{Binding SelectedPage.SelectedBlock.Parameters.Count, Converter={x:Static tool:DataGridCountToHeightConverter.Instance}}" RowHeight="24">
+					<DataGrid Items="{Binding SelectedPage.SelectedBlock.Parameters}" AutoGenerateColumns="False" CanUserResizeColumns="True" GridLinesVisibility="All" SelectionChanged="DataGrid_CollectionChanged" RowBackground="White" AlternatingRowBackground="White" Height="{Binding SelectedPage.SelectedBlock.Parameters.Count, Converter={x:Static tool:DataGridCountToHeightConverter.Instance}}" RowHeight="24" Background="Gray">
 						<DataGrid.Columns>
 							<DataGridTextColumn Header="Name" Binding="{Binding Definition.Name}" IsReadOnly="True"/>
 							<DataGridTextColumn Header="Type" Binding="{Binding Definition.Type, Converter={x:Static tool:TypeToStringConverter.Instance}, Mode=OneWay}" IsReadOnly="True"/>
@@ -30,7 +30,7 @@
 				</Expander>
 				<Separator Height="1" Background="DarkGray"/>
 				<Expander Header="Inputs" IsExpanded="True" Grid.Row="1">
-					<DataGrid Items="{Binding SelectedPage.SelectedBlock.Inputs}" AutoGenerateColumns="False" CanUserResizeColumns="True" GridLinesVisibility="All" SelectionChanged="DataGrid_CollectionChanged" RowBackground="White" Height="{Binding SelectedPage.SelectedBlock.Inputs.Count, Converter={x:Static tool:DataGridCountToHeightConverter.Instance}}">
+					<DataGrid Items="{Binding SelectedPage.SelectedBlock.Inputs}" AutoGenerateColumns="False" CanUserResizeColumns="True" GridLinesVisibility="All" SelectionChanged="DataGrid_CollectionChanged" RowBackground="White" AlternatingRowBackground="White" Height="{Binding SelectedPage.SelectedBlock.Inputs.Count, Converter={x:Static tool:DataGridCountToHeightConverter.Instance}}" Background="Gray">
 						<DataGrid.Columns>
 							<DataGridTextColumn Header="Name" Binding="{Binding Definition.Name}" IsReadOnly="True"/>
 							<DataGridTextColumn Header="Type" Binding="{Binding Definition.Type, Converter={x:Static tool:TypeToStringConverter.Instance}, Mode=OneWay}" IsReadOnly="True"/>
@@ -47,7 +47,7 @@
 				</Expander>
 				<Separator Height="1" Background="DarkGray"/>
 				<Expander Header="Outputs" IsExpanded="True" Grid.Row="2">
-					<DataGrid Items="{Binding SelectedPage.SelectedBlock.Outputs}" AutoGenerateColumns="False" CanUserResizeColumns="True" GridLinesVisibility="All" SelectionChanged="DataGrid_CollectionChanged" RowBackground="White" Height="{Binding SelectedPage.SelectedBlock.Outputs.Count, Converter={x:Static tool:DataGridCountToHeightConverter.Instance}}">
+					<DataGrid Items="{Binding SelectedPage.SelectedBlock.Outputs}" AutoGenerateColumns="False" CanUserResizeColumns="True" GridLinesVisibility="All" SelectionChanged="DataGrid_CollectionChanged" RowBackground="White" AlternatingRowBackground="White" Height="{Binding SelectedPage.SelectedBlock.Outputs.Count, Converter={x:Static tool:DataGridCountToHeightConverter.Instance}}" Background="Gray">
 						<DataGrid.Columns>
 							<DataGridTextColumn Header="Name" Binding="{Binding Definition.Name}" IsReadOnly="True"/>
 							<DataGridTextColumn Header="Type" Binding="{Binding Definition.Type, Converter={x:Static tool:TypeToStringConverter.Instance}, Mode=OneWay}" IsReadOnly="True"/>

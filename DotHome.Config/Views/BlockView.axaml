@@ -8,15 +8,9 @@
              x:Class="DotHome.Config.Views.BlockView"
 			 Padding="2">
 	<Grid RowDefinitions="*,*,*" ColumnDefinitions="*,*" Background="{Binding Definition.Color, Converter={x:Static tool:BlockColorConverter.Instance}}">
-		<Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" BorderThickness="0 0 0 1">
-			<Border.BorderBrush>
-				<SolidColorBrush Color="#444444"/>
-			</Border.BorderBrush>
-			<Panel>
-				<Panel.Background>
-					<SolidColorBrush Color="White" Opacity="0.5"/>
-				</Panel.Background>
-				<TextBlock Text="{Binding Definition.Name}"  HorizontalAlignment="Center" FontWeight="Bold" Margin="2 0"/>
+		<Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" BorderThickness="0 0 0 1" BorderBrush="#444444">
+			<Panel Background="#88FFFFFF">
+				<TextBlock Text="{Binding Definition.Name}"  HorizontalAlignment="Center" FontWeight="Bold" Margin="3 0"/>
 			</Panel>
 		</Border>
 		<ItemsControl Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Items="{Binding Parameters}">
@@ -25,11 +19,11 @@
 			</ItemsControl.Background>
 			<ItemsControl.ItemTemplate>
 				<DataTemplate>
-					<Border BorderThickness="0 0 0 1">
+					<Border BorderThickness="0 0 0 1" IsVisible="{Binding Definition.ShowInBlock}">
 						<Border.BorderBrush>
 							<SolidColorBrush Color="#444444"/>
 						</Border.BorderBrush>
-						<Grid HorizontalAlignment="Stretch" Margin="2 0" IsVisible="{Binding Definition.ShowInBlock}">
+						<Grid HorizontalAlignment="Stretch" Margin="2 0">
 							<Grid.ColumnDefinitions>
 								<ColumnDefinition Width="auto"/>
 								<ColumnDefinition Width="*" MinWidth="20"/>

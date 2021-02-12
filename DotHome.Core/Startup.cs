@@ -32,7 +32,7 @@ namespace DotHome.Core
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddLettuceEncrypt(o => { o.DomainNames = new[] { "zeleznicarska34.duckdns.org" }; o.EmailAddress = "vojta.luk@seznam.cz"; o.AcceptTermsOfService = true; });
+            //services.AddLettuceEncrypt(o => { o.DomainNames = new[] { "zeleznicarska34.duckdns.org" }; o.EmailAddress = "vojta.luk@seznam.cz"; o.AcceptTermsOfService = true; });
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
              .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme,
                  options =>

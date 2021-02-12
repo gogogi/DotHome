@@ -1,11 +1,17 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Templates;
 using Avalonia.Data;
+using Avalonia.Markup.Xaml.Templates;
 using Avalonia.Media;
 using DotHome.Config.Tools;
+using DotHome.Config.Windows;
 using DotHome.ProgrammingModel;
+using DotHome.RunningModel;
 using DotHome.RunningModel.Attributes;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Linq;
@@ -21,13 +27,31 @@ namespace DotHome.Config.Views
         protected override void OnDataContextChanged(EventArgs e)
         {
             lastValid = Parameter.Value;
-            string path = nameof(Parameter.Value);
-            if (Parameter.Definition.Type == typeof(bool)) { CreateBool(); return; }
-            else if (Parameter.Definition.Type == typeof(int)) path = nameof(Parameter.ValueAsInt);
-            else if (Parameter.Definition.Type == typeof(uint)) path = nameof(Parameter.ValueAsUint);
-            else if (Parameter.Definition.Type == typeof(double)) path = nameof(Parameter.ValueAsDouble);
-            else if (Parameter.Definition.Type == typeof(string)) path = nameof(Parameter.ValueAsString);
-            CreateString(path);
+            if (Parameter.Definition.Type == typeof(bool)) CreateBool();
+            else if (Parameter.Definition.Type == typeof(List<User>)) CreateButton();
+            else if (Parameter.Definition.Type == typeof(Room)) CreateComboBox(ConfigTools.MainWindow.Project.Rooms.Prepend(null));
+            else if (Parameter.Definition.Type == typeof(Category)) CreateComboBox(ConfigTools.MainWindow.Project.Categories.Prepend(null));
+            else if (Parameter.Definition.Type == typeof(int)) CreateString(nameof(Parameter.ValueAsInt));
+            else if (Parameter.Definition.Type == typeof(uint)) CreateString(nameof(Parameter.ValueAsUint));
+            else if (Parameter.Definition.Type == typeof(double)) CreateString(nameof(Parameter.ValueAsDouble));
+            else if (Parameter.Definition.Type == typeof(string)) CreateString(nameof(Parameter.ValueAsString));
+        }
+
+        private void CreateComboBox(IEnumerable list)
+        {
+            ComboBox comboBox = new ComboBox() { Items = list };
+            comboBox.Bind(ComboBox.SelectedItemProperty, new Binding(nameof(Parameter.Value), BindingMode.TwoWay));
+            Content = comboBox;
+        }
+
+        private void CreateButton()
+        {
+            Button button = new Button() { Content = "..." };
+            button.Click += async (s, e) =>
+            {
+                await new UsersWindow((List<User>)Parameter.Value).ShowDialog(ConfigTools.MainWindow);
+            };
+            Content = button;
         }
 
         private void CreateBool()

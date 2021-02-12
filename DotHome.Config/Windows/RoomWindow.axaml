@@ -1,0 +1,21 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		WindowStartupLocation="CenterOwner"
+        mc:Ignorable="d" MinWidth="220" MinHeight="90"
+		CanResize="False"
+		SizeToContent="WidthAndHeight"
+        x:Class="DotHome.Config.Windows.RoomWindow"
+		Icon="/Assets/Icons/GeoLocation_256x.png"
+        Title="Room">
+	<Grid Margin="5" ColumnDefinitions="auto,*" RowDefinitions="*,auto">
+		<TextBlock Text="Name" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="40 0 5 0"/>
+
+		<TextBox Text="{Binding RoomName}" Grid.Column="1" Grid.Row="0" Height="34" Margin="1" VerticalContentAlignment="Center"/>
+		<Grid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" ColumnDefinitions="*,*">
+			<Button Content="OK" Grid.Column="0" Margin="1" Click="ButtonOk_Click" IsDefault="True"/>
+			<Button Content="Cancel" Grid.Column="1" Margin="1" Click="ButtonCancel_Click" IsCancel="True"/>
+		</Grid>
+	</Grid>
+</Window>

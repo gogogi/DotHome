@@ -39,6 +39,7 @@
     <None Remove="Assets\Icons\Trash_256x.png" />
     <None Remove="Assets\Icons\Upload_256x.png" />
     <None Remove="Assets\Icons\UserGroup_256x.png" />
+    <None Remove="Assets\Icons\User_256x.png" />
     <None Remove="rwsettings.json" />
   </ItemGroup>
   <ItemGroup>

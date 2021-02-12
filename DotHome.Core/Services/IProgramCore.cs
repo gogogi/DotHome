@@ -1,4 +1,5 @@
-﻿using DotHome.RunningModel;
+﻿using DotHome.ProgrammingModel;
+using DotHome.RunningModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +21,15 @@ namespace DotHome.Core.Services
 
         public void Step();
 
-        public List<AVisualBlock> VisualBlocks { get; }
+        public bool Login(string name, string password);
+
+        public IEnumerable<Room> GetRooms(string username);
+
+        public IEnumerable<Category> GetCategories(string username);
+
+        public IEnumerable<AVisualBlock> GetBlocksInRoom(Room room);
+
+        public IEnumerable<AVisualBlock> GetBlocksInCategory(Category category);
 
         public double AverageCpuUsage { get; }
         public double MaxCpuUsage { get; }

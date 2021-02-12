@@ -10,6 +10,8 @@
 			<ColumnDefinition MinWidth="200" MaxWidth="600" Width="400"/>
 			<ColumnDefinition Width="Auto"/>
 			<ColumnDefinition Width="*"/>
+			<ColumnDefinition Width="Auto"/>
+			<ColumnDefinition MinWidth="200" MaxWidth="600" Width="400"/>
 		</Grid.ColumnDefinitions>
 		<TabControl Grid.Column="0">
 			<TabControl.Styles>
@@ -20,34 +22,142 @@
 			<TabItem Header="Project">
 				<ScrollViewer>
 					<TreeView BorderThickness="0">
-						<TreeViewItem>
+						<TreeViewItem Items="{Binding Users}">
+							<TreeViewItem.Styles>
+								<Style Selector=":is(TreeViewItem)">
+									<Setter Property="ContextMenu">
+										<Setter.Value>
+											<ContextMenu>
+												<MenuItem Header="Edit" Click="EditUser_Click">
+													<MenuItem.Icon>
+														<Image Source="/Assets/Icons/Edit_256x.png"/>
+													</MenuItem.Icon>
+												</MenuItem>
+												<MenuItem Header="Remove" Click="RemoveUser_Click">
+													<MenuItem.Icon>
+														<Image Source="/Assets/Icons/Trash_256x.png"/>
+													</MenuItem.Icon>
+												</MenuItem>
+											</ContextMenu>
+										</Setter.Value>
+									</Setter>
+								</Style>
+							</TreeViewItem.Styles>
+							<TreeViewItem.ContextMenu>
+								<ContextMenu>
+									<MenuItem Header="New User" Click="NewUser_Click">
+										<MenuItem.Icon>
+											<Image Source="/Assets/Icons/Add_256x.png"/>
+										</MenuItem.Icon>
+									</MenuItem>
+								</ContextMenu>
+							</TreeViewItem.ContextMenu>
 							<TreeViewItem.Header>
 								<StackPanel Orientation="Horizontal">
 									<Image Source="/Assets/Icons/UserGroup_256x.png" Width="16" Height="16" Margin="4 0"/>
 									<TextBlock Text="Users"/>
 								</StackPanel>
 							</TreeViewItem.Header>
-							<TreeViewItem Header="Vojta"/>
+							<TreeViewItem.ItemTemplate>
+								<TreeDataTemplate>
+									<StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
+										<Image Source="/Assets/Icons/User_256x.png" Width="16" Height="16" Margin="4 0"/>
+										<TextBlock Text="{Binding Name}"/>
+									</StackPanel>
+								</TreeDataTemplate>
+							</TreeViewItem.ItemTemplate>
 						</TreeViewItem>
-						<TreeViewItem>
+						<TreeViewItem Items="{Binding Rooms}">
 							<TreeViewItem.Header>
 								<StackPanel Orientation="Horizontal">
 									<Image Source="/Assets/Icons/GeoLocation_256x.png" Width="16" Height="16" Margin="4 0"/>
 									<TextBlock Text="Rooms"/>
 								</StackPanel>
 							</TreeViewItem.Header>
-							<TreeViewItem Header="Vojta"/>
+							<TreeViewItem.Styles>
+								<Style Selector=":is(TreeViewItem)">
+									<Setter Property="ContextMenu">
+										<Setter.Value>
+											<ContextMenu>
+												<MenuItem Header="Edit" Click="EditRoom_Click">
+													<MenuItem.Icon>
+														<Image Source="/Assets/Icons/Edit_256x.png"/>
+													</MenuItem.Icon>
+												</MenuItem>
+												<MenuItem Header="Remove" Click="RemoveRoom_Click">
+													<MenuItem.Icon>
+														<Image Source="/Assets/Icons/Trash_256x.png"/>
+													</MenuItem.Icon>
+												</MenuItem>
+											</ContextMenu>
+										</Setter.Value>
+									</Setter>
+								</Style>
+							</TreeViewItem.Styles>
+							<TreeViewItem.ContextMenu>
+								<ContextMenu>
+									<MenuItem Header="New Room" Click="NewRoom_Click">
+										<MenuItem.Icon>
+											<Image Source="/Assets/Icons/Add_256x.png"/>
+										</MenuItem.Icon>
+									</MenuItem>
+								</ContextMenu>
+							</TreeViewItem.ContextMenu>
+							<TreeViewItem.ItemTemplate>
+								<TreeDataTemplate>
+									<StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
+										<Image Source="/Assets/Icons/GeoLocation_256x.png" Width="16" Height="16" Margin="4 0"/>
+										<TextBlock Text="{Binding Name}"/>
+									</StackPanel>
+								</TreeDataTemplate>
+							</TreeViewItem.ItemTemplate>
 						</TreeViewItem>
-						<TreeViewItem>
+						<TreeViewItem Items="{Binding Categories}">
 							<TreeViewItem.Header>
 								<StackPanel Orientation="Horizontal">
 									<Image Source="/Assets/Icons/Group_256x.png" Width="16" Height="16" Margin="4 0"/>
 									<TextBlock Text="Categories"/>
 								</StackPanel>
 							</TreeViewItem.Header>
-							<TreeViewItem Header="Vojta"/>
+							<TreeViewItem.Styles>
+								<Style Selector=":is(TreeViewItem)">
+									<Setter Property="ContextMenu">
+										<Setter.Value>
+											<ContextMenu>
+												<MenuItem Header="Edit" Click="EditCategory_Click">
+													<MenuItem.Icon>
+														<Image Source="/Assets/Icons/Edit_256x.png"/>
+													</MenuItem.Icon>
+												</MenuItem>
+												<MenuItem Header="Remove" Click="RemoveCategory_Click">
+													<MenuItem.Icon>
+														<Image Source="/Assets/Icons/Trash_256x.png"/>
+													</MenuItem.Icon>
+												</MenuItem>
+											</ContextMenu>
+										</Setter.Value>
+									</Setter>
+								</Style>
+							</TreeViewItem.Styles>
+							<TreeViewItem.ContextMenu>
+								<ContextMenu>
+									<MenuItem Header="New Category" Click="NewCategory_Click">
+										<MenuItem.Icon>
+											<Image Source="/Assets/Icons/Add_256x.png"/>
+										</MenuItem.Icon>
+									</MenuItem>
+								</ContextMenu>
+							</TreeViewItem.ContextMenu>
+							<TreeViewItem.ItemTemplate>
+								<TreeDataTemplate>
+									<StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
+										<Image Source="/Assets/Icons/Group_256x.png" Width="16" Height="16" Margin="4 0"/>
+										<TextBlock Text="{Binding Name}"/>
+									</StackPanel>
+								</TreeDataTemplate>
+							</TreeViewItem.ItemTemplate>
 						</TreeViewItem>
-						<TreeViewItem Items="{Binding Pages}" Background="White">
+						<TreeViewItem Items="{Binding Pages}">
 							<TreeViewItem.Styles>
 								<Style Selector=":is(TreeViewItem)">
 									<Setter Property="ContextMenu">
@@ -107,12 +217,12 @@
 			<TabItem Header="Block Library">
 				<local:BlocksLibraryView/>
 			</TabItem>
-			<TabItem Header="Selection">
-				<local:SelectionPropertiesView/>
+			<!--<TabItem Header="Selection">
+				
 			</TabItem>
 			<TabItem Header="Device">
 
-			</TabItem>
+			</TabItem>-->
 		</TabControl>
 		<GridSplitter Grid.Column="1" Width="5" Background="White" BorderBrush="DarkGray" BorderThickness="1 0"/>
 		<TabControl x:Name="pagesTabControl" Grid.Column="2" Items="{Binding Pages}" SelectedItem="{Binding SelectedPage, Mode=OneWayToSource}">
@@ -141,6 +251,8 @@
 				</DataTemplate>
 			</TabControl.ContentTemplate>
 		</TabControl>
+		<GridSplitter Grid.Column="3" Width="5" Background="White" BorderBrush="DarkGray" BorderThickness="1 0"/>
+		<local:SelectionPropertiesView Grid.Column="4"/>
 	</Grid>
 	
 </UserControl>
