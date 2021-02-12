@@ -1,6 +1,6 @@
-﻿using DotHome.RunningModel;
-using DotHome.RunningModel.Attributes;
-using DotHome.RunningModel.Tools;
+﻿using DotHome.Model;
+using DotHome.Model.Attributes;
+using DotHome.Model.Tools;
 using DotHome.StandardBlocks.Services;
 using System;
 using System.Collections.Generic;

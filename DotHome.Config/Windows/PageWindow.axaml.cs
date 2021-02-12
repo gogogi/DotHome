@@ -3,7 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using DotHome.Config.Tools;
 using DotHome.Config.Views;
-using DotHome.ProgrammingModel;
+using DotHome.Model;
 using MessageBox.Avalonia;
 using System.Linq;
 

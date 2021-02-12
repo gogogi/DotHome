@@ -1,11 +1,11 @@
-﻿using DotHome.RunningModel.Attributes;
+﻿using DotHome.Model.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace DotHome.RunningModel
+namespace DotHome.Model
 {
-    public abstract class AVisualBlock : ANamedBlock
+    public abstract class VisualBlock : NamedBlock
     {
         internal event Action VisualStateChanged;
 
@@ -15,7 +15,7 @@ namespace DotHome.RunningModel
         [BlockParameter(true)]
         public Room Room { get; set; }
 
-        [BlockParameter(true)]
+        [BlockParameter]
         public Category Category { get; set; }
 
         protected void VisualStateHasChanged()

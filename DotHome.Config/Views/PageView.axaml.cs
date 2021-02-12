@@ -11,8 +11,8 @@ using Avalonia.Platform;
 using Avalonia.Styling;
 using DotHome.Config.Tools;
 using DotHome.Config.Windows;
-using DotHome.RunningModel;
-using DotHome.RunningModel.Tools;
+using DotHome.Model;
+using DotHome.Model.Tools;
 using MessageBox.Avalonia;
 using MessageBox.Avalonia.Enums;
 using Newtonsoft.Json;
@@ -441,7 +441,7 @@ namespace DotHome.Config.Views
             var point = e.GetPosition(canvas);
             var data = e.Data.Get("add_block");
             foreach (Block b in Page.Blocks) b.Selected = false;
-            if (data is Block b)
+            if (data is Block bb)
             {
                 //if(b.GetType is GenericBlockDefinition gbd)
                 //{
@@ -453,7 +453,7 @@ namespace DotHome.Config.Views
                 //}
                 //else
                 {
-                    Page.Blocks.Add(new Block(bd) { X = (int)point.X, Y = (int)point.Y, Selected = true });
+                    //Page.Blocks.Add(new Block(bd) { X = (int)point.X, Y = (int)point.Y, Selected = true });
                 }
             }
 
@@ -519,7 +519,7 @@ namespace DotHome.Config.Views
                 ConverterParameter = new { InputView = inputView, OutputView = outputView }
             });
 
-            wireView.Stroke = inputView.Input.Definition.Type == outputView.Output.Definition.Type ? Brushes.Black : Brushes.DarkRed;
+            wireView.Stroke = inputView.Input.Type == outputView.Output.Type ? Brushes.Black : Brushes.DarkRed;
         }
 
         private void Wire_DetachedFromVisualTree(object sender, VisualTreeAttachmentEventArgs e)

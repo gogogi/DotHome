@@ -1,4 +1,4 @@
-﻿using DotHome.RunningModel;
+﻿using DotHome.Model;
 using Microsoft.AspNetCore.Components;
 using System;
 using System.Collections.Generic;

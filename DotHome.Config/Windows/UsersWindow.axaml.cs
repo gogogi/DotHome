@@ -2,7 +2,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using DotHome.Config.Tools;
-using DotHome.RunningModel;
+using DotHome.Model;
 using System.Collections.Generic;
 using System.Linq;
 

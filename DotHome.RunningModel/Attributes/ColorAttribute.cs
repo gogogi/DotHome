@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
 
-namespace DotHome.RunningModel.Attributes
+namespace DotHome.Model.Attributes
 {
     public class ColorAttribute : Attribute
     {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DotHome.RunningModel.Attributes
+namespace DotHome.Model.Attributes
 {
     public class BlockParameterAttribute : Attribute
     {

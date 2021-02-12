@@ -3,7 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Shapes;
 using Avalonia.Media;
 using DotHome.Config.Tools;
-using DotHome.ProgrammingModel;
+using DotHome.Model;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;

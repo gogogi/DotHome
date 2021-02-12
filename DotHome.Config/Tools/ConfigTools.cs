@@ -3,7 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.VisualTree;
 using DotHome.Config.Views;
-using DotHome.RunningModel;
+using DotHome.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;

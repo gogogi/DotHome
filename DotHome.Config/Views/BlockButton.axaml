@@ -8,7 +8,7 @@
              x:Class="DotHome.Config.Views.BlockButton"
 		ToolTip.Tip="{Binding Description}" MinWidth="60" Margin="5" Padding="5">
 	<StackPanel>
-		<local:BlockView DataContext="{Binding ., Converter={x:Static tool:BlockDefinitionToBlockConverter.Instance}}" IsEnabled="False"/>
+		<local:BlockView IsEnabled="False"/>
 		<TextBlock Text="{Binding Name}" HorizontalAlignment="Center"/>
 	</StackPanel>
 </Button>

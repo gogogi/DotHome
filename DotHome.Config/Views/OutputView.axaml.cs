@@ -3,7 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Shapes;
 using Avalonia.Markup.Xaml;
 using DotHome.Config.Tools;
-using DotHome.RunningModel;
+using DotHome.Model;
 
 namespace DotHome.Config.Views
 {

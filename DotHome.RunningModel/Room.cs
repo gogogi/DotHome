@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DotHome.RunningModel
+namespace DotHome.Model
 {
     public class Room : INotifyPropertyChanged
     {

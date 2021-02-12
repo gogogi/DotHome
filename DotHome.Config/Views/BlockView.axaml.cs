@@ -5,7 +5,7 @@ using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Markup.Xaml;
 using DotHome.Config.Tools;
-using DotHome.RunningModel;
+using DotHome.Model;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;

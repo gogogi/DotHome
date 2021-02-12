@@ -2,7 +2,7 @@
 using DotHome.Core.Tools;
 using DotHome.Definitions.Tools;
 using DotHome.ProgrammingModel;
-using DotHome.RunningModel;
+using DotHome.Model;
 using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Collections.Generic;

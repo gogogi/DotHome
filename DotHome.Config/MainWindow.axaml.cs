@@ -18,6 +18,7 @@ using Avalonia.Data;
 using System.Text;
 using DotHome.Config.Windows;
 using System.Security.Cryptography;
+using DotHome.Model.Tools;
 
 namespace DotHome.Config
 {
@@ -70,7 +71,7 @@ namespace DotHome.Config
             SelectAllCommand = new Command(() => projectView?.SelectedPageView?.Page?.Blocks.Any(b => !b.Selected) ?? false, () => projectView?.SelectedPageView?.SelectAll());
             CopyCommand = new Command(() => projectView?.SelectedPageView?.Page?.SelectedBlocks?.Any() ?? false, () => projectView?.SelectedPageView?.Copy());
             CutCommand = new Command(() => projectView?.SelectedPageView?.Page?.SelectedBlocks?.Any() ?? false, () => projectView?.SelectedPageView?.Cut());
-            PasteCommand = new Command(async () => Project?.Definitions != null && ContainerSerializer.TryDeserializeContainer(await Application.Current.Clipboard.GetTextAsync(), Project.Definitions) != null, () => projectView?.SelectedPageView?.Paste(Project.Definitions));
+            PasteCommand = new Command(async () => ContainerSerializer.TryDeserializeContainer(await Application.Current.Clipboard.GetTextAsync()) != null, () => projectView?.SelectedPageView?.Paste());
             DeleteCommand = new Command(() => (projectView?.SelectedPageView?.Page?.SelectedBlocks?.Any() ?? false) && projectView.SelectedPageView.IsFocused, () => projectView?.SelectedPageView?.Delete());
 
             ConnectCommand = new Command(() => Server == null, Connect_Executed);
@@ -141,7 +142,7 @@ namespace DotHome.Config
 
         private async Task UploadProject_Executed()
         {
-            ProgrammingModelTools.SetBlockIDs(Project);
+            ModelTools.SetBlockIds(Project);
             await Server.UploadAssemblies();
             await Server.UploadProject(Project);
         }
@@ -164,8 +165,8 @@ namespace DotHome.Config
             if (path != null)
             {
                 Path = path;
-                ProgrammingModelTools.SetBlockIDs(Project);
-                File.WriteAllText(Path, ModelSerializer.SerializeProject(Project));
+                ModelTools.SetBlockIds(Project);
+                //File.WriteAllText(Path, ModelSerializer.SerializeProject(Project));
             }
         }
 
@@ -178,14 +179,14 @@ namespace DotHome.Config
                 if (path != null)
                 {
                     Path = path;
-                    ProgrammingModelTools.SetBlockIDs(Project);
-                    File.WriteAllText(Path, ModelSerializer.SerializeProject(Project));
+                    ModelTools.SetBlockIds(Project);
+                    //File.WriteAllText(Path, ModelSerializer.SerializeProject(Project));
                 }
             }
             else
             {
-                ProgrammingModelTools.SetBlockIDs(Project);
-                File.WriteAllText(Path, ModelSerializer.SerializeProject(Project));
+                ModelTools.SetBlockIds(Project);
+                //File.WriteAllText(Path, ModelSerializer.SerializeProject(Project));
             }
         }
 
@@ -206,14 +207,14 @@ namespace DotHome.Config
                     if (path != null)
                     {
                         Path = path;
-                        File.WriteAllText(Path, ModelSerializer.SerializeProject(Project));
+                        //File.WriteAllText(Path, ModelSerializer.SerializeProject(Project));
                         Project = null;
                         await Server?.StopDebugging();
                     }
                 }
                 else
                 {
-                    File.WriteAllText(Path, ModelSerializer.SerializeProject(Project));
+                    //File.WriteAllText(Path, ModelSerializer.SerializeProject(Project));
                     Project = null;
                     await Server?.StopDebugging();
                 }
@@ -228,7 +229,7 @@ namespace DotHome.Config
             if(paths.Length == 1 && paths[0] != null)
             {
                 Path = paths[0];
-                Project = ModelSerializer.DeserializeProject(File.ReadAllText(Path), DefinitionsCreator.CreateDefinitions(AppConfig.Configuration["AssembliesPath"]));
+                //Project = ModelSerializer.DeserializeProject(File.ReadAllText(Path), DefinitionsCreator.CreateDefinitions(AppConfig.Configuration["AssembliesPath"]));
             }
         }
 
@@ -259,7 +260,7 @@ namespace DotHome.Config
                         if (paths.Length == 1 && paths[0] != null)
                         {
                             Path = paths[0];
-                            File.WriteAllText(Path, ModelSerializer.SerializeProject(Project));
+                            //File.WriteAllText(Path, ModelSerializer.SerializeProject(Project));
                             Project = null;
                             Server?.StopDebugging();
                             Close();
@@ -267,7 +268,7 @@ namespace DotHome.Config
                     }
                     else
                     {
-                        File.WriteAllText(Path, ModelSerializer.SerializeProject(Project));
+                        //File.WriteAllText(Path, ModelSerializer.SerializeProject(Project));
                         Project = null;
                         Server?.StopDebugging();
                         Close();

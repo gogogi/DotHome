@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DotHome.RunningModel
+namespace DotHome.Model
 {
     public interface IBlockService
     {

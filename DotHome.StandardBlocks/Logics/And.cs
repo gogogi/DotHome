@@ -1,5 +1,5 @@
-﻿using DotHome.RunningModel;
-using DotHome.RunningModel.Attributes;
+﻿using DotHome.Model;
+using DotHome.Model.Attributes;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

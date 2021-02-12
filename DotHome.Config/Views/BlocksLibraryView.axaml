@@ -6,7 +6,7 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="DotHome.Config.Views.BlocksLibraryView">
 	<ScrollViewer HorizontalScrollBarVisibility="Disabled">
-		<ItemsControl Items="{Binding Definitions.BlockCategories}">
+		<ItemsControl Items="{Binding Groups}">
 			<ItemsControl.ItemsPanel>
 				<ItemsPanelTemplate>
 					<StackPanel/>
@@ -15,7 +15,7 @@
 			<ItemsControl.ItemTemplate>
 				<DataTemplate>
 					<Expander Header="{Binding Name}">
-						<ItemsControl Items="{Binding AgregatedBlockDefinitions}">
+						<ItemsControl Items="{Binding Blocks}">
 							<ItemsControl.ItemsPanel>
 								<ItemsPanelTemplate>
 									<WrapPanel/>

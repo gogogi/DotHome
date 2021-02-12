@@ -1,11 +1,11 @@
-﻿using DotHome.RunningModel.Tools;
+﻿using DotHome.Model.Tools;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
 
-namespace DotHome.RunningModel
+namespace DotHome.Model
 {
     public abstract class Value : INotifyPropertyChanged
     {
@@ -13,7 +13,7 @@ namespace DotHome.RunningModel
 
         public abstract Type Type { get; }
 
-        public abstract object ValAsObject { get; }
+        public abstract object ValAsObject { get; set; }
 
         public bool Disabled { get => disabled; set => SetAndRaise(ref disabled, value, nameof(Disabled)); }
 
@@ -49,6 +49,6 @@ namespace DotHome.RunningModel
         public T Val { get; set; }
         public override Type Type => typeof(T);
 
-        public override object ValAsObject => Val;
+        public override object ValAsObject { get => Val; set => Val = (T)value; }
     }
 }

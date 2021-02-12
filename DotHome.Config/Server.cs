@@ -1,5 +1,5 @@
 ﻿using DotHome.Config.Tools;
-using DotHome.RunningModel;
+using DotHome.Model;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -170,13 +170,13 @@ namespace DotHome.Config
         private void DebugOutput(int blockId, int outputIndex, object value)
         {
             var block = GetBlockById(blockId);
-            if (block != null) block.Outputs[outputIndex].DebugValue = value;
+            if (block != null) block.Outputs[outputIndex].ValAsObject = value;
         }
 
         private void DebugInput(int blockId, int inputIndex, object value)
         {
             var block = GetBlockById(blockId);
-            if (block != null) block.Inputs[inputIndex].DebugValue = value;
+            if (block != null) block.Inputs[inputIndex].ValAsObject = value;
         }
 
         public async Task StartDebugging()
@@ -201,8 +201,8 @@ namespace DotHome.Config
                 {
                     foreach (Block b in p.Blocks)
                     {
-                        foreach (Input i in b.Inputs) i.DebugValue = null;
-                        foreach (Output o in b.Outputs) o.DebugValue = null;
+                        foreach (Value i in b.Inputs) i.ValAsObject = null;
+                        foreach (Value o in b.Outputs) o.ValAsObject = null;
                         b.Exception = null;
                     }
                 }
