@@ -9,12 +9,12 @@ using System.Text;
 
 namespace DotHome.StandardBlocks.Builtin
 {
-    public abstract class RefSource : ABlock
+    public abstract class RefSource : Block
     {
         [BlockParameter(true)]
         public string Reference { get; set; } = "Ref";
 
-        public abstract AValue Target { get; }
+        public abstract Value Target { get; }
     }
 
     [Description("Provides value from corresponding RefSinks"), Category("Builtin"), Color("Green")]
@@ -23,7 +23,7 @@ namespace DotHome.StandardBlocks.Builtin
         private RefProvider refProvider;
         private Value<T> target;
 
-        public override AValue Target => target;
+        public override Value Target => target;
 
         [Description("Output")]
         public Output<T> O { get; set; }
@@ -37,7 +37,7 @@ namespace DotHome.StandardBlocks.Builtin
         {
             if (refProvider.RefSinks.TryGetValue(Reference, out RefSink sink))
             {
-                var action = RunningModelTools.GetTransferAction(sink.Inputs[0], target);
+                var action = ModelTools.GetTransferAction(sink.Inputs[0], target);
                 if (action != null) sink.Transfer += action;
             }
             if (refProvider.RefSources.TryGetValue(Reference, out List<RefSource> sources))

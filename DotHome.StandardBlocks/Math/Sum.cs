@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace DotHome.StandardBlocks.Math
 {
     [Category("Math"), Description("Output is sum of all inputs"), Color("#64b464")]
-    public class Sum : ABlock
+    public class Sum : Block
     {
         [Description("Input 1")]
         public Input<double> I1 { get; set; }

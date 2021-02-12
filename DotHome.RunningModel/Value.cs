@@ -7,26 +7,48 @@ using System.Text;
 
 namespace DotHome.RunningModel
 {
-    public class Value<T> : AValue
+    public abstract class Value : INotifyPropertyChanged
+    {
+        private bool disabled;
+
+        public abstract Type Type { get; }
+
+        public abstract object ValAsObject { get; }
+
+        public bool Disabled { get => disabled; set => SetAndRaise(ref disabled, value, nameof(Disabled)); }
+
+
+        public List<Value> AttachedValues { get; } = new List<Value>();
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        private event Action TransferEvent;
+
+        public void AttachValue(Value other)
+        {
+            TransferEvent += ModelTools.GetTransferAction(this, other);
+            AttachedValues.Add(other);
+        }
+
+        public void Transfer()
+        {
+            TransferEvent?.Invoke();
+        }
+
+        private void SetAndRaise<T>(ref T field, T value, string name)
+        {
+            if (!Equals(field, value))
+            {
+                field = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+            }
+        }
+    }
+
+    public class Value<T> : Value
     {
         public T Val { get; set; }
         public override Type Type => typeof(T);
 
         public override object ValAsObject => Val;
-
-        //public override bool TryAttachValue(AValue other)
-        //{
-        //    if(RunningModelTools.SupportedTypes.Contains(Type) && RunningModelTools.SupportedTypes.Contains(other.Type) && RunningModelTools.SupportedConversions[Type].Contains(other.Type))
-        //    {
-        //        if(this is Value<bool> vb1)
-        //        {
-        //            if(other is Value<bool> vb2) 
-        //        }
-        //    }
-        //    else
-        //    {
-        //        return false;
-        //    }
-        //}
     }
 }

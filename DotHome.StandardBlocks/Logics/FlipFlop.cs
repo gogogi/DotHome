@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace DotHome.StandardBlocks.Logics
 {
     [Category("Logics"), Description("Output is switched HIGH/LOW according to inputs")]
-    public class FlipFlop : ABlock
+    public class FlipFlop : Block
     {
         [Description("Set")]
         public Input<bool> S { get; set; }

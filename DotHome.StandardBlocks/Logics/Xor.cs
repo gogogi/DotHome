@@ -8,7 +8,7 @@ using System.Text;
 namespace DotHome.StandardBlocks.Logics
 {
     [Description("Output is HIGH if exactly one input is HIGH"), Category("Logics")]
-    public class Xor : ABlock
+    public class Xor : Block
     {
         [Description("Input 1")]
         public Input<bool> I1 { get; set; }

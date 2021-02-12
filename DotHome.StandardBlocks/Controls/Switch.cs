@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace DotHome.StandardBlocks.Controls
 {
     [Category("Controls"), Description("User can switch the value ON/OFF"), Color("#8040fe")]
-    public class Switch : AVisualBlock
+    public class Switch : VisualBlock
     {
         internal bool Val { get; set; }
 

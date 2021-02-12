@@ -1,6 +1,4 @@
-﻿using DotHome.Definitions;
-using DotHome.ProgrammingModel.Tools;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
@@ -14,8 +12,7 @@ namespace DotHome.Config.Tools
         {
             Formatting = Formatting.Indented,
             PreserveReferencesHandling = PreserveReferencesHandling.All,
-            TypeNameHandling = TypeNameHandling.Auto, 
-            Converters = { new BlockJsonConverter(), new DefinitionJsonConverter() }
+            TypeNameHandling = TypeNameHandling.Auto,
         };
 
         public static string SerializeContainer(BlockContainer container)
@@ -23,11 +20,10 @@ namespace DotHome.Config.Tools
             return JsonConvert.SerializeObject(container, jsonSerializerSettings);
         }
 
-        public static BlockContainer TryDeserializeContainer(string text, DefinitionsContainer definitionsContainer)
+        public static BlockContainer TryDeserializeContainer(string text)
         {
             try
             {
-                jsonSerializerSettings.Context = new StreamingContext(StreamingContextStates.All, definitionsContainer);
                 var v = JsonConvert.DeserializeObject<BlockContainer>(text, jsonSerializerSettings);
                 return v;
             }

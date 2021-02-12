@@ -10,7 +10,7 @@ using System.Text;
 
 namespace DotHome.StandardBlocks.Builtin
 {
-    public abstract class RefSink : ABlock
+    public abstract class RefSink : Block
     {
         [BlockParameter(true), Unique]
         public string Reference { get; set; } = "Ref";
@@ -43,7 +43,7 @@ namespace DotHome.StandardBlocks.Builtin
             {
                 foreach(RefSource source in sources)
                 {
-                    var action = RunningModelTools.GetTransferAction(I, source.Target);
+                    var action = ModelTools.GetTransferAction(I, source.Target);
                     if (action != null) Transfer += action;
                 }
             }

@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace DotHome.StandardBlocks.Math
 {
     [Category("Math"), Description("Output is arithmetical average of all enabled inputs"), Color("#64b464")]
-    public class Average : ABlock
+    public class Average : Block
     {
         [Description("Input 1")]
         public Input<double> I1 { get; set; }

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace DotHome.StandardBlocks.Math
 {
     [Category("Math"), Description("Output is maximum of all enabled inputs"), Color("#64b464")]
-    public class Max : ABlock
+    public class Max : Block
     {
         [Description("Input 1")]
         public Input<double> I1 { get; set; }

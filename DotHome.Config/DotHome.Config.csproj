@@ -63,8 +63,7 @@
     <PackageReference Include="System.Net.Http.Json" Version="5.0.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DotHome.ProgrammingModel\DotHome.ProgrammingModel.csproj" />
-    <ProjectReference Include="..\DotHome.RunningModel\DotHome.RunningModel.csproj" />
+    <ProjectReference Include="..\DotHome.RunningModel\DotHome.Model.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="appconfig.json">

@@ -8,7 +8,7 @@ using System.Text;
 namespace DotHome.StandardBlocks.Logics
 {
     [Description("Output is HIGH if all enabled inputs are HIGH"), Category("Logics")]
-    public class And : ABlock
+    public class And : Block
     {
         [Description("Input 1")]
         public Input<bool> I1 { get; set; }

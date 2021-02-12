@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace DotHome.StandardBlocks.Math
 {
     [Category("Math"), Description("Output is Input rounded to specified number of decimal places"), Color("#64b464")]
-    public class Round : ABlock
+    public class Round : Block
     {
         [Description("Input")]
         public Input<double> I { get; set; }

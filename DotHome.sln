@@ -3,15 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30804.86
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotHome.RunningModel", "DotHome.RunningModel\DotHome.RunningModel.csproj", "{C1C6F9FD-0ABB-4764-AB14-4E17D5892CDA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotHome.Model", "DotHome.RunningModel\DotHome.Model.csproj", "{C1C6F9FD-0ABB-4764-AB14-4E17D5892CDA}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotHome.Config", "DotHome.Config\DotHome.Config.csproj", "{DB7637CE-1F15-4E83-8C88-DF6DC23318F6}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotHome.StandardBlocks", "DotHome.StandardBlocks\DotHome.StandardBlocks.csproj", "{7C4F243E-1E6E-44CE-9E32-75D6CF4ADD72}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotHome.ProgrammingModel", "DotHome.ProgrammingModel\DotHome.ProgrammingModel.csproj", "{4F4017C5-E3E5-4B64-ACB4-131ECEB32FA7}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotHome.Definitions", "DotHome.Definitions\DotHome.Definitions.csproj", "{CE7EA0B3-8872-4DCA-9BFF-FBBC5442D456}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotHome.Core", "DotHome.Core\DotHome.Core.csproj", "{A15DE28B-507E-48EA-910E-2B2CF11FAF75}"
 EndProject
@@ -33,14 +29,6 @@ Global
 		{7C4F243E-1E6E-44CE-9E32-75D6CF4ADD72}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7C4F243E-1E6E-44CE-9E32-75D6CF4ADD72}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7C4F243E-1E6E-44CE-9E32-75D6CF4ADD72}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4F4017C5-E3E5-4B64-ACB4-131ECEB32FA7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4F4017C5-E3E5-4B64-ACB4-131ECEB32FA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4F4017C5-E3E5-4B64-ACB4-131ECEB32FA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4F4017C5-E3E5-4B64-ACB4-131ECEB32FA7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CE7EA0B3-8872-4DCA-9BFF-FBBC5442D456}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CE7EA0B3-8872-4DCA-9BFF-FBBC5442D456}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CE7EA0B3-8872-4DCA-9BFF-FBBC5442D456}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CE7EA0B3-8872-4DCA-9BFF-FBBC5442D456}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A15DE28B-507E-48EA-910E-2B2CF11FAF75}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A15DE28B-507E-48EA-910E-2B2CF11FAF75}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A15DE28B-507E-48EA-910E-2B2CF11FAF75}.Release|Any CPU.ActiveCfg = Release|Any CPU

@@ -1,12 +1,8 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
-using DotHome.Definitions;
-using DotHome.Definitions.Tools;
 using DotHome.Config.Tools;
 using DotHome.Config.Views;
-using DotHome.ProgrammingModel;
-using DotHome.ProgrammingModel.Tools;
 using MessageBox.Avalonia;
 using MessageBox.Avalonia.Enums;
 using Newtonsoft.Json;

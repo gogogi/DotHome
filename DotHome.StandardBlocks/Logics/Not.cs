@@ -8,7 +8,7 @@ using System.Text;
 namespace DotHome.StandardBlocks.Logics
 {
     [Description("Output is negated input"), Category("Logics")]
-    class Not : ABlock
+    class Not : Block
     {
         [Description("Input")]
         public Input<bool> I { get; set; }

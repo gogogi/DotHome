@@ -25,7 +25,7 @@ namespace DotHome.Core.Services
         private int usageCount = 0;
         private EventWaitHandle eventWaitHandle = new EventWaitHandle(false, EventResetMode.AutoReset);
         private List<IBlockService> services;
-        private List<ABlock> blocks;
+        private List<Block> blocks;
         private CancellationTokenSource cancellationTokenSource;
         private Task runTask;
         private Stopwatch stopwatch = new Stopwatch();
@@ -37,7 +37,7 @@ namespace DotHome.Core.Services
 
         public double MaxCpuUsage => usageHistory.Take(usageCount).Max();
 
-        public List<AVisualBlock> VisualBlocks { get; private set; }
+        public List<VisualBlock> VisualBlocks { get; private set; }
 
         public BasicProgramCore(ProgrammingModelLoader programmingModelLoader, IHubContext<DebuggingHub> debuggingHubContext)
         {
@@ -48,7 +48,7 @@ namespace DotHome.Core.Services
 
         public void StartDebugging()
         {
-            foreach (ABlock block in blocks)
+            foreach (Block block in blocks)
             {
                 debugValues.Add(block.Id, new Tuple<object[], object[]>(Enumerable.Repeat<object>(null, block.Inputs.Count).ToArray(), Enumerable.Repeat<object>(null, block.Outputs.Count).ToArray())); ;
             }
@@ -74,16 +74,16 @@ namespace DotHome.Core.Services
         {
             Project programmingModel = programmingModelLoader.LoadProgrammingModel();
             period = programmingModel.ProgramPeriod;
-            blocks = new List<ABlock>();
-            VisualBlocks = new List<AVisualBlock>();
+            blocks = new List<Block>();
+            VisualBlocks = new List<VisualBlock>();
 
             services = new List<IBlockService>();
 
             foreach (Page page in programmingModel.Pages)
             {
-                Dictionary<Input, AValue> inputsDictionary = new Dictionary<Input, AValue>();
-                Dictionary<Output, AValue> outputsDictionary = new Dictionary<Output, AValue>();
-                Dictionary<AValue, ABlock> inputsBlocksDictionary = new Dictionary<AValue, ABlock>();
+                Dictionary<Input, Value> inputsDictionary = new Dictionary<Input, Value>();
+                Dictionary<Output, Value> outputsDictionary = new Dictionary<Output, Value>();
+                Dictionary<Value, Block> inputsBlocksDictionary = new Dictionary<Value, Block>();
 
                 List<Block> sortedBlocks = BlocksSorter.SortTopological(page.Blocks.ToList(), page.Wires.ToList());
 
@@ -105,13 +105,13 @@ namespace DotHome.Core.Services
                         parameters.Add(parameter);
                     }
 
-                    ABlock block = (ABlock)Activator.CreateInstance(type, parameters.Cast<object>().ToArray());
+                    Block block = (Block)Activator.CreateInstance(type, parameters.Cast<object>().ToArray());
                     block.Id = b.Id;
 
                     foreach (Input i in b.Inputs)
                     {
                         PropertyInfo pi = type.GetProperty(i.Definition.Name);
-                        AValue input = (AValue)Activator.CreateInstance(pi.PropertyType);
+                        Value input = (Value)Activator.CreateInstance(pi.PropertyType);
                         input.Disabled = i.Disabled;
                         pi.SetValue(block, input);
                         inputsDictionary.Add(i, input);
@@ -123,7 +123,7 @@ namespace DotHome.Core.Services
                     foreach (Output o in b.Outputs)
                     {
                         PropertyInfo po = type.GetProperty(o.Definition.Name);
-                        AValue output = (AValue)Activator.CreateInstance(po.PropertyType);
+                        Value output = (Value)Activator.CreateInstance(po.PropertyType);
                         output.Disabled = o.Disabled;
                         po.SetValue(block, output);
                         outputsDictionary.Add(o, output);
@@ -136,7 +136,7 @@ namespace DotHome.Core.Services
                         po.SetValue(block, p.Value);
                     }
                     blocks.Add(block);
-                    if (block is AVisualBlock vb) VisualBlocks.Add(vb);
+                    if (block is VisualBlock vb) VisualBlocks.Add(vb);
                 }
                 foreach (Wire wire in page.Wires)
                 {
@@ -177,7 +177,7 @@ namespace DotHome.Core.Services
             {
                 service.Init();
             }
-            foreach (ABlock block in blocks)
+            foreach (Block block in blocks)
             {
                 block.Init();
             }
@@ -189,7 +189,7 @@ namespace DotHome.Core.Services
             {
                 service.Run();
             }
-            foreach (ABlock block in blocks)
+            foreach (Block block in blocks)
             {
                 try
                 {
@@ -209,7 +209,7 @@ namespace DotHome.Core.Services
                     }
                 }
 
-                foreach (AValue output in block.Outputs)
+                foreach (Value output in block.Outputs)
                 {
                     output.Transfer();
                 }

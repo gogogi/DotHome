@@ -5,8 +5,7 @@ using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Markup.Xaml;
 using DotHome.Config.Tools;
-using DotHome.Definitions;
-using DotHome.ProgrammingModel;
+using DotHome.RunningModel;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -30,9 +29,7 @@ namespace DotHome.Config.Views
         public Block Block => (Block)DataContext;
         public new double Width => Bounds.Width;
         public new double Height => Bounds.Height;
-
-        public BlockDefinition BlockDefinition { get; }
-        
+                
         public BlockView()
         {
             this.InitializeComponent();

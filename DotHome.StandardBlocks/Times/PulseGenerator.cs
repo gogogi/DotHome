@@ -11,7 +11,7 @@ using System.Text;
 namespace DotHome.StandardBlocks.Times
 {
     [Description("Generates pulses on output"), Category("Times"), Color("Orange")]
-    public class PulseGenerator : ANamedBlock
+    public class PulseGenerator : NamedBlock
     {
         [Description("Disable")]
         public Input<bool> D { get; set; }

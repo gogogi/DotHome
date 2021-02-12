@@ -3,8 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.VisualTree;
 using DotHome.Config.Views;
-using DotHome.Definitions.Tools;
-using DotHome.ProgrammingModel;
+using DotHome.RunningModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,9 +20,8 @@ namespace DotHome.Config.Tools
 
         public static Project NewProject()
         {
-            Project project = new Project() { Definitions = DefinitionsCreator.CreateDefinitions(AppConfig.Configuration["AssembliesPath"]) };
+            Project project = new Project();
             project.Pages.Add(new Page() { Name = "Page1", Width = 1000, Height = 1000 });
-            project.Pages.Add(new Page() { Name = "Page2", Width = 1000, Height = 1000 });
 
             for(int i = 0; i < 200; i++)
             {

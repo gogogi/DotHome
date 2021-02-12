@@ -9,7 +9,7 @@ using System.Text;
 namespace DotHome.StandardBlocks.Builtin
 {
     [Description("Provides constant value"), Category("Builtin"), Color("DarkGray")]
-    class Const<T> : ABlock
+    class Const<T> : Block
     {
         [Description("Output")]
         public Output<T> O { get; set; }

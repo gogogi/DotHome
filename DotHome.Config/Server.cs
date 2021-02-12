@@ -1,7 +1,5 @@
 ﻿using DotHome.Config.Tools;
-using DotHome.Definitions.Tools;
-using DotHome.ProgrammingModel;
-using DotHome.ProgrammingModel.Tools;
+using DotHome.RunningModel;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -104,10 +102,10 @@ namespace DotHome.Config
 
         public async Task UploadProject(Project project)
         {
-            using (var stream = new MemoryStream(Encoding.Default.GetBytes(ModelSerializer.SerializeProject(project))))
-            {
-                var res = await httpClient.PostAsync($"https://{Host}/config/upload", new StreamContent(stream));
-            }
+            //using (var stream = new MemoryStream(Encoding.Default.GetBytes(ModelSerializer.SerializeProject(project))))
+            //{
+            //    var res = await httpClient.PostAsync($"https://{Host}/config/upload", new StreamContent(stream));
+            //}
             Project = project;
         }
 
@@ -136,11 +134,11 @@ namespace DotHome.Config
             if (res.IsSuccessStatusCode)
             {
                 string text = await res.Content.ReadAsStringAsync();
-                Project = ModelSerializer.DeserializeProject(text, DefinitionsCreator.CreateDefinitions(AppConfig.Configuration["AssembliesPath"]));
+                //Project = ModelSerializer.DeserializeProject(text);
             }
             else
             {
-                Project = new Project() { Definitions = DefinitionsCreator.CreateDefinitions(AppConfig.Configuration["AssembliesPath"]) };
+                Project = new Project();
             }
             return Project;
         }

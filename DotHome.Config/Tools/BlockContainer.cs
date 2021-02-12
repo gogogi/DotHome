@@ -1,7 +1,9 @@
 ﻿using DotHome.Config.Views;
-using DotHome.ProgrammingModel;
+using DotHome.RunningModel;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using System.Runtime.Serialization;
 using System.Text;
 
@@ -26,12 +28,14 @@ namespace DotHome.Config.Tools
             var bv = this.Blocks;
             BlockContainer blockContainer = new BlockContainer() { MinX = MinX, MaxX = MaxX, MinY = MinY, MaxY = MaxY };
 
-            Dictionary<Input, Input> inputsDictionary = new Dictionary<Input, Input>();
-            Dictionary<Output, Output> outputsDictionary = new Dictionary<Output, Output>();
+            Dictionary<Value, Value> inputsDictionary = new Dictionary<Value, Value>();
+            Dictionary<Value, Value> outputsDictionary = new Dictionary<Value, Value>();
 
-            foreach (var b in Blocks)
+            foreach (Block b in Blocks)
             {
-                var b2 = new Block(b.Definition) { X = b.X, Y = b.Y };
+                var b2 = (Block)Activator.CreateInstance(b.GetType());
+                b2.X = b.X;
+                b2.Y = b.Y;
                 for(int i = 0; i < b.Inputs.Count; i++)
                 {
                     b2.Inputs[i].Disabled = b.Inputs[i].Disabled;
@@ -42,9 +46,10 @@ namespace DotHome.Config.Tools
                     b2.Outputs[i].Disabled = b.Outputs[i].Disabled;
                     outputsDictionary.Add(b.Outputs[i], b2.Outputs[i]);
                 }
-                for (int i = 0; i < b.Parameters.Count; i++)
+                foreach(PropertyInfo propertyInfo in b.GetType().GetProperties().Where(pi => pi.PropertyType.IsGenericType && pi.PropertyType.GetGenericTypeDefinition() == typeof(Parameter<>)))
                 {
-                    b2.Parameters[i].Value = b.Parameters[i].Value;
+
+                    propertyInfo.SetValue(b2, propertyInfo.GetValue(b));
                 }
                 blockContainer.Blocks.Add(b2);
             }

@@ -20,9 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DotHome.Definitions\DotHome.Definitions.csproj" />
-    <ProjectReference Include="..\DotHome.ProgrammingModel\DotHome.ProgrammingModel.csproj" />
-    <ProjectReference Include="..\DotHome.RunningModel\DotHome.RunningModel.csproj" />
+    <ProjectReference Include="..\DotHome.RunningModel\DotHome.Model.csproj" />
   </ItemGroup>
 
 </Project>

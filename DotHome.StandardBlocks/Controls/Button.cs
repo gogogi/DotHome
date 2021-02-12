@@ -8,7 +8,7 @@ using System.Text;
 namespace DotHome.StandardBlocks.Controls
 {
     [Category("Controls"), Description("Output is HIGH when the button is pressed"), Color("#8040fe")]
-    public class Button : AVisualBlock
+    public class Button : VisualBlock
     {
         private bool pressed, released;
 
