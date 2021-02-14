@@ -38,6 +38,7 @@ namespace DotHome.Core
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddLettuceEncrypt(c => { c.DomainNames = new[] { "zeleznicarska34.duckdns.org" }; c.AcceptTermsOfService = true; c.EmailAddress = "vojta.luk@seznam.cz"; });
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme,
                     options =>
