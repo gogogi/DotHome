@@ -3,6 +3,7 @@
 @using DotHome.RunningModel
 @using System.Diagnostics
 @inject IProgramCore ProgramCore
+@attribute [Authorize]
 
 
 <RadzenDataList WrapItems="true" Data="ProgramCore.VisualBlocks">

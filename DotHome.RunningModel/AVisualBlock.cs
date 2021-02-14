@@ -10,7 +10,7 @@ namespace DotHome.RunningModel
         internal event Action VisualStateChanged;
 
         [BlockParameter]
-        public List<User> AllowedUsers { get; } = new List<User>();
+        public List<User> AllowedUsers { get; set; } = new List<User>();
 
         [BlockParameter(true)]
         public Room Room { get; set; }

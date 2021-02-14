@@ -1,0 +1,22 @@
+﻿@attribute [Authorize]
+
+<RadzenPanelMenu>
+    @if (rooms != null)
+    {
+        <RadzenPanelMenuItem Text="Rooms">
+            @foreach (var room in rooms)
+            {
+                <RadzenPanelMenuItem Text="@room.Name" Path="@($"Rooms/{room.Name}")" />
+            }        
+        </RadzenPanelMenuItem>
+    }
+    @if (categories != null)
+    {
+        <RadzenPanelMenuItem Text="Categories">
+            @foreach (var category in categories)
+            {
+                <RadzenPanelMenuItem Text="@category.Name" Path="@($"Categories/{category.Name}")" />
+            }
+        </RadzenPanelMenuItem>
+}
+</RadzenPanelMenu>

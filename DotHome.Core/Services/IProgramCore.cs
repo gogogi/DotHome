@@ -21,15 +21,23 @@ namespace DotHome.Core.Services
 
         public void Step();
 
-        public bool Login(string name, string password);
+        //public bool Login(string name, string password);
 
-        public IEnumerable<Room> GetRooms(string username);
+        //public IEnumerable<Room> GetRooms(string username);
 
-        public IEnumerable<Category> GetCategories(string username);
+        //public IEnumerable<Category> GetCategories(string username);
 
-        public IEnumerable<AVisualBlock> GetBlocksInRoom(Room room);
+        //public IEnumerable<AVisualBlock> GetBlocksInRoom(Room room);
 
-        public IEnumerable<AVisualBlock> GetBlocksInCategory(Category category);
+        //public IEnumerable<AVisualBlock> GetBlocksInCategory(Category category);
+
+        public List<User> Users { get; }
+
+        public List<Room> Rooms { get; }
+
+        public List<Category> Categories { get; }
+
+        public List<AVisualBlock> VisualBlocks { get; }
 
         public double AverageCpuUsage { get; }
         public double MaxCpuUsage { get; }

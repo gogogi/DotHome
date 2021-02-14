@@ -39,6 +39,12 @@ namespace DotHome.Core.Services
 
         public List<AVisualBlock> VisualBlocks { get; private set; }
 
+        public List<User> Users { get; private set; }
+
+        public List<Room> Rooms { get; private set; }
+
+        public List<Category> Categories { get; private set; }
+
         public BasicProgramCore(ProgrammingModelLoader programmingModelLoader, IHubContext<DebuggingHub> debuggingHubContext)
         {
             this.programmingModelLoader = programmingModelLoader;
@@ -76,6 +82,10 @@ namespace DotHome.Core.Services
             period = programmingModel.ProgramPeriod;
             blocks = new List<ABlock>();
             VisualBlocks = new List<AVisualBlock>();
+
+            Users = programmingModel.Users.ToList();
+            Rooms = programmingModel.Rooms.ToList();
+            Categories = programmingModel.Categories.ToList();
 
             services = new List<IBlockService>();
 

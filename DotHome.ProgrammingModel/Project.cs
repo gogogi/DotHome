@@ -19,7 +19,7 @@ namespace DotHome.ProgrammingModel
 
         public ObservableCollection<User> Users { get; } = new ObservableCollection<User>();
 
-        public ObservableCollection<Room> Rooms { get; } = new ObservableCollection<Room>() { new Room() { Name = "Kuchyne" }, new Room() { Name = "Obyvak" } };
+        public ObservableCollection<Room> Rooms { get; } = new ObservableCollection<Room>();
 
         public ObservableCollection<Category> Categories { get; } = new ObservableCollection<Category>();
 

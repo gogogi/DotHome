@@ -1,13 +1,18 @@
 using DotHome.Core.Data;
 using DotHome.Core.Hubs;
 using DotHome.Core.Services;
+using DotHome.Core.Tools;
+using DotHome.RunningModel;
 using LettuceEncrypt;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Components.Server;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -15,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace DotHome.Core
@@ -32,23 +38,22 @@ namespace DotHome.Core
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            //services.AddLettuceEncrypt(o => { o.DomainNames = new[] { "zeleznicarska34.duckdns.org" }; o.EmailAddress = "vojta.luk@seznam.cz"; o.AcceptTermsOfService = true; });
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-             .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme,
-                 options =>
-                 {
-                     options.Events.OnRedirectToLogin = c =>
-                     {
-                         if (c.Request.Path.StartsWithSegments("/config")) c.Response.StatusCode = 401;
-                         return Task.CompletedTask;
-                     };
-                     options.LoginPath = new PathString("/login");
-                     options.AccessDeniedPath = new PathString("/config/download");
-                 });
+                .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme,
+                    options =>
+                    {
+                        options.Events.OnRedirectToLogin = c =>
+                        {
+                            if (c.Request.Path.StartsWithSegments("/config")) c.Response.StatusCode = 401;
+                            return Task.CompletedTask;
+                        };
+                    });
             services.AddControllersWithViews();
             services.AddRazorPages();
             services.AddSignalR().AddNewtonsoftJsonProtocol();
             services.AddServerSideBlazor();
+
+            services.AddHttpContextAccessor();
 
             services.AddSingleton<ProgrammingModelLoader>();
             services.AddSingleton<IProgramCore, BasicProgramCore>();
@@ -78,6 +83,7 @@ namespace DotHome.Core
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapRazorPages();
                 endpoints.MapBlazorHub();
                 endpoints.MapControllers();
                 endpoints.MapHub<DebuggingHub>("debug");

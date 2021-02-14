@@ -9,12 +9,12 @@ using System.Threading.Tasks;
 
 namespace DotHome.Core.Pages
 {
-    public partial class RoomPage
+    public partial class CategoryPage
     {
         [Parameter]
-        public string RoomName { get; set; }
+        public string CategoryName { get; set; }
 
-        private Room room;
+        private Category category;
         private List<AVisualBlock> visualBlocks;
 
         [Inject]
@@ -26,12 +26,12 @@ namespace DotHome.Core.Pages
         protected override void OnParametersSet()
         {
             base.OnParametersSet();
-            room = ProgramCore.Rooms.SingleOrDefault(r => r.Name == RoomName);
+            category = ProgramCore.Categories.SingleOrDefault(c => c.Name == CategoryName);
             string username = HttpContextAccessor.HttpContext.User.Identity.Name;
             User user = ProgramCore.Users.SingleOrDefault(u => u.Name == username);
-            if(room != null && user != null)
+            if (category != null && user != null)
             {
-                visualBlocks = ProgramCore.VisualBlocks.Where(b => b.AllowedUsers.Contains(user) && b.Room == room).ToList();
+                visualBlocks = ProgramCore.VisualBlocks.Where(b => b.AllowedUsers.Contains(user) && b.Category == category).ToList();
             }
             else
             {

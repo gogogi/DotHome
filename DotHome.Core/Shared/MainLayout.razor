@@ -1,26 +1,6 @@
-﻿@inherits LayoutComponentBase
-
-@*<div class="page">
-        <div class="sidebar">
-            <NavMenu />
-        </div>
-
-        <div class="main">
-            <div class="top-row px-4">
-                <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
-            </div>
-
-            <div class="content px-4">
-                @Body
-            </div>
-        </div>
-    </div>*@
-
-
-@*<RadzenDialog />
-<RadzenNotification />
-<RadzenTooltip />
-<RadzenContextMenu />*@
+﻿@using DotHome.Core.Pages
+@inherits LayoutComponentBase
+@inject NavigationManager NavigationManager
 
 <RadzenHeader>
     <ChildContent>
@@ -31,12 +11,9 @@
                 <RadzenLabel Text="DotHome">
                 </RadzenLabel>
             </div>
-            <!--<div class="col-6 d-flex align-items-center justify-content-end">-->
-                @*<div class="d-none d-md-inline-flex align-items-center">
-                        <Social />
-                    </div>*@
-                <!--<label class="d-none d-sm-inline-block" style="margin-left: 1rem">Theme:</label>
-            </div>-->
+            <div class="col-6 d-flex align-items-center justify-content-end">
+                <RadzenLink Icon="logout" Path="logout" Text="Logout" Style="margin-right:20px" />
+            </div>
         </div>
     </ChildContent>
 </RadzenHeader>
@@ -51,22 +28,15 @@
 </div>
 <RadzenSidebar @bind-Expanded="sidebarExpanded">
     <ChildContent>
-        <RadzenPanelMenu>
-            <RadzenPanelMenuItem Text="Rooms">
-                @foreach (var room in rooms)
-                {
-                    <RadzenPanelMenuItem Text="@room.Name" Path="@($"Rooms/{room.Name}")" />
-                }
-            </RadzenPanelMenuItem>
-            <RadzenPanelMenuItem Text="Categories">
-                @foreach (var category in categories)
-                {
-                    <RadzenPanelMenuItem Text="@category.Name" Path="@($"Categories/{category.Name}")" />
-                }
-            </RadzenPanelMenuItem>
-        </RadzenPanelMenu>
+        <AuthorizeView>
+            <Authorized>
+                <Navbar />
+            </Authorized>
+            <NotAuthorized>
+            </NotAuthorized>
+        </AuthorizeView>
     </ChildContent>
-</RadzenSidebar>    
+</RadzenSidebar>
 
 
 <style>
@@ -74,3 +44,12 @@
         bottom: 0 !important;
     }
 </style>
+
+@code {
+    private bool sidebarExpanded;
+
+    private void OnLogout()
+    {
+        NavigationManager.NavigateTo("/logout");
+    }
+}
