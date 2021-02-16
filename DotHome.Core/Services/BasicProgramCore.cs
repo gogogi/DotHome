@@ -19,13 +19,15 @@ namespace DotHome.Core.Services
         private const int usageSamples = 100;
 
         private ProgrammingModelLoader programmingModelLoader;
+        private BlocksActivator blocksActivator;
         private IHubContext<DebuggingHub> debuggingHubContext;
+
         private double[] usageHistory = new double[usageSamples];
         private int usageIndex = 0;
         private int usageCount = 0;
         private EventWaitHandle eventWaitHandle = new EventWaitHandle(false, EventResetMode.AutoReset);
-        private List<IBlockService> services;
         private List<ABlock> blocks;
+        private List<IBlockService> services;
         private CancellationTokenSource cancellationTokenSource;
         private Task runTask;
         private Stopwatch stopwatch = new Stopwatch();
@@ -45,9 +47,10 @@ namespace DotHome.Core.Services
 
         public List<Category> Categories { get; private set; }
 
-        public BasicProgramCore(ProgrammingModelLoader programmingModelLoader, IHubContext<DebuggingHub> debuggingHubContext)
+        public BasicProgramCore(ProgrammingModelLoader programmingModelLoader, BlocksActivator blocksActivator, IHubContext<DebuggingHub> debuggingHubContext)
         {
             this.programmingModelLoader = programmingModelLoader;
+            this.blocksActivator = blocksActivator;
             this.debuggingHubContext = debuggingHubContext;
             Start();
         }
@@ -76,6 +79,33 @@ namespace DotHome.Core.Services
             runTask = Task.Factory.StartNew(() => Run(cancellationTokenSource.Token), TaskCreationOptions.LongRunning);
         }
 
+        public void Restart()
+        {
+            bool wasDebugging = isDebugging;
+            StopDebugging();
+            cancellationTokenSource?.Cancel();
+            runTask?.Wait();
+            Unload();
+            Start();
+            if (wasDebugging) StartDebugging();
+        }
+
+        public void Pause()
+        {
+            if (isDebugging) isPaused = true;
+        }
+
+        public void Continue()
+        {
+            isPaused = false;
+            eventWaitHandle.Set();
+        }
+
+        public void Step()
+        {
+            eventWaitHandle.Set();
+        }
+
         private void Load()
         {
             Project programmingModel = programmingModelLoader.LoadProgrammingModel();
@@ -87,64 +117,21 @@ namespace DotHome.Core.Services
             Rooms = programmingModel.Rooms.ToList();
             Categories = programmingModel.Categories.ToList();
 
-            services = new List<IBlockService>();
-
             foreach (Page page in programmingModel.Pages)
             {
                 Dictionary<Input, AValue> inputsDictionary = new Dictionary<Input, AValue>();
                 Dictionary<Output, AValue> outputsDictionary = new Dictionary<Output, AValue>();
-                Dictionary<AValue, ABlock> inputsBlocksDictionary = new Dictionary<AValue, ABlock>();
 
                 List<Block> sortedBlocks = BlocksSorter.SortTopological(page.Blocks.ToList(), page.Wires.ToList());
 
                 foreach (Block b in sortedBlocks)
                 {
-                    Type type = b.Definition.Type;
-                    ConstructorInfo[] constructors = type.GetConstructors();
-
-                    ConstructorInfo constructor = constructors.First(c => c.GetParameters().All(p => typeof(IBlockService).IsAssignableFrom(p.ParameterType)));
-                    List<IBlockService> parameters = new List<IBlockService>();
-                    foreach (ParameterInfo parameterInfo in constructor.GetParameters())
-                    {
-                        IBlockService parameter = services.SingleOrDefault(s => parameterInfo.ParameterType.IsAssignableFrom(s.GetType()));
-                        if (parameter == null)
-                        {
-                            parameter = (IBlockService)Activator.CreateInstance(parameterInfo.ParameterType);
-                            services.Add(parameter);
-                        }
-                        parameters.Add(parameter);
-                    }
-
-                    ABlock block = (ABlock)Activator.CreateInstance(type, parameters.Cast<object>().ToArray());
+                    ABlock block = blocksActivator.CreateBlock(b);
                     block.Id = b.Id;
 
-                    foreach (Input i in b.Inputs)
-                    {
-                        PropertyInfo pi = type.GetProperty(i.Definition.Name);
-                        AValue input = (AValue)Activator.CreateInstance(pi.PropertyType);
-                        input.Disabled = i.Disabled;
-                        pi.SetValue(block, input);
-                        inputsDictionary.Add(i, input);
-                        block.Inputs.Add(input);
+                    for (int i = 0; i < b.Inputs.Count; i++) inputsDictionary.Add(b.Inputs[i], block.Inputs[i]);
+                    for (int i = 0; i < b.Outputs.Count; i++) outputsDictionary.Add(b.Outputs[i], block.Outputs[i]);
 
-                        inputsBlocksDictionary.Add(input, block);
-                    }
-
-                    foreach (Output o in b.Outputs)
-                    {
-                        PropertyInfo po = type.GetProperty(o.Definition.Name);
-                        AValue output = (AValue)Activator.CreateInstance(po.PropertyType);
-                        output.Disabled = o.Disabled;
-                        po.SetValue(block, output);
-                        outputsDictionary.Add(o, output);
-                        block.Outputs.Add(output);
-                    }
-
-                    foreach (Parameter p in b.Parameters)
-                    {
-                        PropertyInfo po = type.GetProperty(p.Definition.Name);
-                        po.SetValue(block, p.Value);
-                    }
                     blocks.Add(block);
                     if (block is AVisualBlock vb) VisualBlocks.Add(vb);
                 }
@@ -156,6 +143,26 @@ namespace DotHome.Core.Services
                 }
                 VisualBlocks.Sort((a, b) => a.Name.CompareTo(b.Name));
             }
+
+            services = blocksActivator.BlockServices;
+        }
+
+        private void Unload()
+        {
+            foreach(ABlock block in blocks)
+            {
+                if (block is IDisposable d) d.Dispose();
+            }
+            foreach(IBlockService blockService in services)
+            {
+                if (blockService is IDisposable d) d.Dispose();
+            }
+            blocks = null;
+            services = null;
+            VisualBlocks = null;
+            Rooms = null;
+            Categories = null;
+            Users = null;
         }
 
         private async Task Run(CancellationToken cancellationToken)
@@ -245,32 +252,6 @@ namespace DotHome.Core.Services
                     }
                 }
             }
-        }
-
-        public void Restart()
-        {
-            bool wasDebugging = isDebugging;
-            StopDebugging();
-            cancellationTokenSource?.Cancel();
-            runTask?.Wait();
-            Start();
-            if (wasDebugging) StartDebugging();
-        }
-
-        public void Pause()
-        {
-            if (isDebugging) isPaused = true;
-        }
-
-        public void Continue()
-        {
-            isPaused = false;
-            eventWaitHandle.Set();
-        }
-
-        public void Step()
-        {
-            eventWaitHandle.Set();
         }
     }
 }

@@ -38,7 +38,10 @@ namespace DotHome.Core
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddLettuceEncrypt(c => { c.DomainNames = new[] { "zeleznicarska34.duckdns.org" }; c.AcceptTermsOfService = true; c.EmailAddress = "vojta.luk@seznam.cz"; });
+            if (System.Runtime.InteropServices.RuntimeInformation.OSArchitecture == System.Runtime.InteropServices.Architecture.Arm)
+            {
+                services.AddLettuceEncrypt(c => { c.DomainNames = new[] { "zeleznicarska34.duckdns.org" }; c.AcceptTermsOfService = true; c.EmailAddress = "vojta.luk@seznam.cz"; });
+            }
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme,
                     options =>
@@ -57,6 +60,7 @@ namespace DotHome.Core
             services.AddHttpContextAccessor();
 
             services.AddSingleton<ProgrammingModelLoader>();
+            services.AddSingleton<BlocksActivator>();
             services.AddSingleton<IProgramCore, BasicProgramCore>();
         }
 

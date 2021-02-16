@@ -21,7 +21,7 @@ namespace DotHome.StandardBlocks.Builtin
     public class RefSource<T> : RefSource
     {
         private RefProvider refProvider;
-        private Value<T> target;
+        private Value<T> target = new Value<T>();
 
         public override AValue Target => target;
 

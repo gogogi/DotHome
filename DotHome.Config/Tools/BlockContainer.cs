@@ -1,5 +1,6 @@
 ﻿using DotHome.Config.Views;
 using DotHome.ProgrammingModel;
+using DotHome.RunningModel;
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
@@ -23,7 +24,6 @@ namespace DotHome.Config.Tools
 
         public BlockContainer Copy()
         {
-            var bv = this.Blocks;
             BlockContainer blockContainer = new BlockContainer() { MinX = MinX, MaxX = MaxX, MinY = MinY, MaxY = MaxY };
 
             Dictionary<Input, Input> inputsDictionary = new Dictionary<Input, Input>();
@@ -44,7 +44,14 @@ namespace DotHome.Config.Tools
                 }
                 for (int i = 0; i < b.Parameters.Count; i++)
                 {
-                    b2.Parameters[i].Value = b.Parameters[i].Value;
+                    if(b.Parameters[i].Definition.Type == typeof(List<User>))
+                    {
+                        ((List<User>)b2.Parameters[i].Value).AddRange((List<User>)b.Parameters[i].Value);
+                    }
+                    else
+                    {
+                        b2.Parameters[i].Value = b.Parameters[i].Value;
+                    }
                 }
                 blockContainer.Blocks.Add(b2);
             }
