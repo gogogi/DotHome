@@ -3,6 +3,9 @@
 @using DotHome.RunningModel
 @using System.Diagnostics
 @inject IProgramCore ProgramCore
+@inject NavigationManager NavigationManager
+@inject PageReloader PageReloader
+@inject IHttpContextAccessor HttpContextAccessor
 @attribute [Authorize]
 
 
@@ -11,3 +14,28 @@
         <GenericBlockComponent Block="context" />
     </Template>
 </RadzenDataList>
+
+@code {
+
+    private string username;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        username = HttpContextAccessor.HttpContext.User.Identity.Name;
+        PageReloader.ReloadForced += async () =>
+        {
+            await InvokeAsync(() =>
+            {
+                if (!ProgramCore.Users.Any(u => u.Name == username))
+                {
+                    NavigationManager.NavigateTo("/logout", true);
+                }
+                else
+                {
+                    NavigationManager.NavigateTo(NavigationManager.Uri, true);
+                }
+            });
+        };
+    }
+}

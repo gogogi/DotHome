@@ -14,6 +14,7 @@ namespace DotHome.Core.Pages
         [Parameter]
         public string CategoryName { get; set; }
 
+        private string username;
         private Category category;
         private List<AVisualBlock> visualBlocks;
 
@@ -22,6 +23,12 @@ namespace DotHome.Core.Pages
 
         [Inject]
         public IHttpContextAccessor HttpContextAccessor { get; set; }
+
+        [Inject]
+        public PageReloader PageReloader { get; set; }
+
+        [Inject]
+        public NavigationManager NavigationManager { get; set; }
 
         protected override void OnParametersSet()
         {
@@ -37,6 +44,22 @@ namespace DotHome.Core.Pages
             {
                 visualBlocks = null;
             }
+        }
+
+        protected override void OnInitialized()
+        {
+            base.OnInitialized();
+            PageReloader.ReloadForced += () =>
+            {
+                if (!ProgramCore.Users.Any(u => u.Name == username))
+                {
+                    NavigationManager.NavigateTo("/logout", true);
+                }
+                else
+                {
+                    NavigationManager.NavigateTo(NavigationManager.Uri, true);
+                }
+            };
         }
     }
 }

@@ -29,11 +29,13 @@ namespace DotHome.Core.Controllers
     {
         private IConfiguration configuration;
         private IProgramCore programCore;
+        private PageReloader pageReloader;
 
-        public ConfigController(IConfiguration configuration, IProgramCore programCore)
+        public ConfigController(IConfiguration configuration, IProgramCore programCore, PageReloader pageReloader)
         {
             this.configuration = configuration;
             this.programCore = programCore;
+            this.pageReloader = pageReloader;
         }
 
         [AllowAnonymous, HttpPost("login")]
@@ -104,6 +106,7 @@ namespace DotHome.Core.Controllers
                 await Request.Body.CopyToAsync(fs);
             }
             programCore.Restart();
+            pageReloader.ForceReload();
             return Ok();
         }
 

@@ -59,6 +59,7 @@ namespace DotHome.Core
 
             services.AddHttpContextAccessor();
 
+            services.AddSingleton<PageReloader>();
             services.AddSingleton<ProgrammingModelLoader>();
             services.AddSingleton<BlocksActivator>();
             services.AddSingleton<IProgramCore, BasicProgramCore>();

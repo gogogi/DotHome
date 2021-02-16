@@ -14,6 +14,7 @@ namespace DotHome.Core.Pages
         [Parameter]
         public string RoomName { get; set; }
 
+        private string username;
         private Room room;
         private List<AVisualBlock> visualBlocks;
 
@@ -23,11 +24,17 @@ namespace DotHome.Core.Pages
         [Inject]
         public IHttpContextAccessor HttpContextAccessor { get; set; }
 
+        [Inject]
+        public PageReloader PageReloader { get; set; }
+
+        [Inject]
+        public NavigationManager NavigationManager { get; set; }
+
         protected override void OnParametersSet()
         {
             base.OnParametersSet();
             room = ProgramCore.Rooms.SingleOrDefault(r => r.Name == RoomName);
-            string username = HttpContextAccessor.HttpContext.User.Identity.Name;
+            username = HttpContextAccessor.HttpContext.User.Identity.Name;
             User user = ProgramCore.Users.SingleOrDefault(u => u.Name == username);
             if(room != null && user != null)
             {
@@ -37,6 +44,22 @@ namespace DotHome.Core.Pages
             {
                 visualBlocks = null;
             }
+        }
+
+        protected override void OnInitialized()
+        {
+            base.OnInitialized();
+            PageReloader.ReloadForced += () =>
+            {
+                if(!ProgramCore.Users.Any(u => u.Name == username))
+                {
+                    NavigationManager.NavigateTo("/logout", true);
+                }
+                else
+                {
+                    NavigationManager.NavigateTo(NavigationManager.Uri, true);
+                }
+            };
         }
     }
 }
