@@ -1,0 +1,27 @@
+﻿@page "/AfterLogin/{ReturnUrl}"
+@inject IJSRuntime JSRuntime
+@inject NotificationManager NotificationManager
+@inject NavigationManager NavigationManager
+@inject IHttpContextAccessor HttpContextAncessor
+
+@code {
+
+    [Parameter]
+    public string ReturnUrl { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await RequestNotificationSubscriptionAsync();
+        NavigationManager.NavigateTo(ReturnUrl ?? "/");
+    }
+
+    private async Task RequestNotificationSubscriptionAsync()
+    {
+        var subscription = await JSRuntime.InvokeAsync<NotificationSubscription>("blazorPushNotifications.requestSubscription");
+        if (subscription != null)
+        {
+            subscription.UserId = HttpContextAncessor.HttpContext.User.Identity.Name;
+            NotificationManager.Subscribe(subscription);
+        }
+    }
+}

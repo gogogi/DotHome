@@ -2,9 +2,11 @@
 @using DotHome.Core.Services
 @using DotHome.RunningModel
 @using System.Diagnostics
+@using DotHome.StandardBlocks.Services
 @inject IProgramCore ProgramCore
 @inject NavigationManager NavigationManager
 @inject PageReloader PageReloader
+@inject NotificationManager NotificationManager
 @inject IHttpContextAccessor HttpContextAccessor
 @attribute [Authorize]
 
@@ -23,6 +25,7 @@
     {
         base.OnInitialized();
         username = HttpContextAccessor.HttpContext.User.Identity.Name;
+        //_ = RequestNotificationSubscriptionAsync();
         PageReloader.ReloadForced += async () =>
         {
             await InvokeAsync(() =>

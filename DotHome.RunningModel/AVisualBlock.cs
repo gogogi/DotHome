@@ -5,13 +5,10 @@ using System.Text;
 
 namespace DotHome.RunningModel
 {
-    public abstract class AVisualBlock : ANamedBlock
+    public abstract class AVisualBlock : AAuthenticatedBlock
     {
         internal event Action VisualStateChanged;
-
-        [BlockParameter]
-        public List<User> AllowedUsers { get; set; } = new List<User>();
-
+        
         [BlockParameter(true)]
         public Room Room { get; set; }
 

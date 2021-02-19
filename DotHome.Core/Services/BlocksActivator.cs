@@ -1,5 +1,7 @@
 ﻿using DotHome.ProgrammingModel;
 using DotHome.RunningModel;
+using DotHome.StandardBlocks.Services;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;

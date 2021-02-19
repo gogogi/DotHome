@@ -19,6 +19,21 @@ namespace DotHome.Definitions.Tools
         public static DefinitionsContainer CreateDefinitions(string dllsDirectory)
         {
             DefinitionsContainer definitionsContainer = new DefinitionsContainer();
+
+            List<Assembly> loadedAssemblies = new List<Assembly>();
+            Queue<Assembly> queue = new Queue<Assembly>(Enumerable.Repeat(Assembly.GetEntryAssembly(), 1));
+            while(queue.TryDequeue(out Assembly a))
+            {
+                loadedAssemblies.Add(a);
+                AddBlocksFromAssembly(definitionsContainer, a);
+                foreach (AssemblyName aa in a.GetReferencedAssemblies())
+                {
+                    Assembly aaa = Assembly.Load(aa);
+                    if(!loadedAssemblies.Contains(aaa))
+                        queue.Enqueue(Assembly.Load(aa));
+                }
+            }
+
             foreach (string dll in Directory.GetFiles(dllsDirectory, "*.dll"))
             {
                 Assembly assembly = Assembly.Load(File.ReadAllBytes(dll));
@@ -34,9 +49,7 @@ namespace DotHome.Definitions.Tools
             {
                 if (!type.IsAbstract
                     && typeof(ABlock).IsAssignableFrom(type)
-                    && type.GetConstructors().Count() == 1
-                    && (type.GetConstructors().Single().GetParameters().Count() == 0
-                        || type.GetConstructors().Single().GetParameters().All(pi => typeof(IBlockService).IsAssignableFrom(pi.ParameterType))))
+                    && type.GetConstructors().Count() == 1)
                 {
                     if (type.IsGenericType)
                     {

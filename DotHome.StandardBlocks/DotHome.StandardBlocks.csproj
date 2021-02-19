@@ -13,4 +13,8 @@
     <ProjectReference Include="..\DotHome.RunningModel\DotHome.RunningModel.csproj" />
   </ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="Tools\" />
+	</ItemGroup>
+
 </Project>

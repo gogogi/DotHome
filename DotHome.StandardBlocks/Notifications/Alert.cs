@@ -1,5 +1,6 @@
 ﻿using DotHome.RunningModel;
 using DotHome.RunningModel.Attributes;
+using DotHome.StandardBlocks.Services;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -10,16 +11,22 @@ using System.Threading.Tasks;
 namespace DotHome.StandardBlocks.Notifications
 {
     [Description("Sends notification on changed input"), Category("Notifications")]
-    public class Alert : ABlock
+    public class Alert : AAuthenticatedBlock
     {
         [Description("Input")]
         public Input<bool> I { get; set; }
 
-        [BlockParameter(true), Description("The message to show")]
-        public string Message { get; set; } = "Message";
-
         [BlockParameter, Description("If true, notification is generated on falling edge")]
         public bool FallingEdge { get; set; } = false;
+
+        private INotificationSender notificationSender;
+
+        private bool lastVal;
+
+        public Alert(INotificationSender notificationSender)
+        {
+            this.notificationSender = notificationSender;
+        }
 
         public override void Init()
         {
@@ -28,7 +35,14 @@ namespace DotHome.StandardBlocks.Notifications
 
         public override void Run()
         {
-            throw new NotImplementedException();
+            if(lastVal != I.Val)
+            {
+                lastVal = I.Val;
+                if(lastVal != FallingEdge)
+                {
+                    notificationSender.SendNotification(Name, "/", this);
+                }
+            }
         }
     }
 }

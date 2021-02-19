@@ -1,16 +1,20 @@
 ﻿using DotHome.Core.Services;
+using DotHome.Core.Tools;
 using DotHome.RunningModel;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.JSInterop;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace DotHome.Core.Pages
 {
@@ -18,10 +22,14 @@ namespace DotHome.Core.Pages
     public class LoginModel : PageModel
     {
         private IProgramCore programCore;
+        private IJSRuntime jsRuntime;
+        private NotificationManager notificationManager;
 
-        public LoginModel(IProgramCore programCore)
+        public LoginModel(IProgramCore programCore, IJSRuntime jsRuntime, NotificationManager notificationManager)
         {
             this.programCore = programCore;
+            this.jsRuntime = jsRuntime;
+            this.notificationManager = notificationManager;
         }
 
         [BindProperty]
@@ -44,8 +52,8 @@ namespace DotHome.Core.Pages
                     {
                         new Claim(ClaimTypes.Name, Username)
                     }, "Password")));
-                    var u = HttpContext.User;
-                    return Redirect(returnUrl ?? "/");
+                    var u = HttpContext.User;                    
+                    return Redirect($"/AfterLogin/{HttpUtility.UrlEncode(returnUrl)}");
                 }
                 else
                 {

@@ -3,6 +3,7 @@ using DotHome.Core.Hubs;
 using DotHome.Core.Services;
 using DotHome.Core.Tools;
 using DotHome.RunningModel;
+using DotHome.StandardBlocks.Services;
 using LettuceEncrypt;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
@@ -13,6 +14,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -59,6 +61,11 @@ namespace DotHome.Core
 
             services.AddHttpContextAccessor();
 
+            services.AddDbContext<NotificationsStoreContext>(o => o.UseSqlite("Data Source=notifications.db"), ServiceLifetime.Singleton);
+
+            services.AddSingleton<NotificationManager>();
+            services.AddSingleton<INotificationSender>(sp => sp.GetService<NotificationManager>());
+            //services.AddSingleton<INotificationSender>(sp => sp.GetRequiredService<NotificationManager>());
             services.AddSingleton<PageReloader>();
             services.AddSingleton<ProgrammingModelLoader>();
             services.AddSingleton<BlocksActivator>();
