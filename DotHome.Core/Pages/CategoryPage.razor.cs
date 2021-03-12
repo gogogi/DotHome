@@ -16,7 +16,7 @@ namespace DotHome.Core.Pages
 
         private string username;
         private Category category;
-        private List<AVisualBlock> visualBlocks;
+        private List<VisualBlock> visualBlocks;
 
         [Inject]
         public IProgramCore ProgramCore { get; set; }

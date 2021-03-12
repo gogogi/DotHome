@@ -4,7 +4,7 @@ using System.Drawing;
 
 namespace DotHome.RunningModel
 {
-    public abstract class ABlock
+    public abstract class Block
     {
         private Color debugColor = Color.Black;
 
@@ -12,10 +12,13 @@ namespace DotHome.RunningModel
 
         public string DebugString { get; private set; } = "";
 
+        public List<BlockValue> Inputs { get; } = new List<BlockValue>();
+
+        public List<BlockValue> Outputs { get; } = new List<BlockValue>();
+
         public abstract void Init();
 
         public abstract void Run();
-
 
         protected void DebugWriteLine(object parameter, Color color)
         {
@@ -55,8 +58,5 @@ namespace DotHome.RunningModel
         {
             return "\u001bc" + (char)color.R + (char)color.G + (char)color.B;
         }
-
-        public List<AValue> Inputs { get; } = new List<AValue>();
-        public List<AValue> Outputs { get; } = new List<AValue>();
     }
 }

@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace DotHome.StandardBlocks.Math
 {
     [Category("Math"), Description("Output is arithmetical average of all enabled inputs"), Color("#64b464")]
-    public class Average : ABlock
+    public class Average : Block
     {
         [Description("Input 1")]
         public Input<double> I1 { get; set; }
@@ -35,7 +35,7 @@ namespace DotHome.StandardBlocks.Math
 
         public override void Run()
         {
-            O.Val = (I1.Val + I2.Val + I3.Val + I4.Val) / (2 + (I3.Disabled ? 0 : 1) + (I4.Disabled ? 0 : 1));
+            O.Value = (I1.Value + I2.Value + I3.Value + I4.Value) / (2 + (I3.Disabled ? 0 : 1) + (I4.Disabled ? 0 : 1));
         }
     }
 }

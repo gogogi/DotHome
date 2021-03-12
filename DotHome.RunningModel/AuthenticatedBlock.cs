@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace DotHome.RunningModel
 {
-    public abstract class AAuthenticatedBlock : ANamedBlock
+    public abstract class AuthenticatedBlock : NamedBlock
     {
-        [BlockParameter]
+        [Parameter]
         public List<User> AllowedUsers { get; set; } = new List<User>();
     }
 }

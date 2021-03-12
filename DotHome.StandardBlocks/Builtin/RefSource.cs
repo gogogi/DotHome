@@ -9,21 +9,21 @@ using System.Text;
 
 namespace DotHome.StandardBlocks.Builtin
 {
-    public abstract class RefSource : ABlock
+    public abstract class RefSource : Block
     {
-        [BlockParameter(true)]
+        [Parameter(true)]
         public string Reference { get; set; } = "Ref";
 
-        public abstract AValue Target { get; }
+        public abstract BlockValue Target { get; }
     }
 
     [Description("Provides value from corresponding RefSinks"), Category("Builtin"), Color("Green")]
     public class RefSource<T> : RefSource
     {
         private RefProvider refProvider;
-        private Value<T> target = new Value<T>();
+        private BlockValue<T> target = new BlockValue<T>();
 
-        public override AValue Target => target;
+        public override BlockValue Target => target;
 
         [Description("Output")]
         public Output<T> O { get; set; }
@@ -52,7 +52,7 @@ namespace DotHome.StandardBlocks.Builtin
 
         public override void Run()
         {
-            O.Val = target.Val;
+            O.Value = target.Value;
         }
     }
 }

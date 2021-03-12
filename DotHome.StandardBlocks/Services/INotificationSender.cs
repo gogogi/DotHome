@@ -9,6 +9,6 @@ namespace DotHome.StandardBlocks.Services
 {
     public interface INotificationSender
     {
-        public void SendNotification(string message, string url, AAuthenticatedBlock source);
+        public void SendNotification(string message, string url, AuthenticatedBlock source);
     }
 }

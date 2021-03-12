@@ -5,6 +5,7 @@ using Avalonia.VisualTree;
 using DotHome.Config.Views;
 using DotHome.Definitions.Tools;
 using DotHome.ProgrammingModel;
+using DotHome.RunningModel.Devices;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,7 @@ namespace DotHome.Config.Tools
 {
     public static class ConfigTools
     {
+        public static IEnumerable<DeviceValueType> DeviceValueTypes { get; } = Enum.GetValues(typeof(DeviceValueType)).Cast<DeviceValueType>();
         public static double MinOrDefault<T>(this IEnumerable<T> collection, Func<T, double> selector) => collection.Count() == 0 ? default : collection.Min(selector);
         public static double MaxOrDefault<T>(this IEnumerable<T> collection, Func<T, double> selector) => collection.Count() == 0 ? default : collection.Max(selector);
 
@@ -23,18 +25,6 @@ namespace DotHome.Config.Tools
         {
             Project project = new Project() { Definitions = DefinitionsCreator.CreateDefinitions(AppConfig.Configuration["AssembliesPath"]) };
             project.Pages.Add(new Page() { Name = "Page1", Width = 1000, Height = 1000 });
-            project.Pages.Add(new Page() { Name = "Page2", Width = 1000, Height = 1000 });
-
-            for(int i = 0; i < 200; i++)
-            {
-                //project.Pages[0].Blocks.Add(new RefSink() { Reference = "Ahoj", X = 40 * (i % 20), Y = 30 * (i / 20) });
-            }
-
-            for (int i = 0; i < 200; i++)
-            {
-                //project.Pages[0].Blocks.Add(new RefSource() { Reference = "Ahoj", X = 40 * (i % 20), Y = 500 + 30 * (i / 20) });
-            }
-
             return project;
         }
 

@@ -5,14 +5,14 @@ using System.Text;
 
 namespace DotHome.RunningModel
 {
-    public abstract class AVisualBlock : AAuthenticatedBlock
+    public abstract class VisualBlock : AuthenticatedBlock
     {
         internal event Action VisualStateChanged;
         
-        [BlockParameter(true)]
+        [Parameter(true)]
         public Room Room { get; set; }
 
-        [BlockParameter(true)]
+        [Parameter(true)]
         public Category Category { get; set; }
 
         protected void VisualStateHasChanged()

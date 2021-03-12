@@ -35,6 +35,7 @@
     <None Remove="Assets\Icons\RefSource.png" />
     <None Remove="Assets\Icons\Run_256x.png" />
     <None Remove="Assets\Icons\SelectAll_256x.png" />
+    <None Remove="Assets\Icons\SerialPort_256x.png" />
     <None Remove="Assets\Icons\StepForward_256x.png" />
     <None Remove="Assets\Icons\Trash_256x.png" />
     <None Remove="Assets\Icons\Upload_256x.png" />

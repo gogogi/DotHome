@@ -8,7 +8,7 @@ using System.Text;
 namespace DotHome.StandardBlocks.Logics
 {
     [Description("Output is HIGH if all enabled inputs are HIGH"), Category("Logics")]
-    public class And : ABlock
+    public class And : Block
     {
         [Description("Input 1")]
         public Input<bool> I1 { get; set; }
@@ -32,7 +32,7 @@ namespace DotHome.StandardBlocks.Logics
 
         public override void Run()
         {
-            O.Val = I1.Val && I2.Val && (I3.Val || I3.Disabled) && (I4.Val || I4.Disabled);
+            O.Value = I1.Value && I2.Value && (I3.Value || I3.Disabled) && (I4.Value || I4.Disabled);
         }
     }
 }

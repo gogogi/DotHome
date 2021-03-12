@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace DotHome.StandardBlocks.Controls
 {
     [Category("Controls"), Description("User can switch the value ON/OFF"), Color("#8040fe")]
-    public class Switch : AVisualBlock
+    public class Switch : VisualBlock
     {
         internal bool Val { get; set; }
 
@@ -35,26 +35,26 @@ namespace DotHome.StandardBlocks.Controls
 
         public override void Run()
         {
-            if(lastS != S.Val)
+            if(lastS != S.Value)
             {
-                lastS = S.Val;
-                if(S.Val)
+                lastS = S.Value;
+                if(S.Value)
                 {
                     Val = true;
                 }
             }
-            else if (lastR != R.Val)
+            else if (lastR != R.Value)
             {
-                lastR = R.Val;
-                if (R.Val)
+                lastR = R.Value;
+                if (R.Value)
                 {
                     Val = false;
                 }
             }
-            else if (lastT != T.Val)
+            else if (lastT != T.Value)
             {
-                lastT = T.Val;
-                if (T.Val)
+                lastT = T.Value;
+                if (T.Value)
                 {
                     Val = !Val;
                 }
@@ -66,7 +66,7 @@ namespace DotHome.StandardBlocks.Controls
                 VisualStateHasChanged();
             }
 
-            O.Val = Val;
+            O.Value = Val;
         }
     }
 }

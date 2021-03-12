@@ -26,7 +26,7 @@ namespace DotHome.Core.Services
         private int usageIndex = 0;
         private int usageCount = 0;
         private EventWaitHandle eventWaitHandle = new EventWaitHandle(false, EventResetMode.AutoReset);
-        private List<ABlock> blocks;
+        private List<RunningModel.Block> blocks;
         private List<IBlockService> services;
         private CancellationTokenSource cancellationTokenSource;
         private Task runTask;
@@ -39,7 +39,7 @@ namespace DotHome.Core.Services
 
         public double MaxCpuUsage => usageHistory.Take(usageCount).Max();
 
-        public List<AVisualBlock> VisualBlocks { get; private set; }
+        public List<VisualBlock> VisualBlocks { get; private set; }
 
         public List<User> Users { get; private set; }
 
@@ -57,7 +57,7 @@ namespace DotHome.Core.Services
 
         public void StartDebugging()
         {
-            foreach (ABlock block in blocks)
+            foreach (RunningModel.Block block in blocks)
             {
                 debugValues.Add(block.Id, new Tuple<object[], object[]>(Enumerable.Repeat<object>(null, block.Inputs.Count).ToArray(), Enumerable.Repeat<object>(null, block.Outputs.Count).ToArray())); ;
             }
@@ -110,8 +110,8 @@ namespace DotHome.Core.Services
         {
             Project programmingModel = programmingModelLoader.LoadProgrammingModel();
             period = programmingModel.ProgramPeriod;
-            blocks = new List<ABlock>();
-            VisualBlocks = new List<AVisualBlock>();
+            blocks = new List<RunningModel.Block>();
+            VisualBlocks = new List<VisualBlock>();
 
             Users = programmingModel.Users.ToList();
             Rooms = programmingModel.Rooms.ToList();
@@ -119,21 +119,21 @@ namespace DotHome.Core.Services
 
             foreach (Page page in programmingModel.Pages)
             {
-                Dictionary<Input, AValue> inputsDictionary = new Dictionary<Input, AValue>();
-                Dictionary<Output, AValue> outputsDictionary = new Dictionary<Output, AValue>();
+                Dictionary<Input, BlockValue> inputsDictionary = new Dictionary<Input, BlockValue>();
+                Dictionary<Output, BlockValue> outputsDictionary = new Dictionary<Output, BlockValue>();
 
-                List<Block> sortedBlocks = BlocksSorter.SortTopological(page.Blocks.ToList(), page.Wires.ToList());
+                List<ProgrammingModel.Block> sortedBlocks = BlocksSorter.SortTopological(page.Blocks.ToList(), page.Wires.ToList());
 
-                foreach (Block b in sortedBlocks)
+                foreach (ProgrammingModel.Block b in sortedBlocks)
                 {
-                    ABlock block = blocksActivator.CreateBlock(b);
+                    RunningModel.Block block = blocksActivator.CreateBlock(b);
                     block.Id = b.Id;
 
                     for (int i = 0; i < b.Inputs.Count; i++) inputsDictionary.Add(b.Inputs[i], block.Inputs[i]);
                     for (int i = 0; i < b.Outputs.Count; i++) outputsDictionary.Add(b.Outputs[i], block.Outputs[i]);
 
                     blocks.Add(block);
-                    if (block is AVisualBlock vb) VisualBlocks.Add(vb);
+                    if (block is VisualBlock vb) VisualBlocks.Add(vb);
                 }
                 foreach (Wire wire in page.Wires)
                 {
@@ -149,7 +149,7 @@ namespace DotHome.Core.Services
 
         private void Unload()
         {
-            foreach(ABlock block in blocks)
+            foreach(RunningModel.Block block in blocks)
             {
                 if (block is IDisposable d) d.Dispose();
             }
@@ -194,7 +194,7 @@ namespace DotHome.Core.Services
             {
                 service.Init();
             }
-            foreach (ABlock block in blocks)
+            foreach (RunningModel.Block block in blocks)
             {
                 block.Init();
             }
@@ -206,7 +206,7 @@ namespace DotHome.Core.Services
             {
                 service.Run();
             }
-            foreach (ABlock block in blocks)
+            foreach (RunningModel.Block block in blocks)
             {
                 try
                 {
@@ -226,7 +226,7 @@ namespace DotHome.Core.Services
                     }
                 }
 
-                foreach (AValue output in block.Outputs)
+                foreach (BlockValue output in block.Outputs)
                 {
                     output.Transfer();
                 }

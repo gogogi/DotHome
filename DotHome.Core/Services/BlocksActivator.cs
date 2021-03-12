@@ -64,16 +64,16 @@ namespace DotHome.Core.Services
             }
         }
 
-        public ABlock CreateBlock(Block b)
+        public RunningModel.Block CreateBlock(ProgrammingModel.Block b)
         {
             Type type = b.Definition.Type;
-            ABlock block = (ABlock)CreateInstance(type);
+            RunningModel.Block block = (RunningModel.Block)CreateInstance(type);
             block.Id = b.Id;
 
             foreach (Input i in b.Inputs)
             {
                 PropertyInfo pi = type.GetProperty(i.Definition.Name);
-                AValue input = (AValue)Activator.CreateInstance(pi.PropertyType);
+                BlockValue input = (BlockValue)Activator.CreateInstance(pi.PropertyType);
                 input.Disabled = i.Disabled;
                 pi.SetValue(block, input);
                 block.Inputs.Add(input);
@@ -82,7 +82,7 @@ namespace DotHome.Core.Services
             foreach (Output o in b.Outputs)
             {
                 PropertyInfo po = type.GetProperty(o.Definition.Name);
-                AValue output = (AValue)Activator.CreateInstance(po.PropertyType);
+                BlockValue output = (BlockValue)Activator.CreateInstance(po.PropertyType);
                 output.Disabled = o.Disabled;
                 po.SetValue(block, output);
                 block.Outputs.Add(output);

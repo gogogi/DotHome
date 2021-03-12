@@ -44,11 +44,11 @@ namespace DotHome.ProgrammingModel
             {
                 foreach (Page p in Pages)
                 {
-                    foreach (Block b in p.Blocks)
+                    foreach (Block b in p.Blocks.OfType<Block>())
                     {
-                        if (typeof(AVisualBlock).IsAssignableFrom(b.Definition.Type))
+                        if (typeof(VisualBlock).IsAssignableFrom(b.Definition.Type))
                         {
-                            Parameter parameter = b.Parameters.Single(p => p.Definition.Name == nameof(AVisualBlock.Category));
+                            Parameter parameter = b.Parameters.Single(p => p.Definition.Name == nameof(VisualBlock.Category));
                             if (e.OldItems.Contains(parameter.Value)) parameter.Value = null;
                         }
                     }
@@ -62,11 +62,11 @@ namespace DotHome.ProgrammingModel
             {
                 foreach (Page p in Pages)
                 {
-                    foreach (Block b in p.Blocks)
+                    foreach (Block b in p.Blocks.OfType<Block>())
                     {
-                        if (typeof(AVisualBlock).IsAssignableFrom(b.Definition.Type))
+                        if (typeof(VisualBlock).IsAssignableFrom(b.Definition.Type))
                         {
-                            Parameter parameter = b.Parameters.Single(p => p.Definition.Name == nameof(AVisualBlock.Room));
+                            Parameter parameter = b.Parameters.Single(p => p.Definition.Name == nameof(VisualBlock.Room));
                             if (e.OldItems.Contains(parameter.Value)) parameter.Value = null;
                         }
                     }
@@ -80,11 +80,11 @@ namespace DotHome.ProgrammingModel
             {
                 foreach(Page p in Pages)
                 {
-                    foreach(Block b in p.Blocks)
+                    foreach(Block b in p.Blocks.OfType<Block>())
                     {
-                        if(typeof(AVisualBlock).IsAssignableFrom(b.Definition.Type))
+                        if(typeof(VisualBlock).IsAssignableFrom(b.Definition.Type))
                         {
-                            List<User> allowedUsers = (List<User>)b.Parameters.Single(p => p.Definition.Name == nameof(AVisualBlock.AllowedUsers)).Value;
+                            List<User> allowedUsers = (List<User>)b.Parameters.Single(p => p.Definition.Name == nameof(VisualBlock.AllowedUsers)).Value;
                             allowedUsers.RemoveAll(u => e.OldItems.Contains(u));
                         }
                     }

@@ -6,9 +6,9 @@ using System.Text;
 
 namespace DotHome.RunningModel
 {
-    public abstract class ANamedBlock : ABlock
+    public abstract class NamedBlock : Block
     {
-        [BlockParameter(true), Description("Name of the block")]
+        [Parameter(true), Description("Name of the block")]
         public string Name { get; set; } = "Named Block";
     }
 }

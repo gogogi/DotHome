@@ -12,7 +12,7 @@
                 </RadzenLabel>
             </div>
             <div class="col-6 d-flex align-items-center justify-content-end">
-                <RadzenLink Icon="logout" Path="logout" Text="Logout" Style="margin-right:20px" />
+                <RadzenLink Icon="logout" Path="/BeforeLogout" Text="Logout" Style="margin-right:20px" />
             </div>
         </div>
     </ChildContent>
@@ -47,9 +47,4 @@
 
 @code {
     private bool sidebarExpanded;
-
-    private void OnLogout()
-    {
-        NavigationManager.NavigateTo("/logout");
-    }
 }

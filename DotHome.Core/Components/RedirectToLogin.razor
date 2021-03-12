@@ -4,6 +4,6 @@
     protected override void OnAfterRender(bool firstRender)
     {
         base.OnAfterRender(firstRender);
-        Navigation.NavigateTo($"login?returnUrl={HttpUtility.UrlEncode(Navigation.Uri)}", true);
+        Navigation.NavigateTo("/Login", true);
     }
 }

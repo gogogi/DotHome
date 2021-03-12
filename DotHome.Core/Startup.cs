@@ -3,6 +3,7 @@ using DotHome.Core.Hubs;
 using DotHome.Core.Services;
 using DotHome.Core.Tools;
 using DotHome.RunningModel;
+using DotHome.RunningModel.Devices;
 using DotHome.StandardBlocks.Services;
 using LettuceEncrypt;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -70,6 +71,8 @@ namespace DotHome.Core
             services.AddSingleton<ProgrammingModelLoader>();
             services.AddSingleton<BlocksActivator>();
             services.AddSingleton<IProgramCore, BasicProgramCore>();
+
+            //services.AddSingleton<UDPCommunicationProvider>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -102,6 +105,9 @@ namespace DotHome.Core
                 endpoints.MapHub<DebuggingHub>("debug");
                 endpoints.MapFallbackToPage("/_Host");
             });
+
+            app.ApplicationServices.GetService<IProgramCore>();
+            //app.ApplicationServices.GetService<UDPCommunicationProvider>().SearchDevices();
         }
     }
 }

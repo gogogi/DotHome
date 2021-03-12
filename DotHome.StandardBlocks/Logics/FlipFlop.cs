@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace DotHome.StandardBlocks.Logics
 {
     [Category("Logics"), Description("Output is switched HIGH/LOW according to inputs")]
-    public class FlipFlop : ABlock
+    public class FlipFlop : Block
     {
         [Description("Set")]
         public Input<bool> S { get; set; }
@@ -24,7 +24,7 @@ namespace DotHome.StandardBlocks.Logics
         [Description("Output")]
         public Output<bool> O { get; set; }
 
-        [BlockParameter, Description("Value on Output if both Set and Reset are HIGH")]
+        [Parameter, Description("Value on Output if both Set and Reset are HIGH")]
         public bool DominantSet { get; set; } = false;
 
         private bool lastT;
@@ -36,13 +36,13 @@ namespace DotHome.StandardBlocks.Logics
 
         public override void Run()
         {
-            if (S.Val && R.Val) O.Val = DominantSet;
-            else if (S.Val) O.Val = true;
-            else if (R.Val) O.Val = false;
-            else if(lastT != T.Val)
+            if (S.Value && R.Value) O.Value = DominantSet;
+            else if (S.Value) O.Value = true;
+            else if (R.Value) O.Value = false;
+            else if(lastT != T.Value)
             {
-                lastT = T.Val;
-                if (T.Val) O.Val = !O.Val;
+                lastT = T.Value;
+                if (T.Value) O.Value = !O.Value;
             }
         }
     }

@@ -10,7 +10,7 @@ namespace DotHome.Config.Tools
 {
     public class BlockContainer
     {
-        public List<Block> Blocks { get; } = new List<Block>();
+        public List<ProgrammingModel.Block> Blocks { get; } = new List<ProgrammingModel.Block>();
 
         public List<Wire> Wires { get; } = new List<Wire>();
 
@@ -31,8 +31,8 @@ namespace DotHome.Config.Tools
 
             foreach (var b in Blocks)
             {
-                var b2 = new Block(b.Definition) { X = b.X, Y = b.Y };
-                for(int i = 0; i < b.Inputs.Count; i++)
+                var b2 = new ProgrammingModel.Block(b.Definition) { X = b.X, Y = b.Y };
+                for (int i = 0; i < b.Inputs.Count; i++)
                 {
                     b2.Inputs[i].Disabled = b.Inputs[i].Disabled;
                     inputsDictionary.Add(b.Inputs[i], b2.Inputs[i]);
@@ -44,11 +44,6 @@ namespace DotHome.Config.Tools
                 }
                 for (int i = 0; i < b.Parameters.Count; i++)
                 {
-                    if(b.Parameters[i].Definition.Type == typeof(List<User>))
-                    {
-                        ((List<User>)b2.Parameters[i].Value).AddRange((List<User>)b.Parameters[i].Value);
-                    }
-                    else
                     {
                         b2.Parameters[i].Value = b.Parameters[i].Value;
                     }

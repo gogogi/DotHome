@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace DotHome.StandardBlocks.Math
 {
     [Category("Math"), Description("Output is product of all enabled inputs"), Color("#64b464")]
-    public class Product : ABlock
+    public class Product : Block
     {
         [Description("Input 1")]
         public Input<double> I1 { get; set; }
@@ -34,7 +34,7 @@ namespace DotHome.StandardBlocks.Math
 
         public override void Run()
         {
-            O.Val = I1.Val * I2.Val * (I3.Disabled ? 1 : I3.Val) * (I4.Disabled ? 1 : I4.Val);
+            O.Value = I1.Value * I2.Value * (I3.Disabled ? 1 : I3.Value) * (I4.Disabled ? 1 : I4.Value);
         }
     }
 }

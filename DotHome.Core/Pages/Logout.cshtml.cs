@@ -11,10 +11,10 @@ namespace DotHome.Core.Pages
 {
     public class LogoutModel : PageModel
     {
-        public async Task<IActionResult> OnGet(string returnUrl = null)
+        public async Task<IActionResult> OnGet()
         {
             await HttpContext.SignOutAsync();
-            return Redirect($"/AfterLogout/{HttpUtility.UrlEncode(returnUrl)}");
+            return Redirect("/");
         }
     }
 }

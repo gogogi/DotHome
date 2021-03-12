@@ -28,9 +28,13 @@ namespace DotHome.Definitions.Tools
                 AddBlocksFromAssembly(definitionsContainer, a);
                 foreach (AssemblyName aa in a.GetReferencedAssemblies())
                 {
+                    
                     Assembly aaa = Assembly.Load(aa);
-                    if(!loadedAssemblies.Contains(aaa))
+                    if(!loadedAssemblies.Contains(aaa) && !queue.Contains(aaa))
+                    {
                         queue.Enqueue(Assembly.Load(aa));
+                        //Debug.WriteLine("-- " + aa.FullName + " (" + a.FullName + ")");
+                    }
                 }
             }
 
@@ -48,7 +52,7 @@ namespace DotHome.Definitions.Tools
             foreach(Type type in assembly.GetTypes())
             {
                 if (!type.IsAbstract
-                    && typeof(ABlock).IsAssignableFrom(type)
+                    && typeof(Block).IsAssignableFrom(type)
                     && type.GetConstructors().Count() == 1)
                 {
                     if (type.IsGenericType)
@@ -125,13 +129,13 @@ namespace DotHome.Definitions.Tools
                     outputDefinition.DefaultDisabled = propertyInfo.GetCustomAttribute<DisablableAttribute>()?.DefaultDisabled ?? false;
                     blockDefinition.Outputs.Add(outputDefinition);
                 }
-                else if (propertyInfo.GetCustomAttribute<BlockParameterAttribute>() != null)
+                else if (propertyInfo.GetCustomAttribute<ParameterAttribute>() != null)
                 {
                     ParameterDefinition parameterDefinition = new ParameterDefinition();
                     parameterDefinition.PropertyInfo = propertyInfo;
                     parameterDefinition.Name = propertyInfo.Name;
                     parameterDefinition.Type = propertyInfo.PropertyType;
-                    parameterDefinition.ShowInBlock = propertyInfo.GetCustomAttribute<BlockParameterAttribute>().ShowInBlock;
+                    parameterDefinition.ShowInBlock = propertyInfo.GetCustomAttribute<ParameterAttribute>().ShowInBlock;
                     parameterDefinition.Description = propertyInfo.GetCustomAttribute<DescriptionAttribute>()?.Description;
                     parameterDefinition.DefaultValue = propertyInfo.GetValue(Activator.CreateInstance(type, Enumerable.Repeat<object>(null, type.GetConstructors().Single().GetParameters().Length).ToArray()));
                     parameterDefinition.ValidationAttributes.AddRange(propertyInfo.GetCustomAttributes<ValidationAttribute>(true));

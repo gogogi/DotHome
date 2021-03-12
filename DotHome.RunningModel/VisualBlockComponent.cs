@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace DotHome.RunningModel
 {
-    public class VisualBlockComponent<T> : ComponentBase where T : AVisualBlock
+    public class VisualBlockComponent<T> : ComponentBase where T : VisualBlock
     {
         [Parameter]
         public T Block { get; set; }

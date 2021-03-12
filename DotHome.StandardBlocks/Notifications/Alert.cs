@@ -11,12 +11,12 @@ using System.Threading.Tasks;
 namespace DotHome.StandardBlocks.Notifications
 {
     [Description("Sends notification on changed input"), Category("Notifications")]
-    public class Alert : AAuthenticatedBlock
+    public class Alert : AuthenticatedBlock
     {
         [Description("Input")]
         public Input<bool> I { get; set; }
 
-        [BlockParameter, Description("If true, notification is generated on falling edge")]
+        [Parameter, Description("If true, notification is generated on falling edge")]
         public bool FallingEdge { get; set; } = false;
 
         private INotificationSender notificationSender;
@@ -35,9 +35,9 @@ namespace DotHome.StandardBlocks.Notifications
 
         public override void Run()
         {
-            if(lastVal != I.Val)
+            if(lastVal != I.Value)
             {
-                lastVal = I.Val;
+                lastVal = I.Value;
                 if(lastVal != FallingEdge)
                 {
                     notificationSender.SendNotification(Name, "/", this);

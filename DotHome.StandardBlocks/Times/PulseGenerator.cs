@@ -11,7 +11,7 @@ using System.Text;
 namespace DotHome.StandardBlocks.Times
 {
     [Description("Generates pulses on output"), Category("Times"), Color("Orange")]
-    public class PulseGenerator : ANamedBlock
+    public class PulseGenerator : NamedBlock
     {
         [Description("Disable")]
         public Input<bool> D { get; set; }
@@ -19,10 +19,10 @@ namespace DotHome.StandardBlocks.Times
         [Description("Output")]
         public Output<bool> O { get; set; }
 
-        [BlockParameter(true), Description("Time On [ms]"), Range(500, 60 * 60_000)]
+        [Parameter(true), Description("Time On [ms]"), Range(500, 60 * 60 * 1000)]
         public uint TimeOn { get; set; } = 1000;
 
-        [BlockParameter(true), Description("Time Off [ms]"), Range(500, 60 * 60_000)]
+        [Parameter(true), Description("Time Off [ms]"), Range(500, 60 * 60 * 1000)]
         public uint TimeOff { get; set; } = 1000;
 
         private TimeProvider timeProvider;
@@ -34,12 +34,12 @@ namespace DotHome.StandardBlocks.Times
 
         public override void Init()
         {
-            O.Val = false;
+            O.Value = false;
         }
 
         public override void Run()
         {
-            O.Val = !D.Val && (timeProvider.Millis % (TimeOn + TimeOff)) > TimeOff;
+            O.Value = !D.Value && (timeProvider.Millis % (TimeOn + TimeOff)) > TimeOff;
         }
 
         

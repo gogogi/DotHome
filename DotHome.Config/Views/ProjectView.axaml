@@ -23,6 +23,21 @@
 				<ScrollViewer>
 					<TreeView BorderThickness="0">
 						<TreeViewItem Items="{Binding Users}">
+							<TreeViewItem.Header>
+								<StackPanel Orientation="Horizontal">
+									<Image Source="/Assets/Icons/UserGroup_256x.png" Width="16" Height="16" Margin="4 0"/>
+									<TextBlock Text="Users"/>
+								</StackPanel>
+							</TreeViewItem.Header>
+							<TreeViewItem.ContextMenu>
+								<ContextMenu>
+									<MenuItem Header="New User" Click="NewUser_Click">
+										<MenuItem.Icon>
+											<Image Source="/Assets/Icons/Add_256x.png"/>
+										</MenuItem.Icon>
+									</MenuItem>
+								</ContextMenu>
+							</TreeViewItem.ContextMenu>
 							<TreeViewItem.Styles>
 								<Style Selector=":is(TreeViewItem)">
 									<Setter Property="ContextMenu">
@@ -43,21 +58,6 @@
 									</Setter>
 								</Style>
 							</TreeViewItem.Styles>
-							<TreeViewItem.ContextMenu>
-								<ContextMenu>
-									<MenuItem Header="New User" Click="NewUser_Click">
-										<MenuItem.Icon>
-											<Image Source="/Assets/Icons/Add_256x.png"/>
-										</MenuItem.Icon>
-									</MenuItem>
-								</ContextMenu>
-							</TreeViewItem.ContextMenu>
-							<TreeViewItem.Header>
-								<StackPanel Orientation="Horizontal">
-									<Image Source="/Assets/Icons/UserGroup_256x.png" Width="16" Height="16" Margin="4 0"/>
-									<TextBlock Text="Users"/>
-								</StackPanel>
-							</TreeViewItem.Header>
 							<TreeViewItem.ItemTemplate>
 								<TreeDataTemplate>
 									<StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
@@ -74,6 +74,15 @@
 									<TextBlock Text="Rooms"/>
 								</StackPanel>
 							</TreeViewItem.Header>
+							<TreeViewItem.ContextMenu>
+								<ContextMenu>
+									<MenuItem Header="New Room" Click="NewRoom_Click">
+										<MenuItem.Icon>
+											<Image Source="/Assets/Icons/Add_256x.png"/>
+										</MenuItem.Icon>
+									</MenuItem>
+								</ContextMenu>
+							</TreeViewItem.ContextMenu>
 							<TreeViewItem.Styles>
 								<Style Selector=":is(TreeViewItem)">
 									<Setter Property="ContextMenu">
@@ -94,15 +103,6 @@
 									</Setter>
 								</Style>
 							</TreeViewItem.Styles>
-							<TreeViewItem.ContextMenu>
-								<ContextMenu>
-									<MenuItem Header="New Room" Click="NewRoom_Click">
-										<MenuItem.Icon>
-											<Image Source="/Assets/Icons/Add_256x.png"/>
-										</MenuItem.Icon>
-									</MenuItem>
-								</ContextMenu>
-							</TreeViewItem.ContextMenu>
 							<TreeViewItem.ItemTemplate>
 								<TreeDataTemplate>
 									<StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
@@ -119,6 +119,15 @@
 									<TextBlock Text="Categories"/>
 								</StackPanel>
 							</TreeViewItem.Header>
+							<TreeViewItem.ContextMenu>
+								<ContextMenu>
+									<MenuItem Header="New Category" Click="NewCategory_Click">
+										<MenuItem.Icon>
+											<Image Source="/Assets/Icons/Add_256x.png"/>
+										</MenuItem.Icon>
+									</MenuItem>
+								</ContextMenu>
+							</TreeViewItem.ContextMenu>
 							<TreeViewItem.Styles>
 								<Style Selector=":is(TreeViewItem)">
 									<Setter Property="ContextMenu">
@@ -139,15 +148,6 @@
 									</Setter>
 								</Style>
 							</TreeViewItem.Styles>
-							<TreeViewItem.ContextMenu>
-								<ContextMenu>
-									<MenuItem Header="New Category" Click="NewCategory_Click">
-										<MenuItem.Icon>
-											<Image Source="/Assets/Icons/Add_256x.png"/>
-										</MenuItem.Icon>
-									</MenuItem>
-								</ContextMenu>
-							</TreeViewItem.ContextMenu>
 							<TreeViewItem.ItemTemplate>
 								<TreeDataTemplate>
 									<StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
@@ -158,6 +158,21 @@
 							</TreeViewItem.ItemTemplate>
 						</TreeViewItem>
 						<TreeViewItem Items="{Binding Pages}">
+							<TreeViewItem.Header>
+								<StackPanel Orientation="Horizontal">
+									<Image Source="/Assets/Icons/DocumentCollection_256x.png" Width="16" Height="16" Margin="4 0"/>
+									<TextBlock Text="Pages"/>
+								</StackPanel>
+							</TreeViewItem.Header>
+							<TreeViewItem.ContextMenu>
+								<ContextMenu>
+									<MenuItem Header="New Page" Click="NewPage_Click">
+										<MenuItem.Icon>
+											<Image Source="/Assets/Icons/Add_256x.png"/>
+										</MenuItem.Icon>
+									</MenuItem>
+								</ContextMenu>
+							</TreeViewItem.ContextMenu>
 							<TreeViewItem.Styles>
 								<Style Selector=":is(TreeViewItem)">
 									<Setter Property="ContextMenu">
@@ -178,21 +193,6 @@
 									</Setter>
 								</Style>
 							</TreeViewItem.Styles>
-							<TreeViewItem.ContextMenu>
-								<ContextMenu>
-									<MenuItem Header="New Page" Click="NewPage_Click">
-										<MenuItem.Icon>
-											<Image Source="/Assets/Icons/Add_256x.png"/>
-										</MenuItem.Icon>
-									</MenuItem>
-								</ContextMenu>
-							</TreeViewItem.ContextMenu>
-							<TreeViewItem.Header>
-								<StackPanel Orientation="Horizontal">
-									<Image Source="/Assets/Icons/DocumentCollection_256x.png" Width="16" Height="16" Margin="4 0"/>
-									<TextBlock Text="Pages"/>
-								</StackPanel>
-							</TreeViewItem.Header>
 							<TreeViewItem.ItemTemplate>
 								<TreeDataTemplate>
 									<StackPanel Orientation="Horizontal" DoubleTapped="Page_DoubleTapped" HorizontalAlignment="Stretch">
@@ -202,14 +202,50 @@
 								</TreeDataTemplate>
 							</TreeViewItem.ItemTemplate>
 						</TreeViewItem>
-						<TreeViewItem>
+						<TreeViewItem Items="{Binding Devices}">
 							<TreeViewItem.Header>
 								<StackPanel Orientation="Horizontal">
 									<Image Source="/Assets/Icons/ParallelPort_256x.png" Width="16" Height="16" Margin="4 0"/>
 									<TextBlock Text="Devices"/>
 								</StackPanel>
 							</TreeViewItem.Header>
-							<TreeViewItem Header="Vojta"/>
+							<TreeViewItem.ContextMenu>
+								<ContextMenu>
+									<MenuItem Header="New Device" Click="NewDevice_Click">
+										<MenuItem.Icon>
+											<Image Source="/Assets/Icons/Add_256x.png"/>
+										</MenuItem.Icon>
+									</MenuItem>
+								</ContextMenu>
+							</TreeViewItem.ContextMenu>
+							<TreeViewItem.Styles>
+								<Style Selector=":is(TreeViewItem)">
+									<Setter Property="ContextMenu">
+										<Setter.Value>
+											<ContextMenu>
+												<MenuItem Header="Edit" Click="EditDevice_Click">
+													<MenuItem.Icon>
+														<Image Source="/Assets/Icons/Edit_256x.png"/>
+													</MenuItem.Icon>
+												</MenuItem>
+												<MenuItem Header="Remove" Click="RemoveDevice_Click">
+													<MenuItem.Icon>
+														<Image Source="/Assets/Icons/Trash_256x.png"/>
+													</MenuItem.Icon>
+												</MenuItem>
+											</ContextMenu>
+										</Setter.Value>
+									</Setter>
+								</Style>
+							</TreeViewItem.Styles>
+							<TreeViewItem.ItemTemplate>
+								<TreeDataTemplate>
+									<StackPanel Orientation="Horizontal" DoubleTapped="Device_DoubleTapped" HorizontalAlignment="Stretch">
+										<Image Source="/Assets/Icons/SerialPort_256x.png" Width="16" Height="16" Margin="4 0"/>
+										<TextBlock Text="{Binding Name}"/>
+									</StackPanel>
+								</TreeDataTemplate>
+							</TreeViewItem.ItemTemplate>
 						</TreeViewItem>
 					</TreeView>
 				</ScrollViewer>
@@ -217,12 +253,6 @@
 			<TabItem Header="Block Library">
 				<local:BlocksLibraryView/>
 			</TabItem>
-			<!--<TabItem Header="Selection">
-				
-			</TabItem>
-			<TabItem Header="Device">
-
-			</TabItem>-->
 		</TabControl>
 		<GridSplitter Grid.Column="1" Width="5" Background="White" BorderBrush="DarkGray" BorderThickness="1 0"/>
 		<TabControl x:Name="pagesTabControl" Grid.Column="2" Items="{Binding Pages}" SelectedItem="{Binding SelectedPage, Mode=OneWayToSource}">

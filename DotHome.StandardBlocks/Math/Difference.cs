@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace DotHome.StandardBlocks.Math
 {
     [Category("Math"), Description("O = I1 - I2"), Color("#64b464")]
-    public class Difference : ABlock
+    public class Difference : Block
     {
         [Description("Input 1")]
         public Input<double> I1 { get; set; }
@@ -28,7 +28,7 @@ namespace DotHome.StandardBlocks.Math
 
         public override void Run()
         {
-            O.Val = I1.Val - I2.Val;
+            O.Value = I1.Value - I2.Value;
         }
     }
 }

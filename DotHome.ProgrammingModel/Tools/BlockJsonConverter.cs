@@ -23,8 +23,8 @@ namespace DotHome.ProgrammingModel.Tools
             List<Parameter> oldParameters = new List<Parameter>();
             foreach (Input input in block.Inputs)
             {
-                input.Definition = block.Definition.Inputs.SingleOrDefault(id => id.Name == input.Definition.Name);
-                if(input.Definition == null)
+                if(block is Block b) input.Definition = block.Definition.Inputs.SingleOrDefault(id => id.Name == input.Definition.Name);
+                if (input.Definition == null)
                 {
                     oldInputs.Add(input);
                 }

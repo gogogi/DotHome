@@ -141,6 +141,40 @@ namespace DotHome.Config.Views
             }
         }
 
+        private void Device_DoubleTapped(object sender, Avalonia.Interactivity.RoutedEventArgs e)
+        {
+            //Page page = (Page)((IControl)sender).DataContext;
+            //page.Visible = true;
+            //pagesTabControl.SelectedItem = page;
+        }
+
+        private async void NewDevice_Click(object sender, Avalonia.Interactivity.RoutedEventArgs e)
+        {
+            //NewDeviceWindow newDeviceWindow = new NewDeviceWindow(Project.Definitions.DeviceDefinitions);
+            //Device device = await newDeviceWindow.ShowDialog<Device>(ConfigTools.MainWindow);
+            //if(device != null)
+            //{
+            //    Project.Devices.Add(device);
+            //}
+        }
+
+        private async void EditDevice_Click(object sender, Avalonia.Interactivity.RoutedEventArgs e)
+        {
+            //Page page = (Page)((IControl)sender).DataContext;
+            //await new PageWindow(page).ShowDialog(ConfigTools.MainWindow);
+        }
+
+        private async void RemoveDevice_Click(object sender, Avalonia.Interactivity.RoutedEventArgs e)
+        {
+            //Room room = (Room)((IControl)sender).DataContext;
+            //var result = await MessageBoxManager.GetMessageBoxStandardWindow("Remove Room", $"Do you really want to remove room '{room.Name}'?", ButtonEnum.YesNo, Icon.Warning).ShowDialog(ConfigTools.MainWindow);
+            //if (result == ButtonResult.Yes)
+            //{
+            //    Project.Rooms.Remove(room);
+            //}
+        }
+
+
         public ProjectView()
         {
             this.InitializeComponent();

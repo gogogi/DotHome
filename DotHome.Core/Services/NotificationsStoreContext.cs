@@ -16,10 +16,5 @@ namespace DotHome.Core.Services
         {
             Database.EnsureCreated();
         }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            base.OnModelCreating(modelBuilder);
-        }
     }
 }

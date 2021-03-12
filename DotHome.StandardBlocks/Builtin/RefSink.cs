@@ -10,9 +10,9 @@ using System.Text;
 
 namespace DotHome.StandardBlocks.Builtin
 {
-    public abstract class RefSink : ABlock
+    public abstract class RefSink : Block
     {
-        [BlockParameter(true), Unique]
+        [Parameter(true), Unique]
         public string Reference { get; set; } = "Ref";
 
         public event Action Transfer;

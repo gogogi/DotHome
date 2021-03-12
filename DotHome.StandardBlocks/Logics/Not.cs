@@ -8,7 +8,7 @@ using System.Text;
 namespace DotHome.StandardBlocks.Logics
 {
     [Description("Output is negated input"), Category("Logics")]
-    class Not : ABlock
+    class Not : Block
     {
         [Description("Input")]
         public Input<bool> I { get; set; }
@@ -23,7 +23,7 @@ namespace DotHome.StandardBlocks.Logics
 
         public override void Run()
         {
-            O.Val = !I.Val;
+            O.Value = !I.Value;
         }
     }
 }

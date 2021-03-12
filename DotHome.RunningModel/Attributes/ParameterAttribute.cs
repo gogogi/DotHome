@@ -4,10 +4,10 @@ using System.Text;
 
 namespace DotHome.RunningModel.Attributes
 {
-    public class BlockParameterAttribute : Attribute
+    public class ParameterAttribute : Attribute
     {
         public bool ShowInBlock { get; }
-        public BlockParameterAttribute(bool showInBlock = false)
+        public ParameterAttribute(bool showInBlock = false)
         {
             ShowInBlock = showInBlock;
         }

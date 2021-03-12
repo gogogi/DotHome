@@ -1,5 +1,5 @@
 {
-  "AssembliesPath": "C:\\Users\\Vojta\\Desktop\\Assemblies",
+  "AssembliesPath": "C:\\Users\\Vojta\\Desktop",
   "ProjectPath": "C:\\Users\\Vojta\\Desktop\\serverpokus.json",
 
   "AdminUsername": "admin",
@@ -10,5 +10,8 @@
   "VapidPrivateKey": "xb4gEuj0OOmbFpTDVdQxjGtetNwiSN-Fiz68s29IQmY",
 
   "LettuceDomain": "zeleznicarska34.duckdns.org",
-  "LettuceEmail" :  "vojta.luk@seznam.cz"
+  "LettuceEmail": "vojta.luk@seznam.cz",
+
+  "IPAddress" :  "192.168.1.101",
+  "UdpPort" :  "8000"
 }

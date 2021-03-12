@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace DotHome.StandardBlocks.Controls
 {
     [Category("Controls"), Description("Displays the value from input"), Color("#8040fe")]
-    public class Value<T> : AVisualBlock
+    public class Value<T> : VisualBlock
     {
         internal T Val { get; set; }
 
@@ -24,9 +24,9 @@ namespace DotHome.StandardBlocks.Controls
 
         public override void Run()
         {
-            if(!Equals(Val, I.Val))
+            if(!Equals(Val, I.Value))
             {
-                Val = I.Val;
+                Val = I.Value;
                 VisualStateHasChanged();
             }
         }

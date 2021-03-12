@@ -11,7 +11,7 @@ namespace DotHome.Core.Components
     public partial class GenericBlockComponent
     {
         [Parameter]
-        public AVisualBlock Block { get; set; }
+        public VisualBlock Block { get; set; }
 
         public RenderFragment Renderer => ((builder) =>
         {

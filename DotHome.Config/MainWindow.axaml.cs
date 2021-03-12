@@ -74,7 +74,7 @@ namespace DotHome.Config
             SelectAllCommand = new Command(() => projectView?.SelectedPageView?.Page?.Blocks.Any(b => !b.Selected) ?? false, () => projectView?.SelectedPageView?.SelectAll());
             CopyCommand = new Command(() => projectView?.SelectedPageView?.Page?.SelectedBlocks?.Any() ?? false, () => projectView?.SelectedPageView?.Copy());
             CutCommand = new Command(() => projectView?.SelectedPageView?.Page?.SelectedBlocks?.Any() ?? false, () => projectView?.SelectedPageView?.Cut());
-            PasteCommand = new Command(async () => Project?.Definitions != null && ContainerSerializer.TryDeserializeContainer(await Application.Current.Clipboard.GetTextAsync(), Project.Definitions) != null, () => projectView?.SelectedPageView?.Paste(Project.Definitions));
+            PasteCommand = new Command(async () => Project != null && BlockContainerSerializer.TryDeserializeContainer(await Application.Current.Clipboard.GetTextAsync(), Project) != null, () => projectView?.SelectedPageView?.Paste());
             DeleteCommand = new Command(() => (projectView?.SelectedPageView?.Page?.SelectedBlocks?.Any() ?? false) && projectView.SelectedPageView.IsFocused, () => projectView?.SelectedPageView?.Delete());
 
             ConnectCommand = new Command(() => Server == null, Connect_Executed);

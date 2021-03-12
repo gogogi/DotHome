@@ -14,6 +14,7 @@ using DotHome.Config.Windows;
 using DotHome.Definitions;
 using DotHome.ProgrammingModel;
 using DotHome.ProgrammingModel.Tools;
+using DotHome.RunningModel.Devices;
 using DotHome.RunningModel.Tools;
 using MessageBox.Avalonia;
 using MessageBox.Avalonia.Enums;
@@ -104,11 +105,11 @@ namespace DotHome.Config.Views
             e.Handled = true;
         }
 
-        internal async void Paste(DefinitionsContainer definitions)
+        internal async void Paste()
         {
             try
             {
-                var container = ContainerSerializer.TryDeserializeContainer(await Application.Current.Clipboard.GetTextAsync(), definitions).Copy();
+                var container = BlockContainerSerializer.TryDeserializeContainer(await Application.Current.Clipboard.GetTextAsync(), Project).Copy();
                 var offset = scrollViewer.Offset / Page.Scale;
                 if(Page.Width < container.MaxX - container.MinX || Page.Height < container.MaxY - container.MinY)
                 {
@@ -142,7 +143,7 @@ namespace DotHome.Config.Views
 
         public async void Copy()
         {
-            await Application.Current.Clipboard.SetTextAsync(ContainerSerializer.SerializeContainer(CreateBlockContainer().Copy()));
+            await Application.Current.Clipboard.SetTextAsync(BlockContainerSerializer.SerializeContainer(CreateBlockContainer().Copy()));
         }
 
         public void Cut()
@@ -411,7 +412,7 @@ namespace DotHome.Config.Views
                     if (e.KeyModifiers.HasFlag(KeyModifiers.Control)) Cut();
                     break;
                 case Key.V:
-                    if (e.KeyModifiers.HasFlag(KeyModifiers.Control)) Paste(Project.Definitions);
+                    if (e.KeyModifiers.HasFlag(KeyModifiers.Control)) Paste();
                     break;
             }
             if(delta != default)
@@ -445,7 +446,11 @@ namespace DotHome.Config.Views
             foreach (Block b in Page.Blocks) b.Selected = false;
             if (data is BlockDefinition bd)
             {
-                if(bd is GenericBlockDefinition gbd)
+                if(bd.Type.IsAssignableTo(typeof(GenericDevice)))
+                {
+                    await new GenericDeviceWindow().ShowDialog(ConfigTools.MainWindow);
+                }
+                else if(bd is GenericBlockDefinition gbd)
                 {
                     Type type = await new SelectionWindow("Select type for which you want to create generic block", RunningModelTools.SupportedTypes).ShowDialog<Type>(ConfigTools.MainWindow);
                     if(type != null)

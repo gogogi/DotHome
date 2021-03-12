@@ -26,6 +26,7 @@
         },
 
         getExistingSubscription: async () => {
+            const worker = await navigator.serviceWorker.getRegistration();
             const existingSubscription = await worker.pushManager.getSubscription();
             if (existingSubscription) {
                 return {

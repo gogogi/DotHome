@@ -41,7 +41,7 @@ namespace DotHome.Core.Pages
         [DataType(DataType.Password)]
         public string Password { get; set; }
 
-        public async Task<IActionResult> OnPostAsync(string returnUrl = null)
+        public async Task<IActionResult> OnPostAsync()
         {
             if (ModelState.IsValid)
             {
@@ -53,7 +53,7 @@ namespace DotHome.Core.Pages
                         new Claim(ClaimTypes.Name, Username)
                     }, "Password")));
                     var u = HttpContext.User;                    
-                    return Redirect($"/AfterLogin/{HttpUtility.UrlEncode(returnUrl)}");
+                    return Redirect("/AfterLogin");
                 }
                 else
                 {

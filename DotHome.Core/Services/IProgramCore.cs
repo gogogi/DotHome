@@ -37,7 +37,7 @@ namespace DotHome.Core.Services
 
         public List<Category> Categories { get; }
 
-        public List<AVisualBlock> VisualBlocks { get; }
+        public List<VisualBlock> VisualBlocks { get; }
 
         public double AverageCpuUsage { get; }
         public double MaxCpuUsage { get; }

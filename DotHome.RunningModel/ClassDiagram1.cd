@@ -1,0 +1,211 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Comment CommentText="Inputs/Outputs are inly for reflection. There is no functional difference.">
+    <Position X="12.455" Y="6.525" Height="0.75" Width="3.616" />
+  </Comment>
+  <Class Name="DotHome.RunningModel.AuthenticatedBlock">
+    <Position X="5.25" Y="5.5" Width="1.5" />
+    <AssociationLine Name="AllowedUsers" Type="DotHome.RunningModel.User" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="6.75" Y="6" />
+        <Point X="9.688" Y="6" />
+        <Point X="9.688" Y="5.546" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>AuthenticatedBlock.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="AllowedUsers" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="DotHome.RunningModel.Block">
+    <Position X="5.25" Y="1" Width="1.5" />
+    <Members>
+      <Method Name="ClearDebugString" Hidden="true" />
+      <Method Name="ColorToEscapeString" Hidden="true" />
+      <Field Name="debugColor" Hidden="true" />
+      <Method Name="DebugWrite" Hidden="true" />
+      <Method Name="DebugWriteLine" Hidden="true" />
+      <Method Name="Init" Hidden="true" />
+      <Method Name="Run" Hidden="true" />
+    </Members>
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
+    <AssociationLine Name="Inputs" Type="DotHome.RunningModel.BlockValue" FixedToPoint="true">
+      <Path>
+        <Point X="6.75" Y="1.938" />
+        <Point X="13.5" Y="1.938" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="Outputs" Type="DotHome.RunningModel.BlockValue" FixedToPoint="true">
+      <Path>
+        <Point X="6.75" Y="1.375" />
+        <Point X="13.5" Y="1.375" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>BAACAAAAAAAAAAAAAAAAAAAgEIEBAAAAAAACAAAAgQI=</HashCode>
+      <FileName>Block.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="Inputs" />
+      <Property Name="Outputs" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="DotHome.RunningModel.NamedBlock">
+    <Position X="5.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>NamedBlock.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DotHome.RunningModel.BlockValue">
+    <Position X="13.5" Y="1" Width="1.5" />
+    <Members>
+      <Method Name="AttachValue" Hidden="true" />
+      <Method Name="Transfer" Hidden="true" />
+      <Event Name="TransferEvent" Hidden="true" />
+    </Members>
+    <AssociationLine Name="AttachedValues" Type="DotHome.RunningModel.BlockValue">
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="-0.339" Y="0.319" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAACAAAAAEAAAAACAAQAAAAAAAAAAAQAAAAAAgAA=</HashCode>
+      <FileName>BlockValue.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="AttachedValues" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="DotHome.RunningModel.VisualBlock">
+    <Position X="5.25" Y="7.75" Width="1.5" />
+    <Members>
+      <Method Name="VisualStateHasChanged" Hidden="true" />
+      <Event Name="VisualStateChanged" Hidden="true" />
+    </Members>
+    <Compartments>
+      <Compartment Name="Methods" Collapsed="true" />
+      <Compartment Name="Events" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAQBAAAAAAAAAAAAAAAAAABAAACAA=</HashCode>
+      <FileName>VisualBlock.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Room" />
+      <Property Name="Category" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="DotHome.RunningModel.Category" BaseTypeListCollapsed="true">
+    <Position X="9.75" Y="6.75" Width="1.5" />
+    <Members>
+      <Field Name="name" Hidden="true" />
+      <Event Name="PropertyChanged" Hidden="true" />
+      <Method Name="ToString" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAEAAAAAAQAgAAEAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Category.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="DotHome.RunningModel.Input&lt;T&gt;">
+    <Position X="12.5" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>BlockValue.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DotHome.RunningModel.Output&lt;T&gt;">
+    <Position X="14.5" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>BlockValue.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DotHome.RunningModel.Room" BaseTypeListCollapsed="true">
+    <Position X="7.75" Y="6.75" Width="1.5" />
+    <Members>
+      <Field Name="name" Hidden="true" />
+      <Event Name="PropertyChanged" Hidden="true" />
+      <Method Name="ToString" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAEAAAAAAQAgAAEAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Room.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="DotHome.RunningModel.User" BaseTypeListCollapsed="true">
+    <Position X="9" Y="4.25" Width="1.5" />
+    <Members>
+      <Field Name="name" Hidden="true" />
+      <Field Name="password" Hidden="true" />
+      <Event Name="PropertyChanged" Hidden="true" />
+      <Method Name="ToString" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAEAAAAAAQAgAAEAAACAAAAAgAAAAA=</HashCode>
+      <FileName>User.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="DotHome.RunningModel.BlockValue&lt;T&gt;">
+    <Position X="13.5" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAgAAAAAAA=</HashCode>
+      <FileName>BlockValue.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DotHome.RunningModel.VisualBlockComponent&lt;T&gt;">
+    <Position X="1" Y="7.75" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAA=</HashCode>
+      <FileName>VisualBlockComponent.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DotHome.RunningModel.Attributes.ParameterAttribute">
+    <Position X="1.75" Y="2.5" Width="2" />
+    <Members>
+      <Method Name="ParameterAttribute" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Attributes\ParameterAttribute.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DotHome.RunningModel.Attributes.ColorAttribute">
+    <Position X="1.75" Y="1" Width="2" />
+    <Members>
+      <Method Name="ColorAttribute" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAA=</HashCode>
+      <FileName>Attributes\ColorAttribute.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DotHome.RunningModel.Attributes.DisablableAttribute">
+    <Position X="1.75" Y="4" Width="2" />
+    <Members>
+      <Method Name="DisablableAttribute" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Attributes\DisablableAttribute.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DotHome.RunningModel.Attributes.UniqueAttribute">
+    <Position X="1.75" Y="5.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Attributes\UniqueAttribute.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

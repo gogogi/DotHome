@@ -1,4 +1,4 @@
-﻿@page "/AfterLogin/{ReturnUrl}"
+﻿@page "/AfterLogin"
 @inject IJSRuntime JSRuntime
 @inject NotificationManager NotificationManager
 @inject NavigationManager NavigationManager
@@ -6,13 +6,10 @@
 
 @code {
 
-    [Parameter]
-    public string ReturnUrl { get; set; }
-
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         await RequestNotificationSubscriptionAsync();
-        NavigationManager.NavigateTo(ReturnUrl ?? "/");
+        NavigationManager.NavigateTo("/");
     }
 
     private async Task RequestNotificationSubscriptionAsync()

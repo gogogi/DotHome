@@ -4,6 +4,7 @@ using DotHome.StandardBlocks.Services;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -46,17 +47,22 @@ namespace DotHome.Core.Services
             }
         }
 
-        public async void SendNotification(string message, string url, AAuthenticatedBlock source)
+        public async void SendNotification(string message, string url, AuthenticatedBlock source)
         {
             foreach(NotificationSubscription subscription in notificationsStoreContext.NotificationSubscriptions.ToList().Where(n => source.AllowedUsers.Any(u => u.Name == n.UserId) ))
             {
                 var pushSubscription = new PushSubscription(subscription.Url, subscription.P256dh, subscription.Auth);
                 var vapidDetails = new VapidDetails(subject, publicKey, privateKey);
-                var webPushClient = new WebPushClient();
+                var webPushClient = new WebPushClient(new System.Net.Http.HttpClientHandler());
+
+                var options = new Dictionary<string, object>();
+                options["vapidDetails"] = new VapidDetails(subject, publicKey, privateKey);
+                options["headers"] = new Dictionary<string, object>() { ["Urgency"] = "high" };
+
                 try
                 {
                     var payload = JsonSerializer.Serialize(new{ message, url });
-                    await webPushClient.SendNotificationAsync(pushSubscription, payload, vapidDetails);
+                    await webPushClient.SendNotificationAsync(pushSubscription, payload, options);
                 }
                 catch (Exception ex)
                 {

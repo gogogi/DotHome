@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace DotHome.StandardBlocks.Math
 {
     [Category("Math"), Description("Output is maximum of all enabled inputs"), Color("#64b464")]
-    public class Max : ABlock
+    public class Max : Block
     {
         [Description("Input 1")]
         public Input<double> I1 { get; set; }
@@ -34,10 +34,10 @@ namespace DotHome.StandardBlocks.Math
 
         public override void Run()
         {
-            double val = System.Math.Max(I1.Val, I2.Val);
-            if (!I3.Disabled) val = System.Math.Max(val, I3.Val);
-            if (!I4.Disabled) val = System.Math.Max(val, I4.Val);
-            O.Val = val;
+            double val = System.Math.Max(I1.Value, I2.Value);
+            if (!I3.Disabled) val = System.Math.Max(val, I3.Value);
+            if (!I4.Disabled) val = System.Math.Max(val, I4.Value);
+            O.Value = val;
         }
     }
 }
