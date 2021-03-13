@@ -9,6 +9,7 @@ using DotHome.Config.Windows;
 using DotHome.ProgrammingModel;
 using DotHome.RunningModel;
 using DotHome.RunningModel.Attributes;
+using DotHome.RunningModel.Devices;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -22,13 +23,17 @@ namespace DotHome.Config.Views
     {
         private object lastValid;
 
-        public Parameter Parameter => (Parameter)DataContext;
+        private Parameter Parameter => (Parameter)DataContext;
+
+        private ProgrammingModel.Block Block => ((Project)this.ParentOfType<SelectionPropertiesView>().DataContext).SelectedPage.SelectedBlock;
+
 
         protected override void OnDataContextChanged(EventArgs e)
         {
             lastValid = Parameter.Value;
             if (Parameter.Definition.Type == typeof(bool)) CreateBool();
-            else if (Parameter.Definition.Type == typeof(List<User>)) CreateButton();
+            else if (Parameter.Definition.Type == typeof(List<User>)) CreateButton(async () => await new UsersWindow((List<User>)Parameter.Value).ShowDialog(ConfigTools.MainWindow));
+            else if (Parameter.Definition.Type == typeof(List<GenericDeviceValue>)) CreateButton(async () => await new GenericDeviceWindow(Block).ShowDialog(ConfigTools.MainWindow));
             else if (Parameter.Definition.Type == typeof(Room)) CreateComboBox(ConfigTools.MainWindow.Project.Rooms.Prepend(null));
             else if (Parameter.Definition.Type == typeof(Category)) CreateComboBox(ConfigTools.MainWindow.Project.Categories.Prepend(null));
             else if (Parameter.Definition.Type == typeof(int)) CreateString(nameof(Parameter.ValueAsInt));
@@ -44,13 +49,10 @@ namespace DotHome.Config.Views
             Content = comboBox;
         }
 
-        private void CreateButton()
+        private void CreateButton(Action a)
         {
             Button button = new Button() { Content = "..." };
-            button.Click += async (s, e) =>
-            {
-                await new UsersWindow((List<User>)Parameter.Value).ShowDialog(ConfigTools.MainWindow);
-            };
+            button.Click += (s, e) => a();
             Content = button;
         }
 

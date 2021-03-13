@@ -18,7 +18,7 @@ namespace DotHome.Config.Views
 
         public bool Disabled { get => !IsVisible; set => IsVisible = !value; }
 
-        public Point Position => polygon.TranslatePoint(new Point(0, 4), this.ParentOfType<Canvas>()) ?? new Point(0, 0);
+        public Point Position => polygon.TranslatePoint(new Point(0, 4), this.ParentOfType<Canvas>()) ?? new Point(990, 990);
 
         public InputView(InputDefinition inputDefinition) : this()
         {

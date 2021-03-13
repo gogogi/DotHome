@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace DotHome.RunningModel.Devices
 {
-    public abstract class CommunicationProvider
+    public abstract class CommunicationProvider<T> where T : GenericDevice
     {
-        public abstract List<GenericDevice> SearchDevices();
+        public abstract List<T> SearchDevices();
     }
 }

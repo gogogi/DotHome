@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DotHome.RunningModel.Devices
 {
-    public abstract class TextCommunicationProvider : CommunicationProvider
+    public abstract class TextCommunicationProvider<T> : CommunicationProvider<T> where T : TextDevice
     {
         protected abstract event Action<string> TextReceived;
         

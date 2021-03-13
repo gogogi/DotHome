@@ -26,7 +26,7 @@ namespace DotHome.ProgrammingModel
         [JsonIgnore]
         public double ValueAsDouble { get => (double)Value; set => Value = value; }
         [JsonIgnore]
-        public string ValueAsString { get => (string)Value; set => Value = value; }
+        public string ValueAsString { get => Value as string; set => Value = value; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 

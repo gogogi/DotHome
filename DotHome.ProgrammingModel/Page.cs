@@ -77,6 +77,8 @@ namespace DotHome.ProgrammingModel
                 {
                     if (b.Selected) SelectedBlocks.Add(b);
                     b.PropertyChanged += Block_PropertyChanged;
+                    b.Inputs.CollectionChanged += Inputs_CollectionChanged;
+                    b.Outputs.CollectionChanged += Outputs_CollectionChanged;
                     foreach(Input i in b.Inputs)
                     {
                         i.PropertyChanged += Input_PropertyChanged;
@@ -88,6 +90,24 @@ namespace DotHome.ProgrammingModel
                 }
             }
 
+        }
+
+        private void Outputs_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if(e.Action == NotifyCollectionChangedAction.Remove)
+            {
+                var wiresToRemove = Wires.Where(w => e.OldItems.Contains(w.Output)).ToArray();
+                foreach (Wire w in wiresToRemove) Wires.Remove(w);
+            }
+        }
+
+        private void Inputs_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Remove)
+            {
+                var wiresToRemove = Wires.Where(w => e.OldItems.Contains(w.Input)).ToArray();
+                foreach (Wire w in wiresToRemove) Wires.Remove(w);
+            }
         }
 
         private void Output_PropertyChanged(object sender, PropertyChangedEventArgs e)

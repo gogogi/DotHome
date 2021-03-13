@@ -448,7 +448,11 @@ namespace DotHome.Config.Views
             {
                 if(bd.Type.IsAssignableTo(typeof(GenericDevice)))
                 {
-                    await new GenericDeviceWindow().ShowDialog(ConfigTools.MainWindow);
+                    Block block = new Block(bd) { X = (int)point.X, Y = (int)point.Y, Selected = true };
+                    if(await new GenericDeviceWindow(block).ShowDialog<bool>(ConfigTools.MainWindow))
+                    {
+                        Page.Blocks.Add(block);
+                    }
                 }
                 else if(bd is GenericBlockDefinition gbd)
                 {
@@ -483,6 +487,10 @@ namespace DotHome.Config.Views
         {
             InputView inputView = (InputView)sender;
             inputViewDictionary.Add(inputView.Input, inputView);
+            // Restart effected wires
+            var wires = Page.Wires.Where(w => w.Input == inputView.Input).ToArray();
+            foreach (var wire in wires) Page.Wires.Remove(wire);
+            foreach (var wire in wires) Page.Wires.Add(wire);
         }
 
         private void Block_InputDetachedFromVisualTree(object sender, VisualTreeAttachmentEventArgs e)
@@ -495,6 +503,10 @@ namespace DotHome.Config.Views
         {
             OutputView outputView = (OutputView)sender;
             outputViewDictionary.Add(outputView.Output, outputView);
+            // Restart effected wires
+            var wires = Page.Wires.Where(w => w.Output == outputView.Output).ToArray();
+            foreach (var wire in wires) Page.Wires.Remove(wire);
+            foreach (var wire in wires) Page.Wires.Add(wire);
         }
 
         private void Block_OutputDetachedFromVisualTree(object sender, VisualTreeAttachmentEventArgs e)

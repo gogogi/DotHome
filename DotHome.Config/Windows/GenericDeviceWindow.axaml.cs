@@ -25,21 +25,17 @@ namespace DotHome.Config.Windows
 
         public new event PropertyChangedEventHandler PropertyChanged;
 
-        public GenericDeviceWindow(Block block)
+        public GenericDeviceWindow(Block block) : this()
         {
             this.block = block;
-            //foreach(InputDefinition inputDefinition in blockDefinition.Inputs)
-            //{
-            //    WValues.Add()
-            //}
 
-            List<GenericDeviceValue> rValues = (List<GenericDeviceValue>)block.Parameters.Single(p => p.Definition.PropertyInfo == typeof(GenericDevice).GetProperty(nameof(GenericDevice.RValues))).Value;
+            List<GenericDeviceValue> rValues = (List<GenericDeviceValue>)block.Parameters.Single(p => p.Definition.Name == nameof(GenericDevice.RValues)).Value;
             foreach(var v in rValues)
             {
                 RValues.Add(v);
             }
 
-            List<GenericDeviceValue> wValues = (List<GenericDeviceValue>)block.Parameters.Single(p => p.Definition.PropertyInfo == typeof(GenericDevice).GetProperty(nameof(GenericDevice.WValues))).Value;
+            List<GenericDeviceValue> wValues = (List<GenericDeviceValue>)block.Parameters.Single(p => p.Definition.Name == nameof(GenericDevice.WValues)).Value;
             foreach (var v in wValues)
             {
                 WValues.Add(v);
@@ -92,7 +88,21 @@ namespace DotHome.Config.Windows
 
         private async void ButtonOk_Click(object sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
-            BlockDefinition blockDefinition = new BlockDefinition() { Name = "dev" };
+            block.Parameters.Single(p => p.Definition.Name == nameof(GenericDevice.RValues)).Value = RValues.ToList();
+            block.Parameters.Single(p => p.Definition.Name == nameof(GenericDevice.WValues)).Value = WValues.ToList();
+            if (RValues.GroupBy(v => v.Name).Count() != RValues.Count)
+            {
+                return;
+            }
+            if (WValues.GroupBy(v => v.Name).Count() != WValues.Count)
+            {
+                return;
+            }
+            BlockDefinition blockDefinition = new BlockDefinition() { Name = block.Definition.Name, Description = block.Definition.Description, Color = block.Definition.Color, Type = block.Definition.Type };
+            foreach(var p in block.Definition.Parameters)
+            {
+                blockDefinition.Parameters.Add(p);
+            }
             foreach(var v in RValues)
             {
                 blockDefinition.Outputs.Add(new OutputDefinition() { Name = v.Name, Type = v.Type, Disablable = false, DefaultDisabled = false });
@@ -101,6 +111,29 @@ namespace DotHome.Config.Windows
             {
                 blockDefinition.Inputs.Add(new InputDefinition() { Name = v.Name, Type = v.Type, Disablable = false, DefaultDisabled = false });
             }
+            block.Definition = blockDefinition;
+
+            // Now synchronize I/O with definition
+            var notInDef = block.Inputs.Where(i => !blockDefinition.Inputs.Any(id => id.Name == i.Definition.Name)).ToArray();
+            foreach (var i in notInDef) block.Inputs.Remove(i);
+            for(int i = 0; i < blockDefinition.Inputs.Count; i++)
+            {
+                if (block.Inputs.Count > i && block.Inputs[i].Definition.Name == blockDefinition.Inputs[i].Name) continue; // match
+                else
+                {
+                    var old = block.Inputs.SingleOrDefault(inp => inp.Definition.Name == blockDefinition.Inputs[i].Name);
+                    if (old != null)
+                    {
+                        block.Inputs.Move(block.Inputs.IndexOf(old), i);
+                    }
+                    else
+                    {
+                        block.Inputs.Insert(i, new Input(blockDefinition.Inputs[i]));
+                    }
+                }
+            }
+            while (block.Inputs.Count > blockDefinition.Inputs.Count) block.Inputs.RemoveAt(block.Inputs.Count - 1); // remove the rest
+            Close(true);
         }
 
         private void ButtonCancel_Click(object sender, Avalonia.Interactivity.RoutedEventArgs e)

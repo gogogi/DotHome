@@ -1,4 +1,5 @@
 ﻿using DotHome.Definitions;
+using DotHome.RunningModel.Devices;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -17,28 +18,7 @@ namespace DotHome.ProgrammingModel.Tools
             Block block = serializer.Deserialize<Block>(reader);
             serializer.Converters.Add(this);
 
-            // Inputs, outputs and parameters now do have only empty definitions with names
-            List<Input> oldInputs = new List<Input>();
-            List<Output> oldOutputs = new List<Output>();
             List<Parameter> oldParameters = new List<Parameter>();
-            foreach (Input input in block.Inputs)
-            {
-                if(block is Block b) input.Definition = block.Definition.Inputs.SingleOrDefault(id => id.Name == input.Definition.Name);
-                if (input.Definition == null)
-                {
-                    oldInputs.Add(input);
-                }
-            }
-
-            foreach (Output output in block.Outputs)
-            {
-                output.Definition = block.Definition.Outputs.SingleOrDefault(od => od.Name == output.Definition.Name);
-                if (output.Definition == null)
-                {
-                    oldOutputs.Add(output);
-                }
-            }
-
             foreach (Parameter parameter in block.Parameters)
             {
                 parameter.Definition = block.Definition.Parameters.SingleOrDefault(pd => pd.Name == parameter.Definition.Name);
@@ -51,11 +31,53 @@ namespace DotHome.ProgrammingModel.Tools
                     parameter.Value = Convert.ChangeType(parameter.Value, parameter.Definition.Type); // Type can be wrong which can cause issues later (Int32 vs Int64...)
                 }
             }
-
             // Remove what disappeared in new version of dll
-            foreach (Input i in oldInputs) block.Inputs.Remove(i);
-            foreach (Output o in oldOutputs) block.Outputs.Remove(o);
             foreach (Parameter p in oldParameters) block.Parameters.Remove(p);
+
+            // Inputs, outputs and parameters now do have only empty definitions with names
+            if (!block.Definition.Type.IsAssignableTo(typeof(GenericDevice)))
+            {
+                List<Input> oldInputs = new List<Input>();
+                List<Output> oldOutputs = new List<Output>();
+                foreach (Input input in block.Inputs)
+                {
+                    if (block is Block b) input.Definition = block.Definition.Inputs.SingleOrDefault(id => id.Name == input.Definition.Name);
+                    if (input.Definition == null)
+                    {
+                        oldInputs.Add(input);
+                    }
+                }
+                foreach (Output output in block.Outputs)
+                {
+                    output.Definition = block.Definition.Outputs.SingleOrDefault(od => od.Name == output.Definition.Name);
+                    if (output.Definition == null)
+                    {
+                        oldOutputs.Add(output);
+                    }
+                }
+                // Remove what disappeared in new version of dll
+                foreach (Input i in oldInputs) block.Inputs.Remove(i);
+                foreach (Output o in oldOutputs) block.Outputs.Remove(o);
+            }
+            else
+            {
+                var rValues = (List<GenericDeviceValue>)block.Parameters.Single(p => p.Definition.Name == nameof(GenericDevice.RValues)).Value;
+                var wValues = (List<GenericDeviceValue>)block.Parameters.Single(p => p.Definition.Name == nameof(GenericDevice.WValues)).Value;
+                if(rValues.Count != block.Outputs.Count || wValues.Count != block.Inputs.Count)
+                {
+                    throw new Exception("Generic value integrity corrupted");
+                }
+                for(int i = 0; i < rValues.Count; i++)
+                {
+                    block.Outputs[i].Definition = new OutputDefinition() { Name = rValues[i].Name, Type = rValues[i].Type };
+                    block.Definition.Outputs.Add(block.Outputs[i].Definition);
+                }
+                for (int i = 0; i < wValues.Count; i++)
+                {
+                    block.Inputs[i].Definition = new InputDefinition() { Name = wValues[i].Name, Type = wValues[i].Type };
+                    block.Definition.Inputs.Add(block.Inputs[i].Definition);
+                }
+            }
 
             // Add what appeared in new version of dll
             foreach (InputDefinition id in block.Definition.Inputs.Where(id2 => !block.Inputs.Any(i => i.Definition == id2)).ToArray()) block.Inputs.Add(new Input(id));

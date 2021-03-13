@@ -49,7 +49,7 @@
 		</DataGrid>
 		<DataGrid Grid.Column="1" Grid.Row="1" Margin="2" Items="{Binding WValues}" SelectionMode="Single" SelectedItem="{Binding SelectedWValue, Mode=TwoWay}" CanUserSortColumns="False">
 			<DataGrid.Columns>
-				<DataGridTextColumn>
+				<DataGridTextColumn Foreground="Black">
 					<DataGridTextColumn.Binding>
 						<MultiBinding Converter="{x:Static tool:RowIndexConverter.Instance}">
 							<Binding ElementName="window" Path="WValues"/>
@@ -57,8 +57,19 @@
 						</MultiBinding>
 					</DataGridTextColumn.Binding>
 				</DataGridTextColumn>
-				<DataGridTextColumn Header="Name" Binding="{Binding Name}"/>
+				<DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="*" Foreground="Black"/>
+				<DataGridTemplateColumn Header="Type" Width="*">
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate>
+							<ComboBox SelectedItem="{Binding GenericType}" Items="{x:Static tool:ConfigTools.DeviceValueTypes}" Foreground="Black"/>
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
 			</DataGrid.Columns>
 		</DataGrid>
+		<DockPanel Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2" LastChildFill="False">
+			<Button Content="Cancel" DockPanel.Dock="Right" Margin="2" Padding="10 2" Click="ButtonCancel_Click" IsCancel="True"/>
+			<Button Content="OK" DockPanel.Dock="Right" Margin="2" Padding="10 2" Click="ButtonOk_Click" IsDefault="True"/>
+		</DockPanel>
 	</Grid>
 </Window>
