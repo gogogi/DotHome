@@ -3,7 +3,6 @@ using DotHome.Core.Hubs;
 using DotHome.Core.Services;
 using DotHome.Core.Tools;
 using DotHome.RunningModel;
-using DotHome.RunningModel.Devices;
 using DotHome.StandardBlocks.Services;
 using LettuceEncrypt;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -68,7 +67,7 @@ namespace DotHome.Core
             services.AddSingleton<INotificationSender>(sp => sp.GetService<NotificationManager>());
             //services.AddSingleton<INotificationSender>(sp => sp.GetRequiredService<NotificationManager>());
             services.AddSingleton<PageReloader>();
-            services.AddSingleton<ProgrammingModelLoader>();
+            services.AddSingleton<ModelLoader>();
             services.AddSingleton<BlocksActivator>();
             services.AddSingleton<IProgramCore, BasicProgramCore>();
 

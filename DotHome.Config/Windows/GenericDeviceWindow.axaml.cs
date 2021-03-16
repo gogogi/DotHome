@@ -3,25 +3,26 @@ using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using DotHome.Definitions;
 using DotHome.ProgrammingModel;
-using DotHome.RunningModel.Devices;
+using DotHome.RunningModel;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using Block = DotHome.ProgrammingModel.Block;
 
 namespace DotHome.Config.Windows
 {
     public class GenericDeviceWindow : Window, INotifyPropertyChanged
     {
-        private GenericDeviceValue selectedRValue, selectedWValue;
+        private DeviceValue selectedRValue, selectedWValue;
         private Block block;
 
-        private ObservableCollection<GenericDeviceValue> RValues { get; } = new ObservableCollection<GenericDeviceValue>();
-        private ObservableCollection<GenericDeviceValue> WValues { get; } = new ObservableCollection<GenericDeviceValue>();
+        private ObservableCollection<DeviceValue> RValues { get; } = new ObservableCollection<DeviceValue>();
+        private ObservableCollection<DeviceValue> WValues { get; } = new ObservableCollection<DeviceValue>();
 
-        private GenericDeviceValue SelectedRValue { get => selectedRValue; set { selectedRValue = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SelectedRValue))); } }
-        private GenericDeviceValue SelectedWValue { get => selectedWValue; set { selectedWValue = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SelectedWValue))); } }
+        private DeviceValue SelectedRValue { get => selectedRValue; set { selectedRValue = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SelectedRValue))); } }
+        private DeviceValue SelectedWValue { get => selectedWValue; set { selectedWValue = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SelectedWValue))); } }
 
         public new event PropertyChangedEventHandler PropertyChanged;
 
@@ -29,13 +30,13 @@ namespace DotHome.Config.Windows
         {
             this.block = block;
 
-            List<GenericDeviceValue> rValues = (List<GenericDeviceValue>)block.Parameters.Single(p => p.Definition.Name == nameof(GenericDevice.RValues)).Value;
+            List<DeviceValue> rValues = (List<DeviceValue>)block.Parameters.Single(p => p.Definition.Name == nameof(GenericDevice.RValues)).Value;
             foreach(var v in rValues)
             {
                 RValues.Add(v);
             }
 
-            List<GenericDeviceValue> wValues = (List<GenericDeviceValue>)block.Parameters.Single(p => p.Definition.Name == nameof(GenericDevice.WValues)).Value;
+            List<DeviceValue> wValues = (List<DeviceValue>)block.Parameters.Single(p => p.Definition.Name == nameof(GenericDevice.WValues)).Value;
             foreach (var v in wValues)
             {
                 WValues.Add(v);
@@ -58,7 +59,16 @@ namespace DotHome.Config.Windows
 
         private void ButtonAddRValue_Click(object sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
-            RValues.Add(new GenericDeviceValue());
+            var val = new DeviceValue();
+            if (SelectedRValue != null)
+            {
+                RValues.Insert(RValues.IndexOf(SelectedRValue), val);
+            }
+            else
+            {
+                RValues.Add(val);
+            }
+            SelectedRValue = val;
         }
 
         private void ButtonRemoveRValue_Click(object sender, Avalonia.Interactivity.RoutedEventArgs e)
@@ -73,7 +83,16 @@ namespace DotHome.Config.Windows
 
         private void ButtonAddWValue_Click(object sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
-            WValues.Add(new GenericDeviceValue());
+            var val = new DeviceValue();
+            if (SelectedWValue != null)
+            {
+                WValues.Insert(WValues.IndexOf(SelectedWValue), val);
+            }
+            else
+            {
+                WValues.Add(val);
+            }
+            SelectedWValue = val;
         }
 
         private void ButtonRemoveWValue_Click(object sender, Avalonia.Interactivity.RoutedEventArgs e)
@@ -86,7 +105,67 @@ namespace DotHome.Config.Windows
             if (WValues.Count > 0) SelectedWValue = WValues[Math.Min(i, WValues.Count - 1)];
         }
 
-        private async void ButtonOk_Click(object sender, Avalonia.Interactivity.RoutedEventArgs e)
+        private void ButtonWValueUp_Click(object sender, Avalonia.Interactivity.RoutedEventArgs e)
+        {
+            int index = WValues.IndexOf(SelectedWValue);
+            if (index > 0)
+            {
+                var tmp = SelectedWValue;
+                SelectedWValue = null;
+                WValues.Move(index, index - 1);
+                var array = WValues.ToArray();
+                WValues.Clear();
+                foreach (var val in array) WValues.Add(val);
+                SelectedWValue = tmp;
+            }
+        }
+
+        private void ButtonWValueDown_Click(object sender, Avalonia.Interactivity.RoutedEventArgs e)
+        {
+            int index = WValues.IndexOf(SelectedWValue);
+            if (index < WValues.Count - 1)
+            {
+                var tmp = SelectedWValue;
+                SelectedWValue = null;
+                WValues.Move(index, index + 1);
+                var array = WValues.ToArray();
+                WValues.Clear();
+                foreach (var val in array) WValues.Add(val);
+                SelectedWValue = tmp;
+            }
+        }
+
+        private void ButtonRValueUp_Click(object sender, Avalonia.Interactivity.RoutedEventArgs e)
+        {
+            int index = RValues.IndexOf(SelectedRValue);
+            if (index > 0) 
+            {
+                var tmp = SelectedRValue;
+                SelectedRValue = null;
+                RValues.Move(index, index - 1);
+                var array = RValues.ToArray();
+                RValues.Clear();
+                foreach (var val in array) RValues.Add(val);
+                SelectedRValue = tmp;
+            }
+        }
+
+        private void ButtonRValueDown_Click(object sender, Avalonia.Interactivity.RoutedEventArgs e)
+        {
+            int index = RValues.IndexOf(SelectedRValue);
+            if (index < RValues.Count - 1)
+            {
+                var tmp = SelectedRValue;
+                SelectedRValue = null;
+                RValues.Move(index, index + 1);
+                var array = RValues.ToArray();
+                RValues.Clear();
+                foreach (var val in array) RValues.Add(val);
+                SelectedRValue = tmp;
+            }
+        }
+
+        private void ButtonOk_Click(object sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
             block.Parameters.Single(p => p.Definition.Name == nameof(GenericDevice.RValues)).Value = RValues.ToList();
             block.Parameters.Single(p => p.Definition.Name == nameof(GenericDevice.WValues)).Value = WValues.ToList();
@@ -114,8 +193,8 @@ namespace DotHome.Config.Windows
             block.Definition = blockDefinition;
 
             // Now synchronize I/O with definition
-            var notInDef = block.Inputs.Where(i => !blockDefinition.Inputs.Any(id => id.Name == i.Definition.Name)).ToArray();
-            foreach (var i in notInDef) block.Inputs.Remove(i);
+            var inputsNotInDef = block.Inputs.Where(i => !blockDefinition.Inputs.Any(id => id.Name == i.Definition.Name)).ToArray();
+            foreach (var i in inputsNotInDef) block.Inputs.Remove(i);
             for(int i = 0; i < blockDefinition.Inputs.Count; i++)
             {
                 if (block.Inputs.Count > i && block.Inputs[i].Definition.Name == blockDefinition.Inputs[i].Name) continue; // match
@@ -133,6 +212,26 @@ namespace DotHome.Config.Windows
                 }
             }
             while (block.Inputs.Count > blockDefinition.Inputs.Count) block.Inputs.RemoveAt(block.Inputs.Count - 1); // remove the rest
+
+            var outputsNotInDef = block.Outputs.Where(i => !blockDefinition.Outputs.Any(id => id.Name == i.Definition.Name)).ToArray();
+            foreach (var i in outputsNotInDef) block.Outputs.Remove(i);
+            for (int i = 0; i < blockDefinition.Outputs.Count; i++)
+            {
+                if (block.Outputs.Count > i && block.Outputs[i].Definition.Name == blockDefinition.Outputs[i].Name) continue; // match
+                else
+                {
+                    var old = block.Outputs.SingleOrDefault(inp => inp.Definition.Name == blockDefinition.Outputs[i].Name);
+                    if (old != null)
+                    {
+                        block.Outputs.Move(block.Outputs.IndexOf(old), i);
+                    }
+                    else
+                    {
+                        block.Outputs.Insert(i, new Output(blockDefinition.Outputs[i]));
+                    }
+                }
+            }
+            while (block.Outputs.Count > blockDefinition.Outputs.Count) block.Outputs.RemoveAt(block.Outputs.Count - 1); // remove the rest
             Close(true);
         }
 

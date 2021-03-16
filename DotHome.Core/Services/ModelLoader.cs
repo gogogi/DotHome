@@ -12,11 +12,11 @@ using System.Threading.Tasks;
 
 namespace DotHome.Core.Services
 {
-    public class ProgrammingModelLoader
+    public class ModelLoader
     {
         private IConfiguration configuration;
 
-        public ProgrammingModelLoader(IConfiguration configuration)
+        public ModelLoader(IConfiguration configuration)
         {
             this.configuration = configuration;
         }
@@ -31,7 +31,7 @@ namespace DotHome.Core.Services
         {
             if (File.Exists(configuration["ProjectPath"]))
             {
-                return ModelSerializer.DeserializeProject(File.ReadAllText(configuration["ProjectPath"]), LoadDefinitions());
+                return ModelSerializer.Deserialize<Project>(File.ReadAllText(configuration["ProjectPath"]), LoadDefinitions());
             }
             else
             {

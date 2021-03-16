@@ -2,6 +2,7 @@
 using DotHome.Definitions.Tools;
 using DotHome.ProgrammingModel;
 using DotHome.ProgrammingModel.Tools;
+using DotHome.RunningModel;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -9,6 +10,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -16,6 +18,7 @@ using System.Net.Http.Json;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Block = DotHome.ProgrammingModel.Block;
 
 namespace DotHome.Config
 {
@@ -104,7 +107,7 @@ namespace DotHome.Config
 
         public async Task UploadProject(Project project)
         {
-            using (var stream = new MemoryStream(Encoding.Default.GetBytes(ModelSerializer.SerializeProject(project))))
+            using (var stream = new MemoryStream(Encoding.Default.GetBytes(ModelSerializer.Serialize(project))))
             {
                 var res = await httpClient.PostAsync($"https://{Host}/config/upload", new StreamContent(stream));
             }
@@ -136,7 +139,7 @@ namespace DotHome.Config
             if (res.IsSuccessStatusCode)
             {
                 string text = await res.Content.ReadAsStringAsync();
-                Project = ModelSerializer.DeserializeProject(text, DefinitionsCreator.CreateDefinitions(AppConfig.Configuration["AssembliesPath"]));
+                Project = ModelSerializer.Deserialize<Project>(text, DefinitionsCreator.CreateDefinitions(AppConfig.Configuration["AssembliesPath"]));
             }
             else
             {
@@ -237,6 +240,16 @@ namespace DotHome.Config
             {
                 await hubConnection.InvokeAsync("Step");
             }
+        }
+
+        public async Task<List<Block>> SearchDevices(string typename)
+        {
+            var res = await httpClient.PostAsJsonAsync($"https://{Host}/config/searchdevices", typename);
+            if(res.IsSuccessStatusCode)
+            {
+                return (await res.Content.ReadFromJsonAsync<List<string>>()).Select(s => ModelSerializer.Deserialize<Block>(s, ConfigTools.MainWindow.Project.Definitions)).ToList();
+            }
+            return null;
         }
 
         private Block GetBlockById(int id)

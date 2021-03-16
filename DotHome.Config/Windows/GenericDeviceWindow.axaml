@@ -4,10 +4,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 		xmlns:tool="clr-namespace:DotHome.Config.Tools;assembly=DotHome.Config"
 		xmlns:local="clr-namespace:DotHome.Config.Windows;assembly=DotHome.Config"
-        mc:Ignorable="d" Width="400" Height="400"
+        mc:Ignorable="d" Width="600" Height="400"
         x:Class="DotHome.Config.Windows.GenericDeviceWindow"
 		x:Name="window"
-        Title="GenericDeviceWindow">
+        Title="Specify device I/O"
+		Icon="/Assets/Icons/ParallelPort_256x.png">
 	<Grid ColumnDefinitions="*,*" RowDefinitions="auto,*,auto" Margin="2">
 		<DockPanel Grid.Column="0" Grid.Row="0" LastChildFill="False" Margin="2">
 			<TextBlock Text="R Values" DockPanel.Dock="Left" FontSize="20"/>
@@ -17,6 +18,12 @@
 			<Button DockPanel.Dock="Right" Width="26" Height="26" Margin="2" Click="ButtonAddRValue_Click">
 				<Image Source="/Assets/Icons/Add_256x.png"/>
 			</Button>
+			<Button DockPanel.Dock="Right" Width="26" Height="26" Margin="2" Click="ButtonRValueDown_Click" IsEnabled="{Binding SelectedRValue, Converter={x:Static ObjectConverters.IsNotNull}}">
+				<Image Source="/Assets/Icons/ExpandDown_256x.png"/>
+			</Button>
+			<Button DockPanel.Dock="Right" Width="26" Height="26" Margin="2" Click="ButtonRValueUp_Click" IsEnabled="{Binding SelectedRValue, Converter={x:Static ObjectConverters.IsNotNull}}">
+				<Image Source="/Assets/Icons/CollapseUp_256x.png"/>
+			</Button>
 		</DockPanel>
 		<DockPanel Grid.Column="1" Grid.Row="0" LastChildFill="False" Margin="2">
 			<TextBlock Text="W Values" DockPanel.Dock="Left" FontSize="20"/>
@@ -25,6 +32,12 @@
 			</Button>
 			<Button DockPanel.Dock="Right" Width="26" Height="26" Margin="2" Click="ButtonAddWValue_Click">
 				<Image Source="/Assets/Icons/Add_256x.png"/>
+			</Button>
+			<Button DockPanel.Dock="Right" Width="26" Height="26" Margin="2" Click="ButtonWValueDown_Click" IsEnabled="{Binding SelectedWValue, Converter={x:Static ObjectConverters.IsNotNull}}">
+				<Image Source="/Assets/Icons/ExpandDown_256x.png"/>
+			</Button>
+			<Button DockPanel.Dock="Right" Width="26" Height="26" Margin="2" Click="ButtonWValueUp_Click" IsEnabled="{Binding SelectedWValue, Converter={x:Static ObjectConverters.IsNotNull}}">
+				<Image Source="/Assets/Icons/CollapseUp_256x.png"/>
 			</Button>
 		</DockPanel>
 		<DataGrid Grid.Column="0" Grid.Row="1" Margin="2" Items="{Binding RValues}" SelectionMode="Single" SelectedItem="{Binding SelectedRValue, Mode=TwoWay}" CanUserSortColumns="False">

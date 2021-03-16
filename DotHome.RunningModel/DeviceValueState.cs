@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DotHome.Definitions
+namespace DotHome.RunningModel
 {
-    public class GenericDeviceDefinition
+    public enum DeviceValueState
     {
+        Ok, Unset, Changed, ErrorConnection, ErrorTimeout
     }
 }

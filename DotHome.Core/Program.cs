@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using RWConfiguration;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -22,7 +23,7 @@ namespace DotHome.Core
             //udpClient.Client.Bind(new IPEndPoint(IPAddress.Parse("192.168.1.101"), PORT));
 
 
-            
+
 
 
 
@@ -36,10 +37,11 @@ namespace DotHome.Core
             //    var data = Encoding.UTF8.GetBytes("Details");
             //    udpClient.Send(data, data.Length, "255.255.255.255", PORT);
 
-                
+
             //    //socket.SendTo(Encoding.Default.GetBytes("Ping"), new IPEndPoint(IPAddress.Parse("255.255.255.255"), 8000));
             //    //socket.SendTo(Encoding.Default.GetBytes("Ping"), new IPEndPoint(IPAddress.Parse("192.168.1.110"), 8000));
             //}
+            //Debug.WriteLine(IPAddress.Parse("192.168.1.101").ToString());
             CreateHostBuilder(args).ConfigureAppConfiguration(b => b.Add(new RWConfigurationSource("rwsettings.json"))).Build().Run();
         }
 

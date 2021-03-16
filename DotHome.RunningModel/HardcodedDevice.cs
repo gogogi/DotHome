@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DotHome.RunningModel.Devices
+namespace DotHome.RunningModel
 {
-    public abstract class TextDevice : GenericDevice
+    public abstract class HardcodedDevice : Device
     {
     }
 }

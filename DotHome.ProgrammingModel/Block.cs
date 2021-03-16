@@ -9,7 +9,7 @@ using System.Text;
 
 namespace DotHome.ProgrammingModel
 {
-    public class Block : INotifyPropertyChanged
+    public class Block : INotifyPropertyChanged, IProgrammingModelObject
     {
         public int Id { get; set; }
 
@@ -17,9 +17,10 @@ namespace DotHome.ProgrammingModel
 
         public int Y { get; set; }
 
-        public bool Selected { get; set; }
-
         public BlockDefinition Definition { get; set; }
+
+        [JsonIgnore]
+        public bool Selected { get; set; }
 
         [JsonIgnore]
         public Exception Exception { get; set; }

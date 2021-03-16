@@ -1,4 +1,4 @@
-﻿using DotHome.RunningModel.Devices;
+﻿using DotHome.RunningModel;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -19,13 +19,13 @@ namespace DotHome.RunningModel.Tools
             device.Name = o.Value<string>("Name");
             foreach(var rval in o["RValues"].OfType<JProperty>())
             {
-                GenericDeviceValue value = new GenericDeviceValue()
+                DeviceValue value = new DeviceValue()
                 {
                     Name = rval.Name, 
-                    GenericType = Enum.Parse<DeviceValueType>(((JArray)rval.Value).Value<string>(0)),
+                    ValueType = Enum.Parse<DeviceValueType>(((JArray)rval.Value).Value<string>(0)),
                     State = Enum.Parse<DeviceValueState>(((JArray)rval.Value).Value<string>(1)),
                 };
-                switch(value.GenericType)
+                switch(value.ValueType)
                 {
                     case DeviceValueType.Bool:
                         value.Bool = ((JArray)rval.Value).Value<bool>(2);
@@ -61,13 +61,13 @@ namespace DotHome.RunningModel.Tools
             }
             foreach (var rval in o["WValues"].OfType<JProperty>())
             {
-                GenericDeviceValue value = new GenericDeviceValue()
+                DeviceValue value = new DeviceValue()
                 {
                     Name = rval.Name,
-                    GenericType = Enum.Parse<DeviceValueType>(((JArray)rval.Value).Value<string>(0)),
+                    ValueType = Enum.Parse<DeviceValueType>(((JArray)rval.Value).Value<string>(0)),
                     State = Enum.Parse<DeviceValueState>(((JArray)rval.Value).Value<string>(1)),
                 };
-                switch (value.GenericType)
+                switch (value.ValueType)
                 {
                     case DeviceValueType.Bool:
                         value.Bool = ((JArray)rval.Value).Value<bool>(2);

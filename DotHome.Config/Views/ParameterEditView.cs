@@ -9,7 +9,7 @@ using DotHome.Config.Windows;
 using DotHome.ProgrammingModel;
 using DotHome.RunningModel;
 using DotHome.RunningModel.Attributes;
-using DotHome.RunningModel.Devices;
+using DotHome.RunningModel;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -25,7 +25,7 @@ namespace DotHome.Config.Views
 
         private Parameter Parameter => (Parameter)DataContext;
 
-        private ProgrammingModel.Block Block => ((Project)this.ParentOfType<SelectionPropertiesView>().DataContext).SelectedPage.SelectedBlock;
+        private ProgrammingModel.Block Block => (ProgrammingModel.Block)this.ParentOfType<SelectionPropertiesView>().DataContext;
 
 
         protected override void OnDataContextChanged(EventArgs e)
@@ -33,7 +33,7 @@ namespace DotHome.Config.Views
             lastValid = Parameter.Value;
             if (Parameter.Definition.Type == typeof(bool)) CreateBool();
             else if (Parameter.Definition.Type == typeof(List<User>)) CreateButton(async () => await new UsersWindow((List<User>)Parameter.Value).ShowDialog(ConfigTools.MainWindow));
-            else if (Parameter.Definition.Type == typeof(List<GenericDeviceValue>)) CreateButton(async () => await new GenericDeviceWindow(Block).ShowDialog(ConfigTools.MainWindow));
+            else if (Parameter.Definition.Type == typeof(List<DeviceValue>)) CreateButton(async () => await new GenericDeviceWindow(Block).ShowDialog(ConfigTools.MainWindow));
             else if (Parameter.Definition.Type == typeof(Room)) CreateComboBox(ConfigTools.MainWindow.Project.Rooms.Prepend(null));
             else if (Parameter.Definition.Type == typeof(Category)) CreateComboBox(ConfigTools.MainWindow.Project.Categories.Prepend(null));
             else if (Parameter.Definition.Type == typeof(int)) CreateString(nameof(Parameter.ValueAsInt));

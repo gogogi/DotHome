@@ -72,20 +72,26 @@ namespace DotHome.Core.Services
 
             foreach (Input i in b.Inputs)
             {
+                BlockValue input = (BlockValue)Activator.CreateInstance(typeof(Input<>).MakeGenericType(i.Definition.Type));
                 PropertyInfo pi = type.GetProperty(i.Definition.Name);
-                BlockValue input = (BlockValue)Activator.CreateInstance(pi.PropertyType);
                 input.Disabled = i.Disabled;
-                pi.SetValue(block, input);
                 block.Inputs.Add(input);
+                if (pi != null) // If input is property
+                {
+                    pi.SetValue(block, input);   
+                }
             }
 
             foreach (Output o in b.Outputs)
             {
-                PropertyInfo po = type.GetProperty(o.Definition.Name);
-                BlockValue output = (BlockValue)Activator.CreateInstance(po.PropertyType);
+                BlockValue output = (BlockValue)Activator.CreateInstance(typeof(Output<>).MakeGenericType(o.Definition.Type));
+                PropertyInfo pi = type.GetProperty(o.Definition.Name);
                 output.Disabled = o.Disabled;
-                po.SetValue(block, output);
                 block.Outputs.Add(output);
+                if (pi != null) // If output is property
+                {
+                    pi.SetValue(block, output);
+                }
             }
 
             foreach (Parameter p in b.Parameters)
@@ -95,6 +101,16 @@ namespace DotHome.Core.Services
             }
 
             return block;
+        }
+
+        public object GetService(Type type)
+        {
+            var globalService = serviceProvider.GetService(type);
+            if (globalService != null) return globalService;
+            if (localServices.TryGetValue(type, out object localService)) return localService;
+            var newService = CreateInstance(type);
+            localServices.Add(type, newService);
+            return newService;
         }
 
         public void RemoveServices()

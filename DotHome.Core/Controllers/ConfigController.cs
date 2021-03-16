@@ -1,11 +1,14 @@
 ﻿using DotHome.Core.Services;
+using DotHome.Definitions;
 using DotHome.ProgrammingModel.Tools;
+using DotHome.RunningModel;
 using DotHome.RunningModel;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -30,12 +33,16 @@ namespace DotHome.Core.Controllers
         private IConfiguration configuration;
         private IProgramCore programCore;
         private PageReloader pageReloader;
+        private BlocksActivator blocksActivator;
+        private ModelLoader modelLoader;
 
-        public ConfigController(IConfiguration configuration, IProgramCore programCore, PageReloader pageReloader)
+        public ConfigController(IConfiguration configuration, IProgramCore programCore, PageReloader pageReloader, BlocksActivator blocksActivator, ModelLoader modelLoader)
         {
             this.configuration = configuration;
             this.programCore = programCore;
             this.pageReloader = pageReloader;
+            this.blocksActivator = blocksActivator;
+            this.modelLoader = modelLoader;
         }
 
         [AllowAnonymous, HttpPost("login")]
@@ -140,5 +147,42 @@ namespace DotHome.Core.Controllers
         {
             return new Tuple<double, double>(programCore.AverageCpuUsage, programCore.MaxCpuUsage);
         }
+
+        [HttpPost("searchdevices")]
+        public List<string> SearchForGenericDevices([FromBody] string typename)
+        {
+            BlockDefinition blockDefinition = modelLoader.LoadDefinitions().GetBlockDefinitionByFullName(typename);
+            Type communicationProviderType = blockDefinition.Type.Assembly.GetTypes().SingleOrDefault(t => !t.IsGenericType && !t.IsAbstract && t.IsAssignableTo(typeof(CommunicationProvider<>).MakeGenericType(blockDefinition.Type)));
+            if(communicationProviderType != null)
+            {
+                var communicationProvider = blocksActivator.GetService(communicationProviderType);
+                if(communicationProvider != null)
+                {
+                    return ((CommunicationProvider)communicationProvider).SearchDevices().Select(gd => ModelSerializer.Serialize(GenericDeviceToProgrammingBlock(gd, blockDefinition))).ToList();
+                }
+            }
+            return null;
+        }
+
+        private ProgrammingModel.Block GenericDeviceToProgrammingBlock(GenericDevice genericDevice, BlockDefinition blockDefinition)
+        {
+            ProgrammingModel.Block block = new ProgrammingModel.Block(blockDefinition);
+            foreach(ProgrammingModel.Parameter parameter in block.Parameters)
+            {
+                parameter.Value = parameter.Definition.PropertyInfo.GetValue(genericDevice);
+            }
+            foreach (DeviceValue rValue in genericDevice.RValues)
+            {
+                var outputDefinition = new OutputDefinition() { Name = rValue.Name, Type = rValue.Type };
+                block.Outputs.Add(new ProgrammingModel.Output(outputDefinition));
+            }
+            foreach (DeviceValue wValue in genericDevice.WValues)
+            {
+                var inputDefinition = new InputDefinition() { Name = wValue.Name, Type = wValue.Type };
+                block.Inputs.Add(new ProgrammingModel.Input(inputDefinition));
+            }
+            return block;
+        }
+
     }
 }

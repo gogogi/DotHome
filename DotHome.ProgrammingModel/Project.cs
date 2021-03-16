@@ -11,7 +11,7 @@ using System.Linq;
 
 namespace DotHome.ProgrammingModel
 {
-    public class Project : INotifyPropertyChanged
+    public class Project : INotifyPropertyChanged, IProgrammingModelObject
     {
         public int ProgramPeriod { get; set; } = 100;
 

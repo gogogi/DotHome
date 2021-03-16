@@ -1,4 +1,4 @@
-﻿using DotHome.RunningModel.Devices;
+﻿using DotHome.RunningModel;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -16,9 +16,9 @@ namespace DotHome.RunningModel.Tools
             [DeviceValueType.Int8] = typeof(int),
             [DeviceValueType.Int16] = typeof(int),
             [DeviceValueType.Int32] = typeof(int),
-            [DeviceValueType.Float2] = typeof(float),
-            [DeviceValueType.Float4] = typeof(float),
-            [DeviceValueType.Float] = typeof(float),
+            [DeviceValueType.Float2] = typeof(double),
+            [DeviceValueType.Float4] = typeof(double),
+            [DeviceValueType.Float] = typeof(double),
             [DeviceValueType.String] = typeof(string),
             [DeviceValueType.Object] = typeof(byte[]),
         };

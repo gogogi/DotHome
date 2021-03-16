@@ -1,0 +1,37 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" Width="600" Height="400"
+        x:Class="DotHome.Config.Windows.DeviceSelectionWindow"
+		xmlns:tool="clr-namespace:DotHome.Config.Tools;assembly=DotHome.Config"
+		xmlns:local="clr-namespace:DotHome.Config.Views;assembly=DotHome.Config"
+        Title="Select device"
+		Icon="/Assets/Icons/ParallelPort_256x.png">
+	<Border BorderBrush="DarkGray" BorderThickness="0 1 0 0">
+		<Grid RowDefinitions="*,auto">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition MinWidth="100" MaxWidth="400" Width="150"/>
+				<ColumnDefinition Width="Auto"/>
+				<ColumnDefinition Width="*"/>
+			</Grid.ColumnDefinitions>
+			<ListBox Grid.Column="0" Grid.Row="0" Items="{Binding Blocks}" SelectionMode="Single" SelectedItem="{Binding SelectedBlock, Mode=TwoWay}" BorderThickness="0">
+				<ListBox.ItemTemplate>
+					<DataTemplate>
+						<TextBlock Text="{Binding Path='.', Converter={x:Static tool:BlockNameConverter.Instance}}"/>
+					</DataTemplate>
+				</ListBox.ItemTemplate>
+			</ListBox>
+			<GridSplitter Grid.Column="1" Grid.Row="0" Width="5" Background="White" BorderBrush="DarkGray" BorderThickness="1 0"/>
+			<Panel Grid.Column="2" Grid.Row="0" IsVisible="{Binding SelectedBlock, Converter={x:Static ObjectConverters.IsNotNull}}">
+				<local:SelectionPropertiesView DataContext="{Binding SelectedBlock}" Grid.Column="4"/>
+			</Panel>
+			<Border Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="3" BorderBrush="DarkGray" BorderThickness="0 1 0 0">
+				<DockPanel LastChildFill="False">
+					<Button Content="Cancel" DockPanel.Dock="Right" Margin="2" Padding="10 2" Click="ButtonCancel_Click" IsCancel="True"/>
+					<Button Content="OK" DockPanel.Dock="Right" Margin="2" Padding="10 2" Click="ButtonOk_Click" IsDefault="True" IsEnabled="{Binding SelectedBlock, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+				</DockPanel>
+			</Border>
+		</Grid>
+	</Border>
+</Window>

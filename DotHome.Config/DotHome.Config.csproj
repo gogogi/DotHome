@@ -11,6 +11,7 @@
     <None Remove="Assets\Icons\Add_256x.png" />
     <None Remove="Assets\Icons\Cancel_256x.png" />
     <None Remove="Assets\Icons\Close_256x.png" />
+    <None Remove="Assets\Icons\CollapseUp_256x.png" />
     <None Remove="Assets\Icons\Connect_256x.png" />
     <None Remove="Assets\Icons\Const.png" />
     <None Remove="Assets\Icons\Copy_256x.png" />
@@ -23,6 +24,7 @@
     <None Remove="Assets\Icons\Download_grey_256x.png" />
     <None Remove="Assets\Icons\Edit_256x.png" />
     <None Remove="Assets\Icons\EnableDebugging_256x.png" />
+    <None Remove="Assets\Icons\ExpandDown_256x.png" />
     <None Remove="Assets\Icons\GeoLocation_256x.png" />
     <None Remove="Assets\Icons\Group_256x.png" />
     <None Remove="Assets\Icons\Home_256x.png" />

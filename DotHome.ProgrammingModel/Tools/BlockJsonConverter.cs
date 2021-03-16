@@ -1,5 +1,5 @@
 ﻿using DotHome.Definitions;
-using DotHome.RunningModel.Devices;
+using DotHome.RunningModel;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -61,8 +61,15 @@ namespace DotHome.ProgrammingModel.Tools
             }
             else
             {
-                var rValues = (List<GenericDeviceValue>)block.Parameters.Single(p => p.Definition.Name == nameof(GenericDevice.RValues)).Value;
-                var wValues = (List<GenericDeviceValue>)block.Parameters.Single(p => p.Definition.Name == nameof(GenericDevice.WValues)).Value;
+                var newDefinition = new BlockDefinition() { Name = block.Definition.Name, Color = block.Definition.Color, Description = block.Definition.Description, Type = block.Definition.Type };
+                foreach(var par in block.Definition.Parameters)
+                {
+                    newDefinition.Parameters.Add(par);
+                }
+                block.Definition = newDefinition;
+
+                var rValues = (List<DeviceValue>)block.Parameters.Single(p => p.Definition.Name == nameof(GenericDevice.RValues)).Value;
+                var wValues = (List<DeviceValue>)block.Parameters.Single(p => p.Definition.Name == nameof(GenericDevice.WValues)).Value;
                 if(rValues.Count != block.Outputs.Count || wValues.Count != block.Inputs.Count)
                 {
                     throw new Exception("Generic value integrity corrupted");

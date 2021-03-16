@@ -1,5 +1,5 @@
 ﻿using DotHome.RunningModel;
-using DotHome.RunningModel.Devices;
+using DotHome.RunningModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,17 +23,7 @@ namespace DotHome.StandardBlocks.Devices
             throw new NotImplementedException();
         }
 
-        public override void ReadValues()
-        {
-            throw new NotImplementedException();
-        }
-
         public override void Run()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override void WriteValues()
         {
             throw new NotImplementedException();
         }

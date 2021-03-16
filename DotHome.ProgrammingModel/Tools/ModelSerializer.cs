@@ -17,17 +17,19 @@ namespace DotHome.ProgrammingModel.Tools
             Converters = { new BlockJsonConverter(), new DefinitionJsonConverter() }
         };
 
-        public static string SerializeProject(Project project)
+        public static string Serialize(IProgrammingModelObject obj)
         {
-            return JsonConvert.SerializeObject(project, jsonSerializerSettings);
+            return JsonConvert.SerializeObject(obj, jsonSerializerSettings);
         }
-
-        public static Project DeserializeProject(string text, DefinitionsContainer definitionsContainer)
+        public static T Deserialize<T>(string text, DefinitionsContainer definitionsContainer) where T : IProgrammingModelObject
         {
             jsonSerializerSettings.Context = new StreamingContext(StreamingContextStates.All, definitionsContainer);
-            var project = JsonConvert.DeserializeObject<Project>(text, jsonSerializerSettings);
-            project.Definitions = definitionsContainer;
-            return project;
+            var obj = JsonConvert.DeserializeObject<T>(text, jsonSerializerSettings);
+            if(obj is Project p)
+            {
+                p.Definitions = definitionsContainer;
+            }
+            return obj;
         }
     }
 }

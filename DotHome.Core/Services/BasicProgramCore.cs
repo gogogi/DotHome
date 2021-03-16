@@ -18,7 +18,7 @@ namespace DotHome.Core.Services
     {
         private const int usageSamples = 100;
 
-        private ProgrammingModelLoader programmingModelLoader;
+        private ModelLoader programmingModelLoader;
         private BlocksActivator blocksActivator;
         private IHubContext<DebuggingHub> debuggingHubContext;
 
@@ -47,7 +47,7 @@ namespace DotHome.Core.Services
 
         public List<Category> Categories { get; private set; }
 
-        public BasicProgramCore(ProgrammingModelLoader programmingModelLoader, BlocksActivator blocksActivator, IHubContext<DebuggingHub> debuggingHubContext)
+        public BasicProgramCore(ModelLoader programmingModelLoader, BlocksActivator blocksActivator, IHubContext<DebuggingHub> debuggingHubContext)
         {
             this.programmingModelLoader = programmingModelLoader;
             this.blocksActivator = blocksActivator;
@@ -236,17 +236,17 @@ namespace DotHome.Core.Services
                     var tuple = debugValues[block.Id];
                     for (int i = 0; i < block.Inputs.Count; i++)
                     {
-                        if (!Equals(block.Inputs[i].ValAsObject, tuple.Item1[i]))
+                        if (!Equals(block.Inputs[i].ValueAsObject, tuple.Item1[i]))
                         {
-                            tuple.Item1[i] = block.Inputs[i].ValAsObject;
+                            tuple.Item1[i] = block.Inputs[i].ValueAsObject;
                             debuggingHubContext.Clients.All.SendAsync("Input", block.Id, i, tuple.Item1[i]);
                         }
                     }
                     for (int i = 0; i < block.Outputs.Count; i++)
                     {
-                        if (!Equals(block.Outputs[i].ValAsObject, tuple.Item2[i]))
+                        if (!Equals(block.Outputs[i].ValueAsObject, tuple.Item2[i]))
                         {
-                            tuple.Item2[i] = block.Outputs[i].ValAsObject;
+                            tuple.Item2[i] = block.Outputs[i].ValueAsObject;
                             debuggingHubContext.Clients.All.SendAsync("Output", block.Id, i, tuple.Item2[i]);
                         }
                     }

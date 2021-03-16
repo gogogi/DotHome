@@ -10,9 +10,9 @@ namespace DotHome.RunningModel
     public abstract class BlockValue
     {
         public abstract Type Type { get; }
-        public abstract object ValAsObject { get; }
+        public abstract object ValueAsObject { get; }
         public bool Disabled { get; set; }
-        public List<BlockValue> AttachedValues { get; } = new List<BlockValue>();
+        private List<BlockValue> AttachedValues { get; } = new List<BlockValue>();
 
         private event Action TransferEvent;
 
@@ -33,7 +33,7 @@ namespace DotHome.RunningModel
         public T Value { get; set; }
         public override Type Type => typeof(T);
 
-        public override object ValAsObject => Value;
+        public override object ValueAsObject => Value;
     }
 
     public class Input<T> : BlockValue<T>

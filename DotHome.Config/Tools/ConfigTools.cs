@@ -5,7 +5,7 @@ using Avalonia.VisualTree;
 using DotHome.Config.Views;
 using DotHome.Definitions.Tools;
 using DotHome.ProgrammingModel;
-using DotHome.RunningModel.Devices;
+using DotHome.RunningModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -282,7 +282,10 @@
 			</TabControl.ContentTemplate>
 		</TabControl>
 		<GridSplitter Grid.Column="3" Width="5" Background="White" BorderBrush="DarkGray" BorderThickness="1 0"/>
-		<local:SelectionPropertiesView Grid.Column="4"/>
+		<Panel Grid.Column="4" IsVisible="{Binding SelectedPage.SelectedBlock, Converter={x:Static ObjectConverters.IsNotNull}}">
+			<local:SelectionPropertiesView DataContext="{Binding SelectedPage.SelectedBlock}" Grid.Column="4"/>
+		</Panel>
+		<TextBlock Text="Nothing selected" IsVisible="{Binding SelectedPage.SelectedBlock, Converter={x:Static ObjectConverters.IsNull}}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="18" Grid.Column="4"/>
 	</Grid>
 	
 </UserControl>

@@ -10,6 +10,6 @@ namespace DotHome.RunningModel.Attributes
     public class UniqueAttribute : ValidationAttribute
     {
         // There can hardly be anything as we must see the whole project to perform validation
-        // It only acts as a sign
+        // It only acts as a markup
     }
 }

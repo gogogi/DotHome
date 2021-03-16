@@ -6,64 +6,61 @@
 			 xmlns:tool="clr-namespace:DotHome.Config.Tools;assembly=DotHome.Config"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="DotHome.Config.Views.SelectionPropertiesView">
-	<Panel>
-		<ScrollViewer HorizontalScrollBarVisibility="Disabled" IsVisible="{Binding SelectedPage.SelectedBlock, Converter={x:Static ObjectConverters.IsNotNull}}">
-			<StackPanel>
-				<TextBlock Text="{Binding SelectedPage.SelectedBlock.Definition.Name}" FontSize="20" Margin="2"/>
-				<TextBlock Text="{Binding SelectedPage.SelectedBlock.Definition.Description}" Margin="2" TextWrapping="Wrap"/>
-				<Separator Height="1" Background="DarkGray"/>
-				<Expander Header="Parameters" IsExpanded="True" HorizontalAlignment="Stretch" Grid.Row="0">
-					<DataGrid Items="{Binding SelectedPage.SelectedBlock.Parameters}" AutoGenerateColumns="False" CanUserResizeColumns="True" GridLinesVisibility="All" SelectionChanged="DataGrid_CollectionChanged" RowBackground="White" AlternatingRowBackground="White" Height="{Binding SelectedPage.SelectedBlock.Parameters.Count, Converter={x:Static tool:DataGridCountToHeightConverter.Instance}}" RowHeight="24" Background="Gray">
-						<DataGrid.Columns>
-							<DataGridTextColumn Header="Name" Binding="{Binding Definition.Name}" IsReadOnly="True"/>
-							<DataGridTextColumn Header="Type" Binding="{Binding Definition.Type, Converter={x:Static tool:TypeToStringConverter.Instance}, Mode=OneWay}" IsReadOnly="True"/>
-							<DataGridTextColumn Header="Description" Binding="{Binding Definition.Description}" Width="1*" IsReadOnly="True"/>
-							<DataGridTemplateColumn Header="Value" Width="80">
-								<DataGridTemplateColumn.CellTemplate>
-									<DataTemplate>
-										<local:ParameterEditView/>
-									</DataTemplate>
-								</DataGridTemplateColumn.CellTemplate>
-							</DataGridTemplateColumn>
-						</DataGrid.Columns>
-					</DataGrid>
-				</Expander>
-				<Separator Height="1" Background="DarkGray"/>
-				<Expander Header="Inputs" IsExpanded="True" Grid.Row="1">
-					<DataGrid Items="{Binding SelectedPage.SelectedBlock.Inputs}" AutoGenerateColumns="False" CanUserResizeColumns="True" GridLinesVisibility="All" SelectionChanged="DataGrid_CollectionChanged" RowBackground="White" AlternatingRowBackground="White" Height="{Binding SelectedPage.SelectedBlock.Inputs.Count, Converter={x:Static tool:DataGridCountToHeightConverter.Instance}}" Background="Gray">
-						<DataGrid.Columns>
-							<DataGridTextColumn Header="Name" Binding="{Binding Definition.Name}" IsReadOnly="True"/>
-							<DataGridTextColumn Header="Type" Binding="{Binding Definition.Type, Converter={x:Static tool:TypeToStringConverter.Instance}, Mode=OneWay}" IsReadOnly="True"/>
-							<DataGridTextColumn Header="Description" Binding="{Binding Definition.Description}" Width="1*" IsReadOnly="True"/>
-							<DataGridTemplateColumn Header="Enabled">
-								<DataGridTemplateColumn.CellTemplate>
-									<DataTemplate>
-										<CheckBox IsChecked="{Binding !Disabled, Mode=TwoWay}" IsEnabled="{Binding Definition.Disablable}" HorizontalAlignment="Center"/>
-									</DataTemplate>
-								</DataGridTemplateColumn.CellTemplate>
-							</DataGridTemplateColumn>
-						</DataGrid.Columns>
-					</DataGrid>
-				</Expander>
-				<Separator Height="1" Background="DarkGray"/>
-				<Expander Header="Outputs" IsExpanded="True" Grid.Row="2">
-					<DataGrid Items="{Binding SelectedPage.SelectedBlock.Outputs}" AutoGenerateColumns="False" CanUserResizeColumns="True" GridLinesVisibility="All" SelectionChanged="DataGrid_CollectionChanged" RowBackground="White" AlternatingRowBackground="White" Height="{Binding SelectedPage.SelectedBlock.Outputs.Count, Converter={x:Static tool:DataGridCountToHeightConverter.Instance}}" Background="Gray">
-						<DataGrid.Columns>
-							<DataGridTextColumn Header="Name" Binding="{Binding Definition.Name}" IsReadOnly="True"/>
-							<DataGridTextColumn Header="Type" Binding="{Binding Definition.Type, Converter={x:Static tool:TypeToStringConverter.Instance}, Mode=OneWay}" IsReadOnly="True"/>
-							<DataGridTextColumn Header="Description" Binding="{Binding Definition.Description}" Width="1*" IsReadOnly="True"/>
-							<DataGridTemplateColumn Header="Enabled">
-								<DataGridTemplateColumn.CellTemplate>
-									<DataTemplate>
-										<CheckBox IsChecked="{Binding !Disabled, Mode=TwoWay}" IsEnabled="{Binding Definition.Disablable}" HorizontalAlignment="Center"/>
-									</DataTemplate>
-								</DataGridTemplateColumn.CellTemplate>
-							</DataGridTemplateColumn>
-						</DataGrid.Columns>
-					</DataGrid>
-				</Expander>
-			</StackPanel>
-		</ScrollViewer>
-		<TextBlock Text="Nothing selected" IsVisible="{Binding SelectedPage.SelectedBlock, Converter={x:Static ObjectConverters.IsNull}}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="18"/>
-	</Panel>
+	<ScrollViewer HorizontalScrollBarVisibility="Disabled">
+		<StackPanel>
+			<TextBlock Text="{Binding Definition.Name}" FontSize="20" Margin="2"/>
+			<TextBlock Text="{Binding Definition.Description}" Margin="2" TextWrapping="Wrap"/>
+			<Separator Height="1" Background="DarkGray"/>
+			<Expander Header="Parameters" IsExpanded="True" HorizontalAlignment="Stretch" Grid.Row="0">
+				<DataGrid Items="{Binding Parameters}" AutoGenerateColumns="False" CanUserResizeColumns="True" GridLinesVisibility="All" SelectionChanged="DataGrid_CollectionChanged" RowBackground="White" AlternatingRowBackground="White" Height="{Binding Parameters.Count, Converter={x:Static tool:DataGridCountToHeightConverter.Instance}}" RowHeight="24" Background="Gray" CanUserSortColumns="False">
+					<DataGrid.Columns>
+						<DataGridTextColumn Header="Name" Binding="{Binding Definition.Name}" IsReadOnly="True"/>
+						<DataGridTextColumn Header="Type" Binding="{Binding Definition.Type, Converter={x:Static tool:TypeToStringConverter.Instance}, Mode=OneWay}" IsReadOnly="True"/>
+						<DataGridTextColumn Header="Description" Binding="{Binding Definition.Description}" Width="1*" IsReadOnly="True"/>
+						<DataGridTemplateColumn Header="Value" Width="80">
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<local:ParameterEditView/>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+					</DataGrid.Columns>
+				</DataGrid>
+			</Expander>
+			<Separator Height="1" Background="DarkGray"/>
+			<Expander Header="Inputs" IsExpanded="True" Grid.Row="1">
+				<DataGrid Items="{Binding Inputs}" AutoGenerateColumns="False" CanUserResizeColumns="True" GridLinesVisibility="All" SelectionChanged="DataGrid_CollectionChanged" RowBackground="White" AlternatingRowBackground="White" Height="{Binding Inputs.Count, Converter={x:Static tool:DataGridCountToHeightConverter.Instance}}" Background="Gray" CanUserSortColumns="False">
+					<DataGrid.Columns>
+						<DataGridTextColumn Header="Name" Binding="{Binding Definition.Name}" IsReadOnly="True"/>
+						<DataGridTextColumn Header="Type" Binding="{Binding Definition.Type, Converter={x:Static tool:TypeToStringConverter.Instance}, Mode=OneWay}" IsReadOnly="True"/>
+						<DataGridTextColumn Header="Description" Binding="{Binding Definition.Description}" Width="1*" IsReadOnly="True"/>
+						<DataGridTemplateColumn Header="Enabled">
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<CheckBox IsChecked="{Binding !Disabled, Mode=TwoWay}" IsEnabled="{Binding Definition.Disablable}" HorizontalAlignment="Center"/>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+					</DataGrid.Columns>
+				</DataGrid>
+			</Expander>
+			<Separator Height="1" Background="DarkGray"/>
+			<Expander Header="Outputs" IsExpanded="True" Grid.Row="2">
+				<DataGrid Items="{Binding Outputs}" AutoGenerateColumns="False" CanUserResizeColumns="True" GridLinesVisibility="All" SelectionChanged="DataGrid_CollectionChanged" RowBackground="White" AlternatingRowBackground="White" Height="{Binding Outputs.Count, Converter={x:Static tool:DataGridCountToHeightConverter.Instance}}" Background="Gray" CanUserSortColumns="False">
+					<DataGrid.Columns>
+						<DataGridTextColumn Header="Name" Binding="{Binding Definition.Name}" IsReadOnly="True"/>
+						<DataGridTextColumn Header="Type" Binding="{Binding Definition.Type, Converter={x:Static tool:TypeToStringConverter.Instance}, Mode=OneWay}" IsReadOnly="True"/>
+						<DataGridTextColumn Header="Description" Binding="{Binding Definition.Description}" Width="1*" IsReadOnly="True"/>
+						<DataGridTemplateColumn Header="Enabled">
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<CheckBox IsChecked="{Binding !Disabled, Mode=TwoWay}" IsEnabled="{Binding Definition.Disablable}" HorizontalAlignment="Center"/>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+					</DataGrid.Columns>
+				</DataGrid>
+			</Expander>
+		</StackPanel>
+	</ScrollViewer>
 </UserControl>

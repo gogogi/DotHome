@@ -6,16 +6,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DotHome.RunningModel.Devices
+namespace DotHome.RunningModel
 {
     [Color("Red"), Category("Devices")]
-    public abstract class Device : Block
+    public abstract class Device : NamedBlock
     {
         [Parameter(true)]
-        public string Name { get; set; } = "Device";
-
-        public abstract void ReadValues();
-
-        public abstract void WriteValues();
+        public new string Name { get; set; } = "Device";
     }
 }

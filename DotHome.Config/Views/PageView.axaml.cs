@@ -14,7 +14,7 @@ using DotHome.Config.Windows;
 using DotHome.Definitions;
 using DotHome.ProgrammingModel;
 using DotHome.ProgrammingModel.Tools;
-using DotHome.RunningModel.Devices;
+using DotHome.RunningModel;
 using DotHome.RunningModel.Tools;
 using MessageBox.Avalonia;
 using MessageBox.Avalonia.Enums;
@@ -27,6 +27,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Xml.Serialization;
+using Block = DotHome.ProgrammingModel.Block;
 
 namespace DotHome.Config.Views
 {
@@ -448,10 +449,35 @@ namespace DotHome.Config.Views
             {
                 if(bd.Type.IsAssignableTo(typeof(GenericDevice)))
                 {
-                    Block block = new Block(bd) { X = (int)point.X, Y = (int)point.Y, Selected = true };
-                    if(await new GenericDeviceWindow(block).ShowDialog<bool>(ConfigTools.MainWindow))
+                    if (ConfigTools.MainWindow.Server != null && await MessageBoxManager.GetMessageBoxStandardWindow("Generic device", "Do you want to search for connected devices?", ButtonEnum.YesNo, Icon.Info).ShowDialog(ConfigTools.MainWindow) == ButtonResult.Yes)
                     {
-                        Page.Blocks.Add(block);
+                        ((Control)ConfigTools.MainWindow.Content).IsEnabled = false;
+                        ConfigTools.MainWindow.Cursor = new Cursor(StandardCursorType.Wait);
+                        var list = await ConfigTools.MainWindow.Server.SearchDevices(bd.Type.FullName);
+                        ConfigTools.MainWindow.Cursor = new Cursor(StandardCursorType.Arrow);
+                        ((Control)ConfigTools.MainWindow.Content).IsEnabled = true;
+                        if (list.Count > 0)
+                        {
+                            Block block = await new DeviceSelectionWindow(list).ShowDialog<Block>(ConfigTools.MainWindow);
+                            if(block != null)
+                            {
+                                block.X = (int)point.X;
+                                block.Y = (int)point.Y;
+                                Page.Blocks.Add(block);
+                            }
+                        }
+                        else
+                        {
+                            await MessageBoxManager.GetMessageBoxStandardWindow("Generic device", "No device found", ButtonEnum.Ok, Icon.Info).ShowDialog(ConfigTools.MainWindow);
+                        }
+                    }
+                    else
+                    {
+                        Block block = new Block(bd) { X = (int)point.X, Y = (int)point.Y, Selected = true };
+                        if (await new GenericDeviceWindow(block).ShowDialog<bool>(ConfigTools.MainWindow))
+                        {
+                            Page.Blocks.Add(block);
+                        }
                     }
                 }
                 else if(bd is GenericBlockDefinition gbd)
