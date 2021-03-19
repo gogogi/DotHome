@@ -16,7 +16,7 @@ namespace DotHome.RunningModel
 
         public abstract void ReadDevice(GenericDevice device);
 
-        public void RegisterDevice(GenericDevice device)
+        public virtual void RegisterDevice(GenericDevice device)
         {
             devices.Add(device);
         }

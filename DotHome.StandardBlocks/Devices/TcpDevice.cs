@@ -33,6 +33,7 @@ namespace DotHome.StandardBlocks.Devices
         public override void Init()
         {
             IPAddress = IPAddress.Parse(IP);
+            base.Init();
         }
     }
 }

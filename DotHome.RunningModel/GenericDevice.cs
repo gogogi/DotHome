@@ -27,7 +27,7 @@ namespace DotHome.RunningModel
 
         public override void Init()
         {
-            
+            communicationProvider.RegisterDevice(this);
         }
 
         public override void Run()

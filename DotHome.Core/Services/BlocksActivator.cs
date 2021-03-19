@@ -23,6 +23,15 @@ namespace DotHome.Core.Services
             this.serviceProvider = serviceProvider;
         }
 
+        public void DisposeServices()
+        {
+            foreach(var o in localServices)
+            {
+                if (o.Value is IDisposable d) d.Dispose();
+            }
+            localServices.Clear();
+        }
+
         private object CreateInstance(Type type)
         {
             var constructors = type.GetConstructors();

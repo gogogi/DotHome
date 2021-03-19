@@ -153,10 +153,7 @@ namespace DotHome.Core.Services
             {
                 if (block is IDisposable d) d.Dispose();
             }
-            foreach(IBlockService blockService in services)
-            {
-                if (blockService is IDisposable d) d.Dispose();
-            }
+            blocksActivator.DisposeServices();
             blocks = null;
             services = null;
             VisualBlocks = null;
