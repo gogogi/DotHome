@@ -3,6 +3,7 @@ using DotHome.RunningModel.Tools;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -31,7 +32,7 @@ namespace DotHome.RunningModel
 
         public override void Run()
         {
-            lock(this)
+            lock (this)
             {
                 for (int i = 0; i < RValues.Count; i++)
                 {
@@ -63,9 +64,9 @@ namespace DotHome.RunningModel
                             break;
                     }
                 }
+                bool shouldWrite = false;
                 for (int i = 0; i < WValues.Count; i++)
                 {
-                    bool shouldWrite = false;
                     switch (WValues[i].ValueType)
                     {
                         case DeviceValueType.Bool:
@@ -99,10 +100,11 @@ namespace DotHome.RunningModel
                             WValues[i].Object = ((Input<byte[]>)Inputs[i]).Value;
                             break;
                     }
-                    if(shouldWrite)
-                    {
-                        communicationProvider.WriteDevice(this);
-                    }
+                }
+                if (shouldWrite)
+                {
+                    Debug.WriteLine("should write");
+                    communicationProvider.WriteDevice(this);
                 }
             }
         }

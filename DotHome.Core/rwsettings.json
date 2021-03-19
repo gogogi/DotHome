@@ -12,6 +12,7 @@
   "LettuceDomain": "zeleznicarska34.duckdns.org",
   "LettuceEmail": "vojta.luk@seznam.cz",
 
-  "IPAddress" :  "192.168.1.101",
-  "UdpPort" :  "8000"
+  "IPAddress": "192.168.1.101",
+  "UdpPort": "8000",
+  "TcpPort": "8001"
 }
