@@ -14,29 +14,39 @@ using System.Threading.Tasks;
 
 namespace DotHome.StandardBlocks.Devices
 {
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "<Pending>")]
     public class UdpCommunicationProvider : TextCommunicationProvider<UdpDevice>, IDisposable
     {
         private CancellationTokenSource cancellationTokenSource;
-        private Socket socket;
+        private UdpClient udpClient;
         private int port;
         private byte[] receivingBuffer = new byte[1000];
         private AsyncQueue<Tuple<string, GenericDevice>> outgoingQueue = new AsyncQueue<Tuple<string, GenericDevice>>();
+        private List<Task> tasks = new List<Task>();
 
         protected override event Action<string, GenericDevice> TextReceived;
 
         public UdpCommunicationProvider(IConfiguration configuration)
         {
             port = int.Parse(configuration["UdpPort"]);
-            socket = new Socket(SocketType.Dgram, ProtocolType.Udp);
-            socket.Bind(new IPEndPoint(IPAddress.Parse(configuration["IPAddress"]), port));
+            udpClient = new UdpClient(new IPEndPoint(IPAddress.Parse(configuration["IPAddress"]), port));
             cancellationTokenSource = new CancellationTokenSource();
-            Task.Factory.StartNew(() => ReceivingLoop(cancellationTokenSource.Token), TaskCreationOptions.LongRunning);
-            Task.Factory.StartNew(() => SendingLoop(cancellationTokenSource.Token), TaskCreationOptions.LongRunning);
+            tasks.Add(ReceivingLoop().WithCancellation(cancellationTokenSource.Token));
+            tasks.Add(SendingLoop().WithCancellation(cancellationTokenSource.Token));
         }
 
         public void Dispose()
         {
             cancellationTokenSource.Cancel();
+            foreach(Task task in tasks)
+            {
+                try
+                {
+                    task.WaitWithoutInlining();
+                }
+                catch { }
+            }
+            udpClient.Dispose();
         }
 
         protected override void SendText(string text, GenericDevice target)
@@ -45,29 +55,36 @@ namespace DotHome.StandardBlocks.Devices
             Debug.WriteLine("enqueue " + text);
         }
 
-        private void ReceivingLoop(CancellationToken cancellationToken)
+        private async Task ReceivingLoop()
         {
-            while (!cancellationToken.IsCancellationRequested)
+            try
             {
-                EndPoint endPoint = new IPEndPoint(0, 0);
-                int count = socket.ReceiveFrom(receivingBuffer, ref endPoint);
-                string text = Encoding.Default.GetString(receivingBuffer, 0, count);
-                IPAddress address = ((IPEndPoint)endPoint).Address;
-                var device = devices.SingleOrDefault(d => ((UdpDevice)d).IPAddress == address) ?? new UdpDevice(this) { IPAddress = address, IP = address.MapToIPv4().ToString() };
-                TextReceived?.Invoke(text, device);
-            }
-        }
-
-        private async void SendingLoop(CancellationToken cancellationToken)
-        {
-            while (!cancellationToken.IsCancellationRequested)
-            {
-                var tuple = await outgoingQueue.DequeueAsync(cancellationToken);
-                if (tuple != null)
+                while (true)
                 {
-                    socket.SendTo(Encoding.Default.GetBytes(tuple.Item1), new IPEndPoint((tuple.Item2 as UdpDevice)?.IPAddress ?? IPAddress.Broadcast, port));
+                    var result = await udpClient.ReceiveAsync();
+                    string text = Encoding.Default.GetString(result.Buffer);
+                    var device = devices.SingleOrDefault(d => ((UdpDevice)d).IPAddress.Equals(result.RemoteEndPoint.Address)) ?? new UdpDevice(this) { IPAddress = result.RemoteEndPoint.Address.MapToIPv4(), IP = result.RemoteEndPoint.Address.MapToIPv4().ToString() };
+                    TextReceived?.Invoke(text, device);
                 }
             }
+            catch { }
+        }
+
+        private async Task SendingLoop()
+        {
+            try
+            {
+                while (true)
+                {
+                    var tuple = await outgoingQueue.DequeueAsync();
+                    if (tuple != null)
+                    {
+                        byte[] buffer = Encoding.Default.GetBytes(tuple.Item1);
+                        await udpClient.SendAsync(buffer, buffer.Length, new IPEndPoint((tuple.Item2 as UdpDevice)?.IPAddress ?? IPAddress.Broadcast, port));
+                    }
+                }
+            }
+            catch { }
         }
     }
 }

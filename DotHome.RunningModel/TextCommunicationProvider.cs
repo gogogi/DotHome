@@ -16,6 +16,29 @@ namespace DotHome.RunningModel
         
         protected abstract void SendText(string text, GenericDevice target);
 
+        public TextCommunicationProvider() 
+        {
+            TextReceived += TextCommunicationProvider_TextReceived;
+        }
+
+        private void TextCommunicationProvider_TextReceived(string text, GenericDevice device)
+        {
+            if(text.StartsWith("ChangedInfo "))
+            {
+                try
+                {
+                    lock(device)
+                    {
+                        Parse(text.Substring("ChangedInfo ".Length), device);
+                    }
+                }
+                catch
+                {
+
+                }
+            }
+        }
+
         public override void WriteDevice(GenericDevice device)
         {
             StringBuilder sb = new StringBuilder("Write { ");
@@ -93,6 +116,7 @@ namespace DotHome.RunningModel
             TextReceived -= handler;
             return searchDevices;
         }
+
 
         private void Parse(string json, GenericDevice device)
         {
