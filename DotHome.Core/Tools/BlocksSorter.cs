@@ -1,8 +1,10 @@
 ﻿using DotHome.ProgrammingModel;
+using DotHome.RunningModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Block = DotHome.ProgrammingModel.Block;
 
 namespace DotHome.Core.Tools
 {
@@ -24,8 +26,11 @@ namespace DotHome.Core.Tools
             {
                 BlockWrapper inputBlockWrapper = blockWrappers.Single(bw => bw.Block.Inputs.Contains(wire.Input));
                 BlockWrapper outputBlockWrapper = blockWrappers.Single(bw => bw.Block.Outputs.Contains(wire.Output));
-                inputBlockWrapper.PrecedingBlocks.Add(outputBlockWrapper);
-                outputBlockWrapper.SuccessingBlocks.Add(inputBlockWrapper);
+                if(!outputBlockWrapper.Block.Definition.Type.IsAssignableTo(typeof(Device)))
+                {
+                    inputBlockWrapper.PrecedingBlocks.Add(outputBlockWrapper);
+                    outputBlockWrapper.SuccessingBlocks.Add(inputBlockWrapper);
+                }
             }
 
             Queue<BlockWrapper> blockWrappersWithoutPrecedors = new Queue<BlockWrapper>(blockWrappers.Where(bw => bw.PrecedingBlocks.Count == 0));
