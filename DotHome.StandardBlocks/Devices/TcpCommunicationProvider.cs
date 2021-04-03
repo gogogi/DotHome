@@ -21,12 +21,11 @@ namespace DotHome.StandardBlocks.Devices
         private TcpListener tcpListener;
         private int port;
         private bool stop;
-        private byte[] receivingBuffer = new byte[1000];
-        private AsyncQueue<Tuple<string, GenericDevice>> outgoingQueue = new AsyncQueue<Tuple<string, GenericDevice>>();
+        private AsyncQueue<Tuple<string, TcpDevice>> outgoingQueue = new AsyncQueue<Tuple<string, TcpDevice>>();
         private List<Task> tasks = new List<Task>();
         private Dictionary<IPAddress, Tuple<TcpClient, StreamReader, StreamWriter>> clients = new Dictionary<IPAddress, Tuple<TcpClient, StreamReader, StreamWriter>>();
 
-        protected override event Action<string, GenericDevice> TextReceived;
+        protected override event Action<string, TcpDevice> TextReceived;
 
         
         public TcpCommunicationProvider(IConfiguration configuration)
@@ -41,14 +40,13 @@ namespace DotHome.StandardBlocks.Devices
 
         private void AcceptCallback(IAsyncResult ar)
         {
-            if(!stop)
+            if (!stop)
             {
-                Debug.WriteLine("called");
                 var client = tcpListener.EndAcceptTcpClient(ar);
                 var address = ((IPEndPoint)client.Client.RemoteEndPoint).Address;
                 tcpListener.BeginAcceptTcpClient(AcceptCallback, null);
                 TcpDevice device = (TcpDevice)devices.SingleOrDefault(d => ((TcpDevice)d).IPAddress.Equals(address)) ?? new TcpDevice(this) { IPAddress = address, IP = address.MapToIPv4().ToString() };
-                if(clients.TryGetValue(address, out var tuple))
+                if (clients.TryGetValue(address, out var tuple))
                 {
                     tuple.Item2.Dispose();
                     tuple.Item3.Dispose();
@@ -56,8 +54,7 @@ namespace DotHome.StandardBlocks.Devices
                 }
                 device.Client = client;
                 device.Reader = new StreamReader(client.GetStream());
-                device.Writer = new StreamWriter(client.GetStream());
-
+                device.Writer = new StreamWriter(client.GetStream()) { NewLine = "\n", AutoFlush = true };
                 clients[address] = new (client, device.Reader, device.Writer);
                 tasks.Add(ReceivingLoop(device).WithCancellation(cancellationTokenSource.Token));
             }
@@ -85,7 +82,7 @@ namespace DotHome.StandardBlocks.Devices
             }
         }
 
-        protected override void SendText(string text, GenericDevice target)
+        protected override void SendText(string text, TcpDevice target)
         {
             outgoingQueue.Enqueue(new(text, target));
         }
@@ -116,15 +113,14 @@ namespace DotHome.StandardBlocks.Devices
                         {
                             foreach (var client in clients)
                             {
-                                await client.Value.Item3.WriteAsync(tuple.Item1 + "\n");
-                                await client.Value.Item3.FlushAsync();
+                                await client.Value.Item3.WriteLineAsync(tuple.Item1);
                             }
                         }
                         else
                         {
-                            if(((TcpDevice)tuple.Item2).Writer != null) {
-                                await ((TcpDevice)tuple.Item2).Writer?.WriteAsync(tuple.Item1 + "\n");
-                                await ((TcpDevice)tuple.Item2).Writer?.FlushAsync();
+                            if(((TcpDevice)tuple.Item2).Writer != null)
+                            {
+                                await ((TcpDevice)tuple.Item2).Writer?.WriteLineAsync(tuple.Item1);
                             }
                         }
                     }

@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -158,7 +159,7 @@ namespace DotHome.Core.Controllers
                 var communicationProvider = blocksActivator.GetService(communicationProviderType);
                 if(communicationProvider != null)
                 {
-                    return ((CommunicationProvider)communicationProvider).SearchDevices().Select(gd => ModelSerializer.Serialize(GenericDeviceToProgrammingBlock(gd, blockDefinition))).ToList();
+                    return ((CommunicationProvider)communicationProvider).SearchGenericDevices().Select(gd => ModelSerializer.Serialize(GenericDeviceToProgrammingBlock(gd, blockDefinition))).ToList();
                 }
             }
             return null;

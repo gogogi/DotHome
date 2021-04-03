@@ -7,6 +7,10 @@ using System.Threading.Tasks;
 
 namespace DotHome.RunningModel
 {
+    /// <summary>
+    /// The Blazor framework component that represents the actual user control attached to a <see cref="VisualBlock"/> <typeparamref name="T"/>
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public abstract class VisualBlockComponent<T> : ComponentBase where T : VisualBlock
     {
         [Parameter]

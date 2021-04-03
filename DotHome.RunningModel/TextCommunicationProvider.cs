@@ -10,18 +10,35 @@ using System.Threading.Tasks;
 
 namespace DotHome.RunningModel
 {
+    /// <summary>
+    /// Partial implementation of <see cref="CommunicationProvider{T}"/>. It uses a text, human readable format protocol.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public abstract class TextCommunicationProvider<T> : CommunicationProvider<T> where T : GenericDevice
     {
-        protected abstract event Action<string, GenericDevice> TextReceived;
+        /// <summary>
+        /// To be overriden in derived class and called when message arrives from device
+        /// </summary>
+        protected abstract event Action<string, T> TextReceived;
         
-        protected abstract void SendText(string text, GenericDevice target);
+        /// <summary>
+        /// Must be overriden in derived class. Has to send message <paramref name="text"/> to device <paramref name="target"/>
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="target"></param>
+        protected abstract void SendText(string text, T target);
 
         public TextCommunicationProvider() 
         {
             TextReceived += TextCommunicationProvider_TextReceived;
         }
 
-        private void TextCommunicationProvider_TextReceived(string text, GenericDevice device)
+        /// <summary>
+        /// Reaction to incoming message <paramref name="text"/> from device <paramref name="device"/>
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="device"></param>
+        private void TextCommunicationProvider_TextReceived(string text, T device)
         {
             if(text.StartsWith("ChangedInfo "))
             {
@@ -39,7 +56,11 @@ namespace DotHome.RunningModel
             }
         }
 
-        public override void WriteDevice(GenericDevice device)
+        /// <summary>
+        /// Forces writing all <see cref="GenericDevice.WValues"/> to physical device in text format
+        /// </summary>
+        /// <param name="device"></param>
+        public override void WriteDevice(T device)
         {
             StringBuilder sb = new StringBuilder("Write { ");
             foreach(var v in device.WValues)
@@ -73,7 +94,7 @@ namespace DotHome.RunningModel
                         sb.Append(v.String);
                         sb.Append("\"");
                         break;
-                    case DeviceValueType.Object:
+                    case DeviceValueType.Binary:
                         sb.Append("\"");
                         sb.Append(v.Object == null ? "" : BitConverter.ToString(v.Object).Replace("-", ""));
                         sb.Append("\"");
@@ -85,16 +106,24 @@ namespace DotHome.RunningModel
             SendText(sb.ToString(), device);
         }
 
-        public override void ReadDevice(GenericDevice device)
+        /// <summary>
+        /// Forces read of all <see cref="GenericDevice.RValues"/> from physical <paramref name="device"/>
+        /// </summary>
+        /// <param name="device"></param>
+        public override void ReadDevice(T device)
         {
             SendText("Read", null);
         }
 
-        public override List<GenericDevice> SearchDevices()
+        /// <summary>
+        /// Searches for devices using text protocol
+        /// </summary>
+        /// <returns></returns>
+        public override List<T> SearchDevices()
         {
-            var searchDevices = new List<GenericDevice>();
+            var searchDevices = new List<T>();
 
-            void handler(string text, GenericDevice device)
+            void handler(string text, T device)
             {
                 if (text.StartsWith("DetailsResponse"))
                 {
@@ -117,8 +146,13 @@ namespace DotHome.RunningModel
             return searchDevices;
         }
 
-
-        private void Parse(string json, GenericDevice device)
+        /// <summary>
+        /// Parses the text representation <paramref name="json"/> into existing device <paramref name="device"/>
+        /// <see cref="GenericDevice.RValues"/> and <see cref="GenericDevice.WValues"/> are created when not exist and updated with new values
+        /// </summary>
+        /// <param name="json"></param>
+        /// <param name="device"></param>
+        private static void Parse(string json, T device)
         {
             JObject o = JObject.Parse(json);
             device.Name = o.Value<string>("Name");
@@ -132,11 +166,12 @@ namespace DotHome.RunningModel
                     {
                         Name = rval.Name,
                         ValueType = Enum.Parse<DeviceValueType>(((JArray)rval.Value).Value<string>(0)),
-                        State = Enum.Parse<DeviceValueState>(((JArray)rval.Value).Value<string>(1)),
+                        State = Enum.Parse<DeviceValueError>(((JArray)rval.Value).Value<string>(1)),
                     };
                 }
                 switch (value.ValueType)
                 {
+                    case DeviceValueType.Pulse:
                     case DeviceValueType.Bool:
                         value.Bool = ((JArray)rval.Value).Value<bool>(2);
                         break;
@@ -158,7 +193,7 @@ namespace DotHome.RunningModel
                     case DeviceValueType.String:
                         value.String = ((JArray)rval.Value).Value<string>(2);
                         break;
-                    case DeviceValueType.Object:
+                    case DeviceValueType.Binary:
                         string s = ((JArray)rval.Value).Value<string>(2);
                         byte[] b = new byte[s.Length / 2];
                         for (int i = 0; i < b.Length; i++)
@@ -179,7 +214,7 @@ namespace DotHome.RunningModel
                     {
                         Name = rval.Name,
                         ValueType = Enum.Parse<DeviceValueType>(((JArray)rval.Value).Value<string>(0)),
-                        State = Enum.Parse<DeviceValueState>(((JArray)rval.Value).Value<string>(1)),
+                        State = Enum.Parse<DeviceValueError>(((JArray)rval.Value).Value<string>(1)),
                     };
                 }
                 switch (value.ValueType)
@@ -205,7 +240,7 @@ namespace DotHome.RunningModel
                     case DeviceValueType.String:
                         value.String = ((JArray)rval.Value).Value<string>(2);
                         break;
-                    case DeviceValueType.Object:
+                    case DeviceValueType.Binary:
                         string s = ((JArray)rval.Value).Value<string>(2);
                         byte[] b = new byte[s.Length / 2];
                         for (int i = 0; i < b.Length; i++)

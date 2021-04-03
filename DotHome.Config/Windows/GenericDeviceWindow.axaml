@@ -54,7 +54,7 @@
 				<DataGridTemplateColumn Header="Type" Width="*">
 					<DataGridTemplateColumn.CellTemplate>
 						<DataTemplate>
-							<ComboBox SelectedItem="{Binding GenericType}" Items="{x:Static tool:ConfigTools.DeviceValueTypes}" Foreground="Black"/>
+							<ComboBox SelectedItem="{Binding ValueType}" Items="{x:Static tool:ConfigTools.DeviceValueTypes}" Foreground="Black"/>
 						</DataTemplate>
 					</DataGridTemplateColumn.CellTemplate>
 				</DataGridTemplateColumn>
@@ -74,7 +74,7 @@
 				<DataGridTemplateColumn Header="Type" Width="*">
 					<DataGridTemplateColumn.CellTemplate>
 						<DataTemplate>
-							<ComboBox SelectedItem="{Binding GenericType}" Items="{x:Static tool:ConfigTools.DeviceValueTypes}" Foreground="Black"/>
+							<ComboBox SelectedItem="{Binding ValueType}" Items="{x:Static tool:ConfigTools.DeviceValueTypes}" Foreground="Black"/>
 						</DataTemplate>
 					</DataGridTemplateColumn.CellTemplate>
 				</DataGridTemplateColumn>

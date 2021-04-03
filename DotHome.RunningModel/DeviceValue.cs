@@ -8,11 +8,14 @@ using System.Threading.Tasks;
 
 namespace DotHome.RunningModel
 {
+    /// <summary>
+    /// Low-level value present in end devices representing sensor or actor
+    /// </summary>
     public class DeviceValue
     {
         public string Name { get; set; }
 
-        public DeviceValueState State { get; set; }
+        public DeviceValueError State { get; set; }
 
         public DeviceValueType ValueType { get; set; }
 

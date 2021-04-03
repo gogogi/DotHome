@@ -64,7 +64,7 @@
 				</ItemsControl.RenderTransform>
 				<ItemsControl.ItemTemplate>
 					<DataTemplate>
-						<TextBlock Text="{Binding DebugValue}" IsVisible="{Binding !Disabled}" FontSize="10" Foreground="Blue" HorizontalAlignment="Right" Margin="1" Height="14" Background="#A0FFFFFF"/>
+						<TextBlock Text="{Binding DebugValue, Converter={x:Static tool:DebugValueConverter.Instance}}" IsVisible="{Binding !Disabled}" FontSize="10" Foreground="Blue" HorizontalAlignment="Right" Margin="1" Height="14" Background="#A0FFFFFF"/>
 					</DataTemplate>
 				</ItemsControl.ItemTemplate>
 			</ItemsControl>
@@ -88,7 +88,7 @@
 				</ItemsControl.RenderTransform>
 				<ItemsControl.ItemTemplate>
 					<DataTemplate>
-						<TextBlock Text="{Binding DebugValue}" IsVisible="{Binding !Disabled}" FontSize="10" Foreground="Blue" Margin="1" Height="14" Background="#A0FFFFFF"/>
+						<TextBlock Text="{Binding DebugValue, Converter={x:Static tool:DebugValueConverter.Instance}}" IsVisible="{Binding !Disabled}" FontSize="10" Foreground="Blue" Margin="1" Height="14" Background="#A0FFFFFF"/>
 					</DataTemplate>
 				</ItemsControl.ItemTemplate>
 			</ItemsControl>

@@ -10,26 +10,48 @@ using System.Threading.Tasks;
 
 namespace DotHome.RunningModel
 {
+    /// <summary>
+    /// A <see cref="Device"/>, composed of generic R- and WValues. According to this values, I/O must be created during activation process.
+    /// Init and Run methods are already implemented using generic <see cref="CommunicationProvider"/>. 
+    /// Derived class must implement specific parameters (IP Address, COM port, baudrate...) provide corresponding <see cref="CommunicationProvider"/> into constructor
+    /// </summary>
     public abstract class GenericDevice : Device
     {
         private CommunicationProvider communicationProvider;
 
+        /// <summary>
+        /// Incoming values (sensors)
+        /// </summary>
         [Parameter]
         public List<DeviceValue> RValues { get; set; } = new List<DeviceValue>();
 
+        /// <summary>
+        /// Outcoming values (actuators)
+        /// </summary>
         [Parameter]
         public List<DeviceValue> WValues { get; set; } = new List<DeviceValue>();
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="communicationProvider">The injected comunication module, providing communication for this particular type of <see cref="GenericDevice"/></param>
         public GenericDevice(CommunicationProvider communicationProvider)
         {
             this.communicationProvider = communicationProvider;
         }
 
+        /// <summary>
+        /// Registers device to <see cref="CommunicationProvider"/>
+        /// </summary>
         public override void Init()
         {
             communicationProvider.RegisterDevice(this);
         }
 
+        /// <summary>
+        /// Transfers <see cref="RValues"/> to <see cref="Block.Outputs"/> and <see cref="WValues"/> to <see cref="Block.Inputs"/>.
+        /// If anything changed, forces write to device
+        /// </summary>
         public override void Run()
         {
             lock (this)
@@ -38,6 +60,10 @@ namespace DotHome.RunningModel
                 {
                     switch(RValues[i].ValueType)
                     {
+                        case DeviceValueType.Pulse:
+                            ((Output<bool>)Outputs[i]).Value = RValues[i].Bool;
+                            RValues[i].Bool = false;
+                            break;
                         case DeviceValueType.Bool:
                             ((Output<bool>)Outputs[i]).Value = RValues[i].Bool;
                             break;
@@ -59,7 +85,7 @@ namespace DotHome.RunningModel
                         case DeviceValueType.String:
                             ((Output<string>)Outputs[i]).Value = RValues[i].String;
                             break;
-                        case DeviceValueType.Object:
+                        case DeviceValueType.Binary:
                             ((Output<byte[]>)Outputs[i]).Value = RValues[i].Object;
                             break;
                     }
@@ -95,7 +121,7 @@ namespace DotHome.RunningModel
                             if (WValues[i].String != ((Input<string>)Inputs[i]).Value) shouldWrite = true;
                             WValues[i].String = ((Input<string>)Inputs[i]).Value;
                             break;
-                        case DeviceValueType.Object:
+                        case DeviceValueType.Binary:
                             if (WValues[i].Object != ((Input<byte[]>)Inputs[i]).Value) shouldWrite = true;
                             WValues[i].Object = ((Input<byte[]>)Inputs[i]).Value;
                             break;

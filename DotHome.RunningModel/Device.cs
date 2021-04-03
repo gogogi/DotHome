@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace DotHome.RunningModel
 {
+    /// <summary>
+    /// A <see cref="NamedBlock"/> which represents a physical end device. Only this blocks should interact with physical word.
+    /// </summary>
     [Color("Red"), Category("Devices")]
     public abstract class Device : NamedBlock
     {

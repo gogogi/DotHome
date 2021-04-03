@@ -21,10 +21,10 @@ namespace DotHome.StandardBlocks.Devices
         private UdpClient udpClient;
         private int port;
         private byte[] receivingBuffer = new byte[1000];
-        private AsyncQueue<Tuple<string, GenericDevice>> outgoingQueue = new AsyncQueue<Tuple<string, GenericDevice>>();
+        private AsyncQueue<Tuple<string, UdpDevice>> outgoingQueue = new AsyncQueue<Tuple<string, UdpDevice>>();
         private List<Task> tasks = new List<Task>();
 
-        protected override event Action<string, GenericDevice> TextReceived;
+        protected override event Action<string, UdpDevice> TextReceived;
 
         public UdpCommunicationProvider(IConfiguration configuration)
         {
@@ -49,7 +49,7 @@ namespace DotHome.StandardBlocks.Devices
             udpClient.Dispose();
         }
 
-        protected override void SendText(string text, GenericDevice target)
+        protected override void SendText(string text, UdpDevice target)
         {
             outgoingQueue.Enqueue(new(text, target));
             Debug.WriteLine("enqueue " + text);

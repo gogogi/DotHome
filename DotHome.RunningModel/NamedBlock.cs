@@ -6,6 +6,9 @@ using System.Text;
 
 namespace DotHome.RunningModel
 {
+    /// <summary>
+    /// A <see cref="Block"/> with a name parameter
+    /// </summary>
     public abstract class NamedBlock : Block
     {
         [Parameter(true), Description("Name of the block")]

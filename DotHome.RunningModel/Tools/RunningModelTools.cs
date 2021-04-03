@@ -5,10 +5,17 @@ using System.Text;
 
 namespace DotHome.RunningModel.Tools
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public static class RunningModelTools
     {
+        /// <summary>
+        /// Maps low-level device types to high-level block types
+        /// </summary>
         private static Dictionary<DeviceValueType, Type> deviceValueTypeToTypeDictionary = new Dictionary<DeviceValueType, Type>()
         {
+            [DeviceValueType.Pulse] = typeof(bool),
             [DeviceValueType.Bool] = typeof(bool),
             [DeviceValueType.Uint8] = typeof(uint),
             [DeviceValueType.Uint16] = typeof(uint),
@@ -20,13 +27,29 @@ namespace DotHome.RunningModel.Tools
             [DeviceValueType.Float4] = typeof(double),
             [DeviceValueType.Float] = typeof(double),
             [DeviceValueType.String] = typeof(string),
-            [DeviceValueType.Object] = typeof(byte[]),
+            [DeviceValueType.Binary] = typeof(byte[]),
         };
 
+        /// <summary>
+        /// Gets the supported high-level <see cref="Block"/> I/O types
+        /// </summary>
         public static Type[] SupportedTypes { get; } = { typeof(bool), typeof(int), typeof(uint), typeof(double), typeof(string), typeof(byte[]) };
 
+        /// <summary>
+        /// Checks if conversion from <paramref name="first"/> to <paramref name="second"/> I/O type is supported
+        /// </summary>
+        /// <param name="first"></param>
+        /// <param name="second"></param>
+        /// <returns></returns>
         public static bool IsConversionSupported(Type first, Type second) => GetTransferAction((BlockValue)Activator.CreateInstance(typeof(BlockValue<>).MakeGenericType(first)), (BlockValue)Activator.CreateInstance(typeof(BlockValue<>).MakeGenericType(second))) != null;
 
+        /// <summary>
+        /// Result of this method is <see cref="Action"/> that copies value of <paramref name="first"/> to <paramref name="second"/>, converting to value properly according to <see cref="BlockValue.Type"/>
+        /// If conversion is not supported, returns null
+        /// </summary>
+        /// <param name="first"></param>
+        /// <param name="second"></param>
+        /// <returns></returns>
         public static Action GetTransferAction(BlockValue first, BlockValue second)
         {
             if (first is BlockValue<bool> vb1)
@@ -72,6 +95,9 @@ namespace DotHome.RunningModel.Tools
             return null;
         }
 
+        /// <summary>
+        /// Maps low-level device types to high-level block types
+        /// </summary>
         public static Type ToType(this DeviceValueType deviceValueType)
         {
             return deviceValueTypeToTypeDictionary[deviceValueType];

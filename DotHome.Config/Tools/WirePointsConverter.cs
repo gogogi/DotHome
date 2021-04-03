@@ -24,10 +24,19 @@ namespace DotHome.Config.Tools
             InputView inputView = parameter.InputView;
             OutputView outputView = parameter.OutputView;
 
-            //Point po = outputView.Position;
-            //Point pi = inputView.Position;
 
-            //var list = new List<Point>() { po };
+
+            Point po = outputView.Position;
+            Point pi = inputView.Position;
+
+            if(pi.X - po.X > 20)
+            {
+                return new List<Point>() { po, po.WithX((pi.X + po.X) / 2), pi.WithX((pi.X + po.X) / 2), pi };
+            }
+            else
+            {
+                return new List<Point>() { po,  po + new Point(10, 0), (po + new Point(10, 0)).WithY((pi.Y + po.Y) / 2), (pi + new Point(-10, 0)).WithY((pi.Y + po.Y) / 2), pi + new Point(-10, 0), pi };
+            }
 
             //if ((pi.X - po.X) * ratio > Math.Abs(pi.Y - po.Y))
             //{

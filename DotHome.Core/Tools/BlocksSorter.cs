@@ -34,7 +34,6 @@ namespace DotHome.Core.Tools
             }
 
             Queue<BlockWrapper> blockWrappersWithoutPrecedors = new Queue<BlockWrapper>(blockWrappers.Where(bw => bw.PrecedingBlocks.Count == 0));
-            //blockWrappersWithoutPrecedors.Enqueue(blockWrappers.First(bw => bw.PrecedingBlocks.Count == 0));
 
             List<Block> sortedBlocks = new List<Block>();
 

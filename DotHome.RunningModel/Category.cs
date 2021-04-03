@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace DotHome.RunningModel
 {
+    /// <summary>
+    /// Represents category of automation (Light, Heating, Ventilation...)
+    /// </summary>
     public class Category : INotifyPropertyChanged
     {
         private string name;
@@ -14,6 +17,7 @@ namespace DotHome.RunningModel
 
         public event PropertyChangedEventHandler PropertyChanged;
 
+        //Is overriden for Config gui to work properly
         public override string ToString()
         {
             return Name;

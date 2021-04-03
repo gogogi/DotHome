@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace DotHome.RunningModel
 {
+    /// <summary>
+    /// Represents room of house (Kitchen, Living room, Bathroom...)
+    /// </summary>
     public class Room : INotifyPropertyChanged
     {
         private string name;
@@ -14,6 +17,7 @@ namespace DotHome.RunningModel
 
         public event PropertyChangedEventHandler PropertyChanged;
 
+        //Is overriden for Config gui to work properly
         public override string ToString()
         {
             return Name;
