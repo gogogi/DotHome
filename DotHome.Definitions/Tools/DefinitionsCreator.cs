@@ -15,8 +15,16 @@ using System.Text;
 
 namespace DotHome.Definitions.Tools
 {
+    /// <summary>
+    /// Helper class for creating definitions from running model (with libraries)
+    /// </summary>
     public static class DefinitionsCreator
     {
+        /// <summary>
+        /// Scans the <paramref name="dllsDirectory"/> for *.dll files, loads assemblies from them and creates <see cref="DefinitionsContainer"/> with all found <see cref="Block"/> derived types
+        /// </summary>
+        /// <param name="dllsDirectory"></param>
+        /// <returns></returns>
         public static DefinitionsContainer CreateDefinitions(string dllsDirectory)
         {
             DefinitionsContainer definitionsContainer = new DefinitionsContainer();
@@ -48,6 +56,11 @@ namespace DotHome.Definitions.Tools
             return definitionsContainer;
         }
 
+        /// <summary>
+        /// searches for <see cref="Block"/> derived types in <paramref name="assembly"/> and adds corresponding <see cref="BlockDefinition"/>s to <paramref name="definitionsContainer"/>
+        /// </summary>
+        /// <param name="definitionsContainer"></param>
+        /// <param name="assembly"></param>
         private static void AddBlocksFromAssembly(DefinitionsContainer definitionsContainer, Assembly assembly)
         {
             foreach(Type type in assembly.GetTypes())
@@ -74,6 +87,11 @@ namespace DotHome.Definitions.Tools
             }
         }
 
+        /// <summary>
+        /// Adds <see cref="BlockDefinition"/> representing <paramref name="type"/> to <paramref name="definitionsContainer"/>
+        /// </summary>
+        /// <param name="definitionsContainer"></param>
+        /// <param name="type"></param>
         private static void AddBlockFromType(DefinitionsContainer definitionsContainer, Type type)
         {
             BlockDefinition blockDefinition = GetBlockFromType(type);
@@ -90,6 +108,11 @@ namespace DotHome.Definitions.Tools
             }
         }
 
+        /// <summary>
+        /// Creates corresponding <see cref="BlockDefinition"/> for <paramref name="type"/>
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
         public static BlockDefinition GetBlockFromType(Type type)
         {
             BlockDefinition blockDefinition = new BlockDefinition();
@@ -106,7 +129,7 @@ namespace DotHome.Definitions.Tools
             Dictionary<ParameterDefinition, Type> parameterDeclaringTypesDictionary = new Dictionary<ParameterDefinition, Type>();
             Dictionary<ParameterDefinition, int> parameterOriginalOrderDictionary = new Dictionary<ParameterDefinition, int>();
             int i = 0;  // Counter for original order
-            foreach (PropertyInfo propertyInfo in type.GetProperties())
+            foreach (PropertyInfo propertyInfo in type.GetProperties()) // Scan type for inputs, outputs and parameters
             {
                 if (propertyInfo.PropertyType.IsGenericType && propertyInfo.PropertyType.GetGenericTypeDefinition() == typeof(Input<>))
                 {
@@ -146,6 +169,7 @@ namespace DotHome.Definitions.Tools
                 }
             }
 
+            // Now sort parameters such that the inherited parameters are first
             blockDefinition.Parameters.Sort((a, b) =>
             {
                 if (parameterDeclaringTypesDictionary[a].IsSubclassOf(parameterDeclaringTypesDictionary[b])) return 1;

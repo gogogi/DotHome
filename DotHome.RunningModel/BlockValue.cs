@@ -44,7 +44,7 @@ namespace DotHome.RunningModel
 
     /// <summary>
     /// Generic base class for containers representing I/O of <see cref="Block"/>s
-    /// Note that supported types for <typeparamref name="T"/> are <see cref="bool"/>, <see cref="int"/>, <see cref="uint"/>, <see cref="double"/>, <see cref="string"/> and <see cref="byte[]"/>
+    /// Note that supported types for <typeparamref name="T"/> are only <see cref="RunningModelTools.SupportedTypes"/>
     /// </summary>
     public class BlockValue<T> : BlockValue
     {

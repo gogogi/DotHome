@@ -4,12 +4,18 @@ using System.Text;
 
 namespace DotHome.Definitions
 {
+    /// <summary>
+    /// Container contains metadata of types derived from <see cref="RunningModel.Block"/> from all currently used block libraries (like StandardBlocks)
+    /// </summary>
     public class DefinitionsContainer
     {
         public List<BlocksCategory> BlockCategories { get; } = new List<BlocksCategory>();
 
-        //public Dictionary<Type, Type> CommunicationProviders { get; } = new Dictionary<Type, Type>();
-
+        /// <summary>
+        /// Gets <see cref="BlockDefinition"/> with given type name
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         public BlockDefinition GetBlockDefinitionByFullName(string name)
         {
             foreach (BlocksCategory category in BlockCategories)
