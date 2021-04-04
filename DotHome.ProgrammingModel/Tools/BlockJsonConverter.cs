@@ -8,9 +8,12 @@ using System.Text;
 
 namespace DotHome.ProgrammingModel.Tools
 {
+    /// <summary>
+    /// Helper tool for reading <see cref="Block"/>s from json.
+    /// </summary>
     public class BlockJsonConverter : JsonConverter<Block>
     {
-        public override bool CanWrite => false;
+        public override bool CanWrite => false; // For writing, use default scenario
 
         public override Block ReadJson(JsonReader reader, Type objectType, Block existingValue, bool hasExistingValue, JsonSerializer serializer)
         {

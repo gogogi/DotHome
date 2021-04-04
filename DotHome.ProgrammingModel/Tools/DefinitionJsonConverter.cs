@@ -8,6 +8,9 @@ using System.Text;
 
 namespace DotHome.ProgrammingModel.Tools
 {
+    /// <summary>
+    /// Helper tool for reading and writing <see cref="ADefinition"/>s. To work properly, <see cref="JsonSerializerSettings.Context"/> must contain <see cref="DefinitionsContainer"/>
+    /// </summary>
     public class DefinitionJsonConverter : JsonConverter<ADefinition>
     {
         public override ADefinition ReadJson(JsonReader reader, Type objectType, ADefinition existingValue, bool hasExistingValue, JsonSerializer serializer)

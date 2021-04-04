@@ -12,28 +12,58 @@ using System.Text;
 
 namespace DotHome.ProgrammingModel
 {
+    /// <summary>
+    /// Organization unit for Config GUI. <see cref="Project"/> consists of <see cref="Page"/>s, <see cref="Page"/>s consist of <see cref="Block"/>s and <see cref="Wire"/>s
+    /// </summary>
     public class Page : INotifyPropertyChanged
     {
+        /// <summary>
+        /// Page name. Must be unique, is showed in Config GUI
+        /// </summary>
         public string Name { get; set; }
 
+        /// <summary>
+        /// Page width in pixels
+        /// </summary>
         public int Width { get; set; }
 
+        /// <summary>
+        /// Page height in pixels
+        /// </summary>
         public int Height { get; set; }
 
+        /// <summary>
+        /// Determines if the page is 'open' - it means if it's tab is visible in main window. Only for visualization bindings.
+        /// </summary>
         [JsonIgnore]
         public bool Visible { get; set; } = true;
 
+        /// <summary>
+        /// Page scale in Config GUI - 1 = 100%. Only for visualization bindings.
+        /// </summary>
         [JsonIgnore]
         public double Scale { get; set; } = 1;
 
+        /// <summary>
+        /// Selected blocks in a Page. Only for visualization bindings.
+        /// </summary>
         [JsonIgnore]
         public ObservableCollection<Block> SelectedBlocks { get; } = new ObservableCollection<Block>();
 
+        /// <summary>
+        /// Single selected block in a Page. Is not null only when count of <see cref="SelectedBlocks"/> is exactly 1. Only for visualization bindings.
+        /// </summary>
         [JsonIgnore]
         public Block SelectedBlock { get; private set; }
 
+        /// <summary>
+        /// <see cref="Block"/>s on this page.
+        /// </summary>
         public ObservableCollection<Block> Blocks { get; } = new ObservableCollection<Block>();
 
+        /// <summary>
+        /// <see cref="Wire"/>s connecting <see cref="Block.Inputs"/> and <see cref="Block.Outputs"/>
+        /// </summary>
         public ObservableCollection<Wire> Wires { get; } = new ObservableCollection<Wire>();
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -44,12 +74,21 @@ namespace DotHome.ProgrammingModel
             SelectedBlocks.CollectionChanged += SelectedBlocks_CollectionChanged;
         }
 
+        /// <summary>
+        /// Update <see cref="SelectedBlock"/> according to <see cref="SelectedBlocks"/>
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void SelectedBlocks_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (SelectedBlocks.Count == 1) SelectedBlock = SelectedBlocks[0];
             else SelectedBlock = null;
         }
 
+        /// <summary>
+        /// Safely adds <see cref="Wire"/>. When <see cref="Wire.Input"/> already has a wire attached, it is removed.
+        /// </summary>
+        /// <param name="wire"></param>
         public void AddWire(Wire wire)
         {
             if (!Blocks.Any(b => b.Inputs.Contains(wire.Input) && b.Outputs.Contains(wire.Output)))
@@ -60,6 +99,11 @@ namespace DotHome.ProgrammingModel
             }
         }
 
+        /// <summary>
+        /// Keeps consistence between <see cref="Blocks"/> and <see cref="Wires"/>. If a block is removed, all attached wires are also removed
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Blocks_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if(e.Action == NotifyCollectionChangedAction.Remove)
@@ -71,7 +115,7 @@ namespace DotHome.ProgrammingModel
                     if (b.Selected) SelectedBlocks.Remove(b);
                 }
             }
-            else if(e.Action == NotifyCollectionChangedAction.Add)
+            else if(e.Action == NotifyCollectionChangedAction.Add) // Add event handlers for new blocks
             {
                 foreach (Block b in e.NewItems)
                 {
@@ -92,6 +136,11 @@ namespace DotHome.ProgrammingModel
 
         }
 
+        /// <summary>
+        /// If an <see cref="Output"/> was removed, remove all attached <see cref="Wire"/>s
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Outputs_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if(e.Action == NotifyCollectionChangedAction.Remove)
@@ -101,6 +150,11 @@ namespace DotHome.ProgrammingModel
             }
         }
 
+        /// <summary>
+        /// If an <see cref="Input"/> was removed, remove all attached <see cref="Wire"/>s (there should only be one)
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Inputs_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (e.Action == NotifyCollectionChangedAction.Remove)
@@ -110,6 +164,11 @@ namespace DotHome.ProgrammingModel
             }
         }
 
+        /// <summary>
+        /// If an <see cref="Output"/> was disabled, remove all attached <see cref="Wire"/>s
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Output_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if(e.PropertyName == nameof(Input.Disabled))
@@ -120,6 +179,11 @@ namespace DotHome.ProgrammingModel
             }
         }
 
+        /// <summary>
+        /// If an <see cref="Input"/> was disabled, remove all attached <see cref="Wire"/>s (there should only be one)
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Input_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(Output.Disabled))
@@ -130,6 +194,11 @@ namespace DotHome.ProgrammingModel
             }
         }
 
+        /// <summary>
+        /// Update <see cref="SelectedBlocks"/> if a <see cref="Block"/> was selected or unselected
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Block_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             Block block = (Block)sender;

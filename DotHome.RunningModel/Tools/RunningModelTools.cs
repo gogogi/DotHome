@@ -6,7 +6,7 @@ using System.Text;
 namespace DotHome.RunningModel.Tools
 {
     /// <summary>
-    /// 
+    /// Helper class for namespace <see cref="RunningModel"/>
     /// </summary>
     public static class RunningModelTools
     {

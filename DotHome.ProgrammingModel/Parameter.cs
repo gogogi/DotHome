@@ -10,13 +10,22 @@ using System.Text;
 
 namespace DotHome.ProgrammingModel
 {
+    /// <summary>
+    /// A parameter of <see cref="Block"/>. It represents property of <see cref="RunningModel.Block"/> marked by <see cref="RunningModel.Attributes.ParameterAttribute"/>
+    /// </summary>
     public class Parameter : INotifyPropertyChanged
     {
+        /// <summary>
+        /// Metadata of <see cref="RunningModel.Block"/> property this instance represents
+        /// </summary>
         public ParameterDefinition Definition { get; set; }
-
-        //[ParameterValidation]
+        
+        /// <summary>
+        /// Value of the parameter set in Config GUI. The corresponding property of <see cref="RunningModel.Block"/> is initialized with this value in Core.
+        /// </summary>
         public object Value { get; set; }
 
+        //Following properties are only helpers for binding in Configu GUI
         [JsonIgnore]
         public bool ValueAsBool { get => (bool)Value; set => Value = value; }
         [JsonIgnore]
@@ -34,8 +43,6 @@ namespace DotHome.ProgrammingModel
         {
             Definition = definition;
             Value = definition.DefaultValue;
-            //ParameterValidationAttribute parameterValidationAttribute = GetType().GetProperty(nameof(Value)).GetCustomAttribute<ParameterValidationAttribute>();
-            //parameterValidationAttribute.ValidationAttributes.AddRange(Definition.ValidationAttributes);
         }
     }
 }
